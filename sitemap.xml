@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>http://steve-jansen.github.com/blog/2013/02/25/a-ghost-no-more/</loc>
+        <lastmod>2013-02-28T17:14:44-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/
+        </loc>
+        <lastmod>2013-02-28T17:26:07-05:00</lastmod>
+    </url>
+    <url>
+        <loc>http://steve-jansen.github.com/blog/archives/</loc>
+        <lastmod>2013-02-28T17:26:07-05:00</lastmod>
+    </url>
+    <url>
+        <loc>http://steve-jansen.github.com/</loc>
+        <lastmod>2013-02-28T17:26:07-05:00</lastmod>
+    </url>
+    <url>
+        <loc>http://steve-jansen.github.com/robots.txt</loc>
+        <lastmod>2013-02-28T17:14:44-05:00</lastmod>
+    </url>
+</urlset>

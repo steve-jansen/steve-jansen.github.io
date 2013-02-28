@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: msdeploy | Steve Jansen]]></title>
+  <link href="http://steve-jansen.github.com/blog/categories/msdeploy/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.com/"/>
+  <updated>2013-02-28T17:27:11-05:00</updated>
+  <id>http://steve-jansen.github.com/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service]]></title>
+    <link href="http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/"/>
+    <updated>2013-02-28T16:44:00-05:00</updated>
+    <id>http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service</id>
+    <content type="html"><![CDATA[<p>I love shell scripting, which is probably why I seem to somehow get organically involved in "DevOps" on most of my project work.  I'm drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) - it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft's Web Deployment Agent service.</p>
+
+<p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can...</p>
+
+<p><div><script src='https://gist.github.com/5060329.js'></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+]]></content>
+  </entry>
+  
+</feed>
