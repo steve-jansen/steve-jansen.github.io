@@ -9,9 +9,9 @@ body > header {
     }
   }
   h2 {
-    margin: .2em 0 0;
+    margin: 0;
     @extend .sans;
-    font-size: 1em;
+    font-size: x-large;
     color: $subtitle-color;
     font-weight: normal;
   }

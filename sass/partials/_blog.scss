@@ -92,7 +92,7 @@ article + article {
   article { padding-top: 2em; }
   article header { background: none; padding-bottom: 0; }
   article h1 {
-    font-size: 2.2em;
+    //font-size: 2.2em;
     a { color: inherit; &:hover { color: $link-color-hover; } }
   }
   a[rel=full-article] {
