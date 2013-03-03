@@ -1,0 +1,13 @@
+{% if site.stackoverflow_user_name %}
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    {% if site.github_show_profile_link %}
+      <li /><a href="https://github.com/{{site.github_user}}">@{{site.github_user}}</a> on GitHub
+    {% endif %}
+    <li /><a href="http://stackoverflow.com/users/{{site.stackoverflow_user_id}}/{{site.stackoverflow_user_name}}">@{{site.stackoverflow_user_name}}</a> on StackOverflow
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+  </ul>
+</section>
+{% endif %}
