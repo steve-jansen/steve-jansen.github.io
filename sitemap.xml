@@ -6,17 +6,23 @@
     </url>
     <url>
         <loc>
+            http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/
+        </loc>
+        <lastmod>2013-03-03T15:16:13-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
             http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/
         </loc>
         <lastmod>2013-02-28T17:26:07-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/blog/archives/</loc>
-        <lastmod>2013-02-28T17:26:07-05:00</lastmod>
+        <lastmod>2013-03-03T15:16:13-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/</loc>
-        <lastmod>2013-02-28T17:26:07-05:00</lastmod>
+        <lastmod>2013-03-03T15:16:13-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/robots.txt</loc>
