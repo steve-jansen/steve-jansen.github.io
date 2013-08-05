@@ -1,7 +1,7 @@
 ---
 published: false
 layout: post
-title: "Fundamentals of Windows Shell Scripting - Overview"
+title: "Guide to Windows Batch Scripting"
 date: 2013-03-01 10:57
 comments: true
 categories: 
@@ -24,13 +24,15 @@ This series will share some of the tips and tricks I've picked up through the ye
 This series will share some conventions I picked up along the way for scripting in Windows via command prompt batch files.  The Windows PowerShell is definitely sweet, but, I still like batch files for their portability and low friction.  The Windows command line is very stable - no worrying about the PowerShell interpreter path, which version of PowerShell the server is running, etc. 
 
 ## Series Parts
-* [Part 1 - Getting Started with Windows Batch Scripting](/blog/2012/03/DD/title/)
-* [Part 2 - Variables](/blog/2012/03/DD/title/)
-* [Part 3 - Return Codes](/blog/2012/03/DD/title/)
-* [Part 4 - The pseudofiles stdin, stdout, stderr, and more](/blog/2012/03/DD/title/)
-* [Part 5 - If/Then Conditionals](/blog/2012/03/DD/title/)
-* [Part 6 - Loops](/blog/2012/03/DD/title/)
-* [Part 7 - Subroutines](/blog/2012/03/DD/title/)
-* [Part 8 - Parsing Input](/blog/2012/03/DD/title/)
-* [Part 9 - Logging](/blog/2012/03/DD/title/)
+* [Part 1 - Getting Started](/guides/windows-batch-scripting/part-1-getting-started.html)
+* [Part 2 - Variables](/guides/windows-batch-scripting/part-2-variables.html)
+* [Part 3 - Return Codes](/guides/windows-batch-scripting/part-3-return-codes.html)
+* [Part 4 - stdin, stdout, stderr](/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html)
+* [Part 5 - If/Then Conditionals](/guides/windows-batch-scripting/part-5-if-then-conditionals.html)
+* [Part 6 - Loops](/guides/windows-batch-scripting/part-6-loops.html)
+* [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
+* [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
+* [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+
 
