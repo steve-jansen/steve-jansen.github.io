@@ -5,11 +5,17 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: webdeploy - /* steve jansen */</title>
+  <title>Windows Batch Scripting: Functions - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Category: webdeploy">
+  <meta name="description" content="Overview
+Part 1 - Getting Started
+Part 2 - Variables
+Part 3 - Return Codes
+Part 4 - stdin, stdout, stderr
+Part 5 - If/Then Conditionals
+Part 6 - &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/blog/categories/webdeploy/">
+  <link rel="canonical" href="http://steve-jansen.github.com/guides/windows-batch-scripting/part-7-functions.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,36 +70,165 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Webdeploy</h1>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Functions</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
+<li>Part 7 - Functions</li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
+</ul>
 
-  
-  <h2>2013</h2>
 
-<article>
-  
-<h1><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a></h1>
-<time datetime="2013-02-28T16:44:00-05:00" pubdate><span class='month'>Feb</span> <span class='day'>28</span> <span class='year'>2013</span></time>
+<p>Functions are de facto way to reuse code in just about any procedural coding language.  While DOS lacks a bona fide function keyword, you can
+fake it till you make it thanks to labels and the <code>CALL</code> keyword.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/iis/'>iis</a>, <a class='category' href='/blog/categories/msdeploy/'>msdeploy</a>, <a class='category' href='/blog/categories/webdeploy/'>webdeploy</a></span>
-</footer>
+<p>There are a few gotchas to pay attention to:</p>
+
+<ol>
+<li>Your quasi functions need to be defined as labels at the bottom of your script.</li>
+<li>The main logic of your script must have a <code>EXIT /B [errorcode]</code> statement.  This keeps your main logic from falling through into your functions.</li>
+</ol>
 
 
-</article>
+<h1>Defining a function</h1>
 
+<p>In this example, we&#8217;ll implement a poor man&#8217;s version of the *nix tee utility to write a message to both a file and the stdout stream.  We&#8217;ll use a variable global to the entire script, <code>%log%</code> in the function.</p>
+
+<pre><code>@ECHO OFF
+SETLOCAL
+
+:: script global variables
+SET me=%~n0
+SET log=%TEMP%\%me%.txt
+
+:: The "main" logic of the script
+IF EXIST "%log%" DELETE /Q %log% &gt;NUL
+
+:: do something cool, then log it
+CALL :tee "%me%: Hello, world!"
+
+:: force execution to quit at the end of the "main" logic
+EXIT /B %ERRORLEVEL%
+
+:: a function to write to a log file and write to stdout
+:tee
+ECHO %* &gt;&gt; "%log%"
+ECHO %*
+EXIT /B 0
+</code></pre>
+
+<h1>Calling a function</h1>
+
+<p>We use the <code>CALL</code> keyword to invoke the quasi function labelled <code>:tee</code>.  We can pass command line arguments just like we&#8217;re calling another batch file.</p>
+
+<p>We have to remember to <code>EXIT /B</code> keyword at the end our function.  Sadly, there is no way to return anything other than an exit code.</p>
+
+<h1>Return values</h1>
+
+<p>The return value of <code>CALL</code> will always be the exit code of the function.  Like any other invokation of an executable, the caller reads <code>%ERRORLEVEL%</code>
+to get the exit code.</p>
+
+<p>You have to get creative to pass anything other than integer return codes.  The function can <code>ECHO</code> to stdout, letting the caller decide to handle the
+output by pipeling the output as the input to another executable, redirecting to a file, or parsing via the <code>FOR</code> command.</p>
+
+<p>The caller could also pass data by modifying a global variable, however, I try to avoid this approach.</p>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-6-loops.html">&lt;&lt; Part 6 - Loops</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input >></a>
+</span></p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/guides/windows-batch-scripting/part-7-functions.html" data-via="" data-counturl="http://steve-jansen.github.com/guides/windows-batch-scripting/part-7-functions.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -212,7 +347,10 @@
       var disqus_shortname = 'steve-jansen';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-7-functions.html';
+        var disqus_url = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-7-functions.html';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

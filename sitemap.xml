@@ -17,12 +17,80 @@
         <lastmod>2013-02-28T17:26:07-05:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update/
+        </loc>
+        <lastmod>2013-08-06T23:47:56-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://steve-jansen.github.com/blog/archives/</loc>
-        <lastmod>2013-03-03T15:16:13-05:00</lastmod>
+        <lastmod>2013-08-06T23:47:56-04:00</lastmod>
+    </url>
+    <url>
+        <loc>http://steve-jansen.github.com/guides/windows-batch-scripting/</loc>
+        <lastmod>2013-06-23T14:06:21-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-1-getting-started.html
+        </loc>
+        <lastmod>2013-06-23T14:15:48-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-10-advanced-tricks.html
+        </loc>
+        <lastmod>2013-06-23T15:13:08-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-2-variables.html
+        </loc>
+        <lastmod>2013-06-23T14:16:38-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-3-return-codes.html
+        </loc>
+        <lastmod>2013-06-23T14:17:14-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html
+        </loc>
+        <lastmod>2013-06-23T14:17:50-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-5-if-then-conditionals.html
+        </loc>
+        <lastmod>2013-06-23T14:18:25-04:00</lastmod>
+    </url>
+    <url>
+        <loc>http://steve-jansen.github.com/guides/windows-batch-scripting/part-6-loops.html</loc>
+        <lastmod>2013-06-23T14:18:57-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-7-functions.html
+        </loc>
+        <lastmod>2013-06-23T14:19:30-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html
+        </loc>
+        <lastmod>2013-06-23T15:11:31-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/guides/windows-batch-scripting/part-9-logging.html
+        </loc>
+        <lastmod>2013-06-23T14:21:06-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/</loc>
-        <lastmod>2013-03-03T15:16:13-05:00</lastmod>
+        <lastmod>2013-08-06T23:47:56-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/robots.txt</loc>

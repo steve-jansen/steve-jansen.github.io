@@ -5,11 +5,17 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Tailoring the Windows Command Prompt Shell - /* steve jansen */</title>
+  <title>Windows Batch Scripting: stdin, stdout, stderr - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I spend a lot of time in the Windows Command Prompt. Most developers I work with don&#8217;t know some of the tricks up the Command Prompt&#8217;s &hellip;">
+  <meta name="description" content="Overview
+Part 1 - Getting Started
+Part 2 - Variables
+Part 3 - Return Codes
+Part 4 - stdin, stdout, stderr
+Part 5 - If/Then Conditionals
+Part 6 - &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">
+  <link rel="canonical" href="http://steve-jansen.github.com/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -68,7 +74,7 @@
   
   <header>
     
-      <h1 class="entry-title">Tailoring the Windows Command Prompt Shell</h1>
+      <h1 class="entry-title">Windows Batch Scripting: Stdin, Stdout, Stderr</h1>
     
     
       <p class="meta">
@@ -84,7 +90,7 @@
   
 
 
-<time datetime="2013-02-27T14:18:00-05:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time>
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -93,69 +99,104 @@
   </header>
 
 
-<div class="entry-content"><p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&#8217;t know some of the tricks up the Command Prompt&#8217;s sleeve.  So allow me to share some of my favorite settings.</p>
-
-<!-- more -->
-
-
-<h2>Launching the Command Prompt</h2>
-
-<p>Windows gurus launch the command prompt using the keyboard shortcut <code>Windows Logo Key</code>+<code>R</code> (i.e., &#8220;Run&#8221;) > Type <code>cmd.exe</code> then <code>Enter</code>.  This is way faster than navigating the Windows Start Menu to find the Command Prompt.</p>
-
-<h2>Preferences</h2>
-
-<p>Right click the Command Prompt title bar and select &#8220;Properties&#8221; from the context menu.  I modify the preferences highlighted in below screenshots to accomplish a few things:</p>
-
-<ul>
-<li>make the shell easier on our overtaxed eyes ;)</li>
-<li>quicker navigation of the command history (up/down arrows) by removing the noise of duplicate entries</li>
-<li>simplify copying text to copy any selected text (by the mouse) when you press enter</li>
-<li>simplify pasting text to paste on right click</li>
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
+<li>Part 4 - stdin, stdout, stderr</li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
 </ul>
 
 
-<p><img src="/images/posts/2013-02-27-A.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p>DOS, like Unix/Linux, uses the three universal &#8220;files&#8221; for keyboard input, printing text on the screen, and the
+printing errors on the screen.  The &#8220;Standard In&#8221; file, known as stdin, contains the input to the program/script.
+The &#8220;Standard Out&#8221; file, known as stdout, is used to write output for display on the screen.  Finally, the
+&#8220;Standard Err&#8221; file, known as stderr, contains any error messages for display on the screen.</p>
 
-<p><img src="/images/posts/2013-02-27-B.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<h2>File Numbers</h2>
 
-<p><img src="/images/posts/2013-02-27-C.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p>Each of these three standard files, otherwise known as the standard streams, are referernced using the numbers 0, 1, and 2.
+Stdin is file 0, stdout is file 1, and stderr is file 2.</p>
 
-<p><img src="/images/posts/2013-02-27-D.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<h2>Redirection</h2>
 
-<h2>Tab and Filename Autocompletion</h2>
+<p>A very common task in batch files is sending the output of a program to a log file.   The <code>&gt;</code> operator sends, or redirects,
+stdout or stderr to another file.  For example, you can write a listing of the current directory to a text file:</p>
 
-<p>The <code>Tab</code> key should auto complete the names of files and folders in the current working directory.  Each press of <code>Tab</code> should cycle to the next name.  The autocompletion is pretty smart - it will filter the choices based on what you have already typed.   For example, typing <code>D</code> then <code>Tab</code> will autocomplete the first file or folder that starts with the letter &#8220;D&#8221;.  Tabbing again will display the next file or folder that start with D.  Tabbing will cycle through a ring of possible matches.</p>
+<pre><code>DIR &gt; temp.txt
+</code></pre>
 
-<p>For example, tabbing through the letter &#8220;D&#8221; in your user profile directory on Windows 7 might autocomplete &#8220;Desktop&#8221;, &#8220;Documents&#8221;, &#8220;Downloads&#8221;, and then back to &#8220;Desktop&#8221;.  Autocomplete will even quote paths with spaces, which is a nice trick.  I often see experienced developers stuggle to find a filepath, repeatedly doing <code>DIR</code> and <code>CD</code> commands to just run a single batch script.</p>
+<p>The <code>&gt;</code> operator will overwrite the contents of temp.txt with stdout from the DIR command.  The <code>&gt;&gt;</code> operator is a slight
+variant that appends the output to a target file, rather than overwriting the target file.</p>
 
-<p>One small shortcoming is autocomlete cannot expand environmental variables like <code>%ProgramFiles%</code> or <code>%UserProfile%</code>.  Although you can use <code>Windows logo key</code> + <code>R</code> Run dialog to autocomplete environmental variables.</p>
+<p>A common technique is to use <code>&gt;</code> to create/overwrite a log file, then use <code>&gt;&gt;</code> subsequently to append to the log file.</p>
 
-<p>Autocompletion saves you a bunch of typing with just a key or two to filter your choices, tabbing until you find the folder you want,  pressing <code>\</code> to start tabbing through the subfolder, and repeat.  And it makes you look more competent when pair programming.</p>
+<pre><code>SomeCommand.exe   &gt; temp.txt
+OtherCommand.exe &gt;&gt; temp.txt
+</code></pre>
 
-<h2>Command History</h2>
+<p>By default, the <code>&gt;</code> and <code>&gt;&gt;</code> operators redirect stdout.  You can redirect stderr by using the file number <code>2</code> in front of the
+operator:</p>
 
-<p>The <code>DOSKEY</code> utility is similar to the <code>history</code> utility on Unix/Linux shells.  Most developers know you can press the up arrow or down arrow to cycle through the history of issued commands.</p>
+<pre><code>DIR SomeFile.txt  2&gt;&gt; error.txt
+</code></pre>
 
-<p>Most developers (and even sysadmins) aren&#8217;t aware of the advanced keyboard shortcuts wired to <code>DOSKEY</code>:</p>
+<p>You can even combine the stdout and stderr streams using the file number and the <code>&amp;</code> prefix:</p>
 
-<ul>
-<li>UP and DOWN ARROWS recall commands</li>
-<li><code>ESC</code> clears command line</li>
-<li><code>F7</code> displays command history</li>
-<li><code>ALT</code>+<code>F7</code> clears command history</li>
-<li><code>F8</code> searches command history</li>
-<li><code>F9</code> selects a command by number</li>
-</ul>
+<pre><code>DIR SomeFile.txt 2&gt;&amp;1
+</code></pre>
 
+<p>This is useful if you want to write both stdout and stderr to a single log file.</p>
 
-<p>Example of pressing <code>ALT</code>+<code>F7</code> to view the command history:
-<img src="/images/posts/2013-02-27-E.png" alt="Screenshot of the visual command history" /></p>
+<pre><code>DIR SomeFile.txt &gt; output.txt 2&gt;&amp;1
+</code></pre>
 
-<p>Example of pressing <code>F9</code> to recall a command by history number:
-<img src="/images/posts/2013-02-27-F.png" alt="Screenshot of the visual command history" /></p>
+<p>To use the contents of a file as the input to a program, instead of typing the input from the keyboard, use the <code>&lt;</code> operator.</p>
 
-<p>Example of pressing <code>F8</code> to cycle through history entries matching the text &#8220;D&#8221; already typed into the comamnd line buffer:
-<img src="/images/posts/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
+<pre><code>TYPE &lt; SomeFile.txt
+</code></pre>
+
+<h2>Suppressing Program Output</h2>
+
+<p>The pseudofile <code>NUL</code> is used to discard any output from a program. Here is an example of emulating the Unix command <code>sleep</code> by calling ping
+against the loopback address.  We redirect stdout to the <code>NUL</code> device to avoid printing the output on the command prompt screen.</p>
+
+<pre><code>PING 127.0.0.1 &gt; NUL
+</code></pre>
+
+<h2>Redirecting Program Output As Input to Another Program</h2>
+
+<p>Let&#8217;s say you want to chain together the output of one program as input to another.  This is known as &#8220;piping&#8221; output to another program,
+and not suprisingly we use the pipe character <code>|</code> to get the job done.  We&#8217;ll sort the output of the DIR commmand.</p>
+
+<pre><code>DIR /B | SORT
+</code></pre>
+
+<h2>A Cool Party Trick</h2>
+
+<p>You can quickly create a new text file, say maybe a batch script, from just the command line by redirecting the command prompt&#8217;s own stdin,
+called <code>CON</code>, to a text file.  When you are done typing, hit <code>CTRL+Z</code>, which sends the end-of-file (EOF) character.</p>
+
+<pre><code>TYPE CON &gt; output.txt
+</code></pre>
+
+<p><img src="/images/posts/2013-03-05-A.png" alt="Screenshot of sending keyboard input to a file" /></p>
+
+<p>There are a number of other special files on DOS that you can redirect, however, most are a bit dated like like LPT1 for parallel portt printers
+or COM1 for serial devices like modems.</p>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-3-return-codes.html">&lt;&lt; Part 3 - Return Codes</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals >></a>
+</span></p>
 </div>
 
 
@@ -178,12 +219,12 @@
   
 
 
-<time datetime="2013-02-27T14:18:00-05:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time>
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/tools/'>tools</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
   
 </span>
 
@@ -192,7 +233,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/" data-via="" data-counturl="http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html" data-via="" data-counturl="http://steve-jansen.github.com/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html" >Tweet</a>
   
   
   
@@ -201,10 +242,6 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/02/25/a-ghost-no-more/" title="Previous Post: A ghost no more">&laquo; A ghost no more</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/" title="Next Post: How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service">How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service &raquo;</a>
       
     </p>
   </footer>
@@ -334,8 +371,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/';
-        var disqus_url = 'http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/';
+        var disqus_identifier = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html';
+        var disqus_url = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html';
         var disqus_script = 'embed.js';
       
     (function () {

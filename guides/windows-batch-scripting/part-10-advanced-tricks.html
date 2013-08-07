@@ -5,11 +5,17 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: webdeploy - /* steve jansen */</title>
+  <title>Windows Batch Scripting: Advanced Tricks - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Category: webdeploy">
+  <meta name="description" content="Overview
+Part 1 - Getting Started
+Part 2 - Variables
+Part 3 - Return Codes
+Part 4 - stdin, stdout, stderr
+Part 5 - If/Then Conditionals
+Part 6 - &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/blog/categories/webdeploy/">
+  <link rel="canonical" href="http://steve-jansen.github.com/guides/windows-batch-scripting/part-10-advanced-tricks.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,36 +70,169 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Webdeploy</h1>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Advanced Tricks</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
+<li>Part 10 - Advanced Tricks</li>
+</ul>
 
-  
-  <h2>2013</h2>
 
-<article>
-  
-<h1><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a></h1>
-<time datetime="2013-02-28T16:44:00-05:00" pubdate><span class='month'>Feb</span> <span class='day'>28</span> <span class='year'>2013</span></time>
+<h1>Boilplate info</h1>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/iis/'>iis</a>, <a class='category' href='/blog/categories/msdeploy/'>msdeploy</a>, <a class='category' href='/blog/categories/webdeploy/'>webdeploy</a></span>
-</footer>
+<p>I like to include a header on all of scripts that documents the who/what/when/why/how.  You can use the <code>::</code> comemnt trick to make
+this header info more readable:</p>
+
+<pre><code>:: Name:     MyScript.cmd
+:: Purpose:  Configures the FooBar engine to run from a source control tree path
+:: Author:   stevejansen_github@icloud.com
+:: Revision: March 2013 - initial version
+::           April 2013 - added support for FooBar v2 switches
+
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
+
+:: variables
+SET me=%~n0
 
 
-</article>
+:END
+ENDLOCAL
+ECHO ON
+@EXIT /B 0
+</code></pre>
 
+<h1>Conditional commands based on success/failure</h1>
+
+<p>The conditional operators <code>||</code> and <code>&amp;&amp;</code> provide a convenient shorthand method to run a 2nd command based on the succes or failure of a 1st command.</p>
+
+<p>The <code>&amp;&amp;</code> syntax is the AND opeartor to invoke a 2nd command when the first command returns a zero (success) exit code.</p>
+
+<pre><code>DIR myfile.txt &gt;NUL 2&gt;&amp;1 &amp;&amp; TYPE myfile.txt
+</code></pre>
+
+<p>The <code>||</code> syntax is an OR operator to invoke a 2nd command when the first command returns a non-zero (failure) exit code.</p>
+
+<pre><code>DIR myfile.txt &gt;NUL 2&gt;&amp;1 || CALL :WARNING file not found - myfile.txt
+</code></pre>
+
+<p>We can even combined the techniques.  Notice how we use the <code>()</code> grouping construct with <code>&amp;&amp;</code> to run 2 commands together should the 1st fail.</p>
+
+<pre><code>DIR myfile.txt &gt;NUL 2&gt;&amp;1 || (ECHO %me%: WARNING - file not found - myfile.txt &gt;2 &amp;&amp; EXIT /B 1)
+</code></pre>
+
+<h1>Getting the full path to the parent directory of the script</h1>
+
+<pre><code>:: variables
+PUSHD "%~dp0" &gt;NUL &amp;&amp; SET root=%CD% &amp;&amp; POPD &gt;NUL
+</code></pre>
+
+<h1>Making a script sleep for N seconds</h1>
+
+<p>You can use <code>PING.EXE</code> to fake a real *nix style <code>sleep</code> command.</p>
+
+<pre><code>:: sleep for 2 seconds
+PING.EXE -N 2 127.0.0.1 &gt; NUL
+</code></pre>
+
+<h1>Supporting &#8220;double-click&#8221; execution (aka invoking from Windows Explorer)</h1>
+
+<p>Test %CMDCMDLINE% is equal to %COMSPEC%  If so, enable a PAUSE at the end of the script.  Also remember to CD to a valid working directory if needed.</p>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-9-logging.html">&lt;&lt; Part 9 - Logging</a>
+</span></p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/guides/windows-batch-scripting/part-10-advanced-tricks.html" data-via="" data-counturl="http://steve-jansen.github.com/guides/windows-batch-scripting/part-10-advanced-tricks.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -212,7 +351,10 @@
       var disqus_shortname = 'steve-jansen';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-10-advanced-tricks.html';
+        var disqus_url = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-10-advanced-tricks.html';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

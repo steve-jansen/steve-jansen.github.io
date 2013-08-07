@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: webdeploy - /* steve jansen */</title>
+  <title>Guide to Windows Batch Scripting - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Category: webdeploy">
+  <meta name="description" content="I love shell scripting - it&#8217;s the duct tape of programming to me. Low cost, high benefit. And it feels like art, where one can learn to do &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/blog/categories/webdeploy/">
+  <link rel="canonical" href="http://steve-jansen.github.com/guides/windows-batch-scripting/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,36 +64,119 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Webdeploy</h1>
+    
+      <h1 class="entry-title">Guide to Windows Batch Scripting</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>I <em>love</em> shell scripting - it&#8217;s the duct tape of programming to me.  Low cost, high benefit.  And it feels like art, where one can learn to do increasinlgy complex tasks with greater simplicity.</p>
 
-  
-  <h2>2013</h2>
+<p>Sadly, I feel like it&#8217;s a developer skill on the decline.  Maybe new developers feel it&#8217;s &#8220;not real programming&#8221;.  Perhaps the growing dominance of Java as the <em>lingua franca</em> of academic comp sci courses has made shell scripting less relevant in university settings.</p>
 
-<article>
-  
-<h1><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a></h1>
-<time datetime="2013-02-28T16:44:00-05:00" pubdate><span class='month'>Feb</span> <span class='day'>28</span> <span class='year'>2013</span></time>
+<p>True, shell scripting feel a bit “vocational”, maybe even a bit unsexy compared to Python/Ruby/LISP/blah/blah/blah.  Nevertheless, it&#8217;s a skill that becomes invaluable as you gain seniority and start doing more <a href="http://en.wikipedia.org/wiki/DevOps">DevOps</a> in you day job, or if you want to do some high-speed, low drag stuff to tailor your development environment like <a href="https://github.com/blog/1345-introducing-boxen">this</a>.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/iis/'>iis</a>, <a class='category' href='/blog/categories/msdeploy/'>msdeploy</a>, <a class='category' href='/blog/categories/webdeploy/'>webdeploy</a></span>
-</footer>
+<h2>Why Windows?</h2>
 
+<p>This series will share some of the tips and tricks I&#8217;ve picked up through the years of working with Windows professionally.  I&#8217;ll be the first to admit the Unix shells of the world are far superior to the Windows command prompt (or even Windows PowerShell).  Windows is a fact of life for most professionals writing code for coporate customers; this series aims to make life with Windows a little easier.</p>
 
-</article>
+<h2>Why DOS-style Batch Files?</h2>
+
+<p>This series will share some conventions I picked up along the way for scripting in Windows via command prompt batch files.  The Windows PowerShell is definitely sweet, but, I still like batch files for their portability and low friction.  The Windows command line is very stable - no worrying about the PowerShell interpreter path, which version of PowerShell the server is running, etc.</p>
+
+<h2>Series Parts</h2>
+
+<ul>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
+</ul>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/guides/windows-batch-scripting/index.html" data-via="" data-counturl="http://steve-jansen.github.com/guides/windows-batch-scripting/index.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -212,7 +295,10 @@
       var disqus_shortname = 'steve-jansen';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.com/guides/windows-batch-scripting/index.html';
+        var disqus_url = 'http://steve-jansen.github.com/guides/windows-batch-scripting/index.html';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

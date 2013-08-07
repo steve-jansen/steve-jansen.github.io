@@ -5,11 +5,17 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: webdeploy - /* steve jansen */</title>
+  <title>Windows Batch Scripting: Parsing Input - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Category: webdeploy">
+  <meta name="description" content="Overview
+Part 1 - Getting Started
+Part 2 - Variables
+Part 3 - Return Codes
+Part 4 - stdin, stdout, stderr
+Part 5 - If/Then Conditionals
+Part 6 - &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/blog/categories/webdeploy/">
+  <link rel="canonical" href="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,36 +70,151 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Webdeploy</h1>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Parsing Input</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
+<li>Part 8 - Parsing Input</li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
+</ul>
 
-  
-  <h2>2013</h2>
 
-<article>
-  
-<h1><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a></h1>
-<time datetime="2013-02-28T16:44:00-05:00" pubdate><span class='month'>Feb</span> <span class='day'>28</span> <span class='year'>2013</span></time>
+<p>Robust parsing of command line input separates a good script from a great script.  I&#8217;ll share some tips on how I parse input.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/iis/'>iis</a>, <a class='category' href='/blog/categories/msdeploy/'>msdeploy</a>, <a class='category' href='/blog/categories/webdeploy/'>webdeploy</a></span>
-</footer>
+<h1>The Easy Way to read Command Line Arguments</h1>
 
+<p>By far the easiest way to parse command line arguments is to read required arguments by ordinal position.</p>
 
-</article>
+<p>Here we get the full path to a local file passed as the first argument.  We write an error message to stderr if the file does not exist and exit
+our script:</p>
 
+<pre><code>SET filepath=%~f1
+
+IF NOT EXIST "%filepath%" (
+    ECHO %~n0: file not found - %filepath% &gt;&amp;2
+    EXIT /B 1
+)
+</code></pre>
+
+<h1>Optional parameters</h1>
+
+<p>I assign a default value for parameters as such</p>
+
+<pre><code>SET filepath=%dp0\default.txt
+
+:: the first parameter is an optional filepath
+IF EXIST "%~f1" SET filepath=%~f1
+</code></pre>
+
+<h1>Switches</h1>
+
+<h1>Named Parameters</h1>
+
+<h1>Variable Number of Arguments</h1>
+
+<h1>Reading user input</h1>
+
+<pre><code>:confirm
+SET /P "Continue [y/n]&gt;" %confirm%
+FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
+</code></pre>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-7-functions.html">&lt;&lt; Part 7 - Functions</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging >></a>
+</span></p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html" data-via="" data-counturl="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -212,7 +333,10 @@
       var disqus_shortname = 'steve-jansen';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html';
+        var disqus_url = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
