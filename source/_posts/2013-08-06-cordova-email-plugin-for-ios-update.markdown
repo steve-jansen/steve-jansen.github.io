@@ -1,9 +1,11 @@
 ---
 layout: post
 title: "Update to the Cordova Email Plugin for iOS"
-date: 2013-08-06 23:37
+date: 2013-08-06 23:45
 comments: true
-categories: cordova, phonegap
+categories: 
+- cordova
+- phonegap
 ---
 
 I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices --
@@ -34,9 +36,8 @@ Major changes to the plugin include:
 * Jasmine unit tests for the JS part of the plugin
 * Xcode unit tests for the obj-c part of the plugin
 
-I'm planning on repointing [phonegap-plugins/iOS/EmailCompser](https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer) and
+I have a [pull request](https://github.com/phonegap/phonegap-plugins/pull/1238) to repoint [phonegap-plugins/iOS/EmailCompser](https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer) and
 [phonegap-plugins/iOS/EmailCompserWithAttachments](https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments) to this new repo.
 As a courtesy, I've asked the original contributors to these two plugins to give their blessing.
 
-I'm also planning on publishing to the new [cordova npm-like repository](http://plugins.cordova.org) if I can figure out the right args to get plugman to publish it.  (`plugman publish .` fails for me with a path.join error...)
-
+I've also published this plugin to the [cordova npm-like repository](http://plugins.cordova.io/#/emailcomposer).  And, trust me, [don't call `plugman publish` with the `--plugin` argument](https://issues.apache.org/jira/browse/CB-4528?).
