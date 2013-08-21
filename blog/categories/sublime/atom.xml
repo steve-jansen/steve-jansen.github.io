@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: sublime | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.com/blog/categories/sublime/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.com/"/>
+  <updated>2013-08-21T16:16:55-04:00</updated>
+  <id>http://steve-jansen.github.com/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A Fantastic Video Tutorial on Sublime Text 2]]></title>
+    <link href="http://steve-jansen.github.com/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/"/>
+    <updated>2013-08-21T12:29:00-04:00</updated>
+    <id>http://steve-jansen.github.com/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial</id>
+    <content type="html"><![CDATA[<p>Jeffrey Way at Nettuts+ created a wonderul video tutorial on using Sublime Text 2
+to its fullest capabilities.</p>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/TZ-bgcJ6fQo "></iframe></div></p>
+
+<p>Even better, Jeffrey authored a free online course to <a href="https://tutsplus.com/course/improve-workflow-in-sublime-text-2/">improve your workflow in Sublime Text 2</a>.
+You can read more about it at <a href="http://net.tutsplus.com/articles/news/perfect-workflow-in-sublime-text-free-course/">Perfect Workflow in Sublime Text: Free Course!</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>
