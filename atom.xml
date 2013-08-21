@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.com/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-06T23:48:52-04:00</updated>
+  <updated>2013-08-21T12:08:54-04:00</updated>
   <id>http://steve-jansen.github.com/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -14,9 +14,130 @@
 
   
   <entry>
+    <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>
+    <link href="http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
+    <updated>2013-08-20T21:44:00-04:00</updated>
+    <id>http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
+    <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
+
+<p>If you haven&#8217;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
+
+<p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
+Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
+
+<p>Well, the proxy lets you transparently reroute <code>http://localhost/api/foo/1</code> from your local laptop to an integration server
+like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No nonsense.</p>
+
+<h3>Grunt</h3>
+
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&#8217;s an example config from the scaffold project:</p>
+
+<pre><code>connect: {
+  options: {
+    port: 9000,
+    // Change this to '0.0.0.0' to access the server from outside.
+    hostname: 'localhost'
+  },
+  livereload: {
+    options: {
+      middleware: function (connect) {
+        return [
+          require('json-proxy').initialize({
+            proxy: {
+              forward: {
+                '/api/': 'http://integration-server:4040',
+                '/swagger/': 'http://integration-server:4040',
+              },
+              headers: {
+                'X-Forwarded-User': 'John Doe',
+                'X-Forwarded-User-Email': 'john.doe@example.com'
+              }
+            }
+          }),
+          lrSnippet,
+          mountFolder(connect, '.tmp'),
+          mountFolder(connect, yeomanConfig.app)
+        ];
+      }
+    }
+  },
+</code></pre>
+
+<h3>Auth Headers</h3>
+
+<p>Even better, you can inject headers into proxied request.  So if you remote server requires an Authorization header with an OAuth-style token, or sits behind an Enterprise SSO appliance, you can add the headers to deal with bypassing the remote server authentication.</p>
+
+<h3>CLI</h3>
+
+<p>The CLI utility is also improved.  The CLI properly supports global installation.
+If you install using <code>sudo npm install -g json-proxy</code>, you can invoke the proxy simply as <code>json-proxy</code> with whatever args you want.</p>
+
+<h3>CLI usage info:</h3>
+
+<pre><code> json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]
+             [-h header rule] [-html5mode [defaultFile]] [directory]
+
+Examples:
+   json-proxy -p 8080 -f "/api=http://server" -f "/=http://localhost:9000" .
+   json-proxy -h "X-Forwarded-User=johndoe" /tmp/folder
+   json-proxy -c "/tmp/config.json"
+
+By default, looks for a config file at ./json-proxy.json
+
+Environmental variables:
+  JSON_PROXY_PORT         see --port
+  JSON_PROXY_WEBROOT      directory
+  JSON_PROXY_GATEWAY      --gateway
+  JSON_PROXY_GATEWAY_AUTH "username:password" credentials for --gateway)
+
+Options:
+  -p, --port     The TCP port for the proxy server                      
+  -f, --forward  a forwarding rule (ex. /foo=server/foo)                
+  -h, --header   a custom request header (ex. iv-user=johndoel)         
+  -c, --config   a config file                                          
+  -g, --gateway  URL for a LAN HTTP proxy to use for forwarding requests
+  --html5mode    support AngularJS HTML5 mode by catching 404s          
+  -?, --help     about this utility                                     
+  --version      version info            
+</code></pre>
+
+<p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
+<a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
+
+<p>Enjoy!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[passport-reverseproxy]]></title>
+    <link href="http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/"/>
+    <updated>2013-08-11T19:38:00-04:00</updated>
+    <id>http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy</id>
+    <content type="html"><![CDATA[<p>Just released a new &#8220;API&#8221; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
+
+<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
+Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&#8217;s WebSeal application for SSO does exactly this.</p>
+
+<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
+inspired by Passport&#8217;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
+
+<p>Installing the provider is as simple as:</p>
+
+<pre><code>npm install express
+npm install passport
+npm install passport-reverseproxy
+</code></pre>
+
+<p>I&#8217;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
+
+<p>Overall, I think Passport is a great library - both easy to use and easy to implement custom strategies.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Update to the Cordova Email Plugin for iOS]]></title>
     <link href="http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
-    <updated>2013-08-06T23:37:00-04:00</updated>
+    <updated>2013-08-06T23:45:00-04:00</updated>
     <id>http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
     <content type="html"><![CDATA[<p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &#8211;
 v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
@@ -50,11 +171,11 @@ per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-
 </ul>
 
 
-<p>I&#8217;m planning on repointing <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
+<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
 <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
 As a courtesy, I&#8217;ve asked the original contributors to these two plugins to give their blessing.</p>
 
-<p>I&#8217;m also planning on publishing to the new <a href="http://plugins.cordova.org">cordova npm-like repository</a> if I can figure out the right args to get plugman to publish it.  (<code>plugman publish .</code> fails for me with a path.join error&#8230;)</p>
+<p>I&#8217;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&#8217;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
 ]]></content>
   </entry>
   

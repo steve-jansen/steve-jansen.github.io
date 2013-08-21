@@ -5,17 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Windows Batch Scripting: Parsing Input - /* steve jansen */</title>
+  <title>passport-reverseproxy - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Overview
-Part 1 - Getting Started
-Part 2 - Variables
-Part 3 - Return Codes
-Part 4 - stdin, stdout, stderr
-Part 5 - If/Then Conditionals
-Part 6 - &hellip;">
+  <meta name="description" content="Just released a new &#8220;API&#8221; provider for the NodeJS authentication middelware Passport. The ReverseProxy API provider enables NodeJS apps &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -24,7 +18,7 @@ Part 6 - &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html">
+  <link rel="canonical" href="http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -74,7 +68,7 @@ Part 6 - &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Windows Batch Scripting: Parsing Input</h1>
+      <h1 class="entry-title">Passport-reverseproxy</h1>
     
     
       <p class="meta">
@@ -90,7 +84,7 @@ Part 6 - &hellip;">
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2013-08-11T19:38:00-04:00" pubdate data-updated="true">Aug 11<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -99,67 +93,24 @@ Part 6 - &hellip;">
   </header>
 
 
-<div class="entry-content"><ul>
-<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
-<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
-<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
-<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
-<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
-<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
-<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
-<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
-<li>Part 8 - Parsing Input</li>
-<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
-<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
-</ul>
+<div class="entry-content"><p>Just released a new &#8220;API&#8221; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
 
+<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
+Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&#8217;s WebSeal application for SSO does exactly this.</p>
 
-<p>Robust parsing of command line input separates a good script from a great script.  I&#8217;ll share some tips on how I parse input.</p>
+<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
+inspired by Passport&#8217;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
 
-<h1>The Easy Way to read Command Line Arguments</h1>
+<p>Installing the provider is as simple as:</p>
 
-<p>By far the easiest way to parse command line arguments is to read required arguments by ordinal position.</p>
-
-<p>Here we get the full path to a local file passed as the first argument.  We write an error message to stderr if the file does not exist and exit
-our script:</p>
-
-<pre><code>SET filepath=%~f1
-
-IF NOT EXIST "%filepath%" (
-    ECHO %~n0: file not found - %filepath% &gt;&amp;2
-    EXIT /B 1
-)
+<pre><code>npm install express
+npm install passport
+npm install passport-reverseproxy
 </code></pre>
 
-<h1>Optional parameters</h1>
+<p>I&#8217;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
 
-<p>I assign a default value for parameters as such</p>
-
-<pre><code>SET filepath=%dp0\default.txt
-
-:: the first parameter is an optional filepath
-IF EXIST "%~f1" SET filepath=%~f1
-</code></pre>
-
-<h1>Switches</h1>
-
-<h1>Named Parameters</h1>
-
-<h1>Variable Number of Arguments</h1>
-
-<h1>Reading user input</h1>
-
-<pre><code>:confirm
-SET /P "Continue [y/n]&gt;" %confirm%
-FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
-</code></pre>
-
-<p><span class="basic-alignment left">
-<a href="/guides/windows-batch-scripting/part-7-functions.html">&lt;&lt; Part 7 - Functions</a>
-</span>
-<span class="basic-alignment right">
-<a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging >></a>
-</span></p>
+<p>Overall, I think Passport is a great library - both easy to use and easy to implement custom strategies.</p>
 </div>
 
 
@@ -182,12 +133,12 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2013-08-11T19:38:00-04:00" pubdate data-updated="true">Aug 11<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+    <a class='category' href='/blog/categories/node/'>node</a>, <a class='category' href='/blog/categories/passport/'>passport</a>
   
 </span>
 
@@ -196,7 +147,7 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html" data-via="" data-counturl="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/" data-via="" data-counturl="http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/" >Tweet</a>
   
   
   
@@ -205,6 +156,10 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/" title="Previous Post: Update to the Cordova Email Plugin for iOS">&laquo; Update to the Cordova Email Plugin for iOS</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/" title="Next Post: For all UI devs out there...json-proxy v0.10.0">For all UI devs out there...json-proxy v0.10.0 &raquo;</a>
       
     </p>
   </footer>
@@ -338,8 +293,8 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html';
-        var disqus_url = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html';
+        var disqus_identifier = 'http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/';
+        var disqus_url = 'http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/';
         var disqus_script = 'embed.js';
       
     (function () {

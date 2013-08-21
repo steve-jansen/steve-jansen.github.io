@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: passport | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.com/blog/categories/passport/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.com/"/>
+  <updated>2013-08-21T12:08:54-04:00</updated>
+  <id>http://steve-jansen.github.com/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[passport-reverseproxy]]></title>
+    <link href="http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/"/>
+    <updated>2013-08-11T19:38:00-04:00</updated>
+    <id>http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy</id>
+    <content type="html"><![CDATA[<p>Just released a new "API" provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
+
+<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
+Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM's WebSeal application for SSO does exactly this.</p>
+
+<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
+inspired by Passport's <code>passport-http</code> strategy for HTTP basic authentication.</p>
+
+<p>Installing the provider is as simple as:</p>
+
+<pre><code>npm install express
+npm install passport
+npm install passport-reverseproxy
+</code></pre>
+
+<p>I've also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
+
+<p>Overall, I think Passport is a great library - both easy to use and easy to implement custom strategies.</p>
+]]></content>
+  </entry>
+  
+</feed>

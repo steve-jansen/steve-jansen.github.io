@@ -4,7 +4,7 @@
   <title><![CDATA[Category: phonegap | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.com/blog/categories/phonegap/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-06T23:48:52-04:00</updated>
+  <updated>2013-08-21T12:08:54-04:00</updated>
   <id>http://steve-jansen.github.com/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Update to the Cordova Email Plugin for iOS]]></title>
     <link href="http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
-    <updated>2013-08-06T23:37:00-04:00</updated>
+    <updated>2013-08-06T23:45:00-04:00</updated>
     <id>http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
     <content type="html"><![CDATA[<p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices --
 v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
@@ -50,11 +50,11 @@ per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-
 </ul>
 
 
-<p>I'm planning on repointing <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
+<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
 <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
 As a courtesy, I've asked the original contributors to these two plugins to give their blessing.</p>
 
-<p>I'm also planning on publishing to the new <a href="http://plugins.cordova.org">cordova npm-like repository</a> if I can figure out the right args to get plugman to publish it.  (<code>plugman publish .</code> fails for me with a path.join error...)</p>
+<p>I've also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don't call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
 ]]></content>
   </entry>
   

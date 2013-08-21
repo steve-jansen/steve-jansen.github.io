@@ -5,17 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Windows Batch Scripting: Parsing Input - /* steve jansen */</title>
+  <title>For all UI devs out there...json-proxy v0.10.0 - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Overview
-Part 1 - Getting Started
-Part 2 - Variables
-Part 3 - Return Codes
-Part 4 - stdin, stdout, stderr
-Part 5 - If/Then Conditionals
-Part 6 - &hellip;">
+  <meta name="description" content="To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine. If you haven&#8217;t seen the proxy before &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -24,7 +18,7 @@ Part 6 - &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html">
+  <link rel="canonical" href="http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -74,7 +68,7 @@ Part 6 - &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Windows Batch Scripting: Parsing Input</h1>
+      <h1 class="entry-title">For All UI Devs Out there...json-proxy v0.10.0</h1>
     
     
       <p class="meta">
@@ -90,7 +84,7 @@ Part 6 - &hellip;">
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2013-08-20T21:44:00-04:00" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -99,67 +93,93 @@ Part 6 - &hellip;">
   </header>
 
 
-<div class="entry-content"><ul>
-<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
-<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
-<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
-<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
-<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
-<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
-<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
-<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
-<li>Part 8 - Parsing Input</li>
-<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
-<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
-</ul>
+<div class="entry-content"><p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 
+<p>If you haven&#8217;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
 
-<p>Robust parsing of command line input separates a good script from a great script.  I&#8217;ll share some tips on how I parse input.</p>
+<p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
+Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
 
-<h1>The Easy Way to read Command Line Arguments</h1>
+<p>Well, the proxy lets you transparently reroute <code>http://localhost/api/foo/1</code> from your local laptop to an integration server
+like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No nonsense.</p>
 
-<p>By far the easiest way to parse command line arguments is to read required arguments by ordinal position.</p>
+<h3>Grunt</h3>
 
-<p>Here we get the full path to a local file passed as the first argument.  We write an error message to stderr if the file does not exist and exit
-our script:</p>
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&#8217;s an example config from the scaffold project:</p>
 
-<pre><code>SET filepath=%~f1
-
-IF NOT EXIST "%filepath%" (
-    ECHO %~n0: file not found - %filepath% &gt;&amp;2
-    EXIT /B 1
-)
+<pre><code>connect: {
+  options: {
+    port: 9000,
+    // Change this to '0.0.0.0' to access the server from outside.
+    hostname: 'localhost'
+  },
+  livereload: {
+    options: {
+      middleware: function (connect) {
+        return [
+          require('json-proxy').initialize({
+            proxy: {
+              forward: {
+                '/api/': 'http://integration-server:4040',
+                '/swagger/': 'http://integration-server:4040',
+              },
+              headers: {
+                'X-Forwarded-User': 'John Doe',
+                'X-Forwarded-User-Email': 'john.doe@example.com'
+              }
+            }
+          }),
+          lrSnippet,
+          mountFolder(connect, '.tmp'),
+          mountFolder(connect, yeomanConfig.app)
+        ];
+      }
+    }
+  },
 </code></pre>
 
-<h1>Optional parameters</h1>
+<h3>Auth Headers</h3>
 
-<p>I assign a default value for parameters as such</p>
+<p>Even better, you can inject headers into proxied request.  So if you remote server requires an Authorization header with an OAuth-style token, or sits behind an Enterprise SSO appliance, you can add the headers to deal with bypassing the remote server authentication.</p>
 
-<pre><code>SET filepath=%dp0\default.txt
+<h3>CLI</h3>
 
-:: the first parameter is an optional filepath
-IF EXIST "%~f1" SET filepath=%~f1
+<p>The CLI utility is also improved.  The CLI properly supports global installation.
+If you install using <code>sudo npm install -g json-proxy</code>, you can invoke the proxy simply as <code>json-proxy</code> with whatever args you want.</p>
+
+<h3>CLI usage info:</h3>
+
+<pre><code> json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]
+             [-h header rule] [-html5mode [defaultFile]] [directory]
+
+Examples:
+   json-proxy -p 8080 -f "/api=http://server" -f "/=http://localhost:9000" .
+   json-proxy -h "X-Forwarded-User=johndoe" /tmp/folder
+   json-proxy -c "/tmp/config.json"
+
+By default, looks for a config file at ./json-proxy.json
+
+Environmental variables:
+  JSON_PROXY_PORT         see --port
+  JSON_PROXY_WEBROOT      directory
+  JSON_PROXY_GATEWAY      --gateway
+  JSON_PROXY_GATEWAY_AUTH "username:password" credentials for --gateway)
+
+Options:
+  -p, --port     The TCP port for the proxy server                      
+  -f, --forward  a forwarding rule (ex. /foo=server/foo)                
+  -h, --header   a custom request header (ex. iv-user=johndoel)         
+  -c, --config   a config file                                          
+  -g, --gateway  URL for a LAN HTTP proxy to use for forwarding requests
+  --html5mode    support AngularJS HTML5 mode by catching 404s          
+  -?, --help     about this utility                                     
+  --version      version info            
 </code></pre>
 
-<h1>Switches</h1>
+<p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
+<a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
 
-<h1>Named Parameters</h1>
-
-<h1>Variable Number of Arguments</h1>
-
-<h1>Reading user input</h1>
-
-<pre><code>:confirm
-SET /P "Continue [y/n]&gt;" %confirm%
-FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
-</code></pre>
-
-<p><span class="basic-alignment left">
-<a href="/guides/windows-batch-scripting/part-7-functions.html">&lt;&lt; Part 7 - Functions</a>
-</span>
-<span class="basic-alignment right">
-<a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging >></a>
-</span></p>
+<p>Enjoy!</p>
 </div>
 
 
@@ -182,12 +202,12 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2013-08-20T21:44:00-04:00" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+    <a class='category' href='/blog/categories/grunt/'>grunt</a>, <a class='category' href='/blog/categories/node/'>node</a>, <a class='category' href='/blog/categories/proxy/'>proxy</a>
   
 </span>
 
@@ -196,7 +216,7 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html" data-via="" data-counturl="http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/" data-via="" data-counturl="http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/" >Tweet</a>
   
   
   
@@ -204,6 +224,8 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
 
     
     <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/11/passport-reverseproxy/" title="Previous Post: passport-reverseproxy">&laquo; passport-reverseproxy</a>
       
       
     </p>
@@ -338,8 +360,8 @@ FINDSTR /I "^(y|n|yes|no)$" &gt; NUL || GOTO: confirm
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html';
-        var disqus_url = 'http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html';
+        var disqus_identifier = 'http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/';
+        var disqus_url = 'http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/';
         var disqus_script = 'embed.js';
       
     (function () {
