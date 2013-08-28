@@ -13,14 +13,16 @@ v2.0 of the plugin now lives @ [https://github.com/steve-jansen/cordova-ios-emai
 
 You can give it a test drive with:
 
-    sudo npm install -g cordova
-    cordova create ~/MyApp MyApp
-    cd ~/MyApp
-    cordova platform add ios
-    cordova plugin add emailcomposer # using the http://plugins.cordova.io registry
-    cordova build
-    # manually update the www/index.html file to link to www/examples/EmailComposer.html
-    # run the app in the iOS 5.x+ simulator via Xcode
+``` bash
+sudo npm install -g cordova
+cordova create ~/MyApp MyApp
+cd ~/MyApp
+cordova platform add ios
+cordova plugin add emailcomposer # using the http://plugins.cordova.io registry
+cordova build
+# manually update the www/index.html file to link to www/examples/EmailComposer.html
+# run the app in the iOS 5.x+ simulator via Xcode
+```
 
 Major changes to the plugin include:
 

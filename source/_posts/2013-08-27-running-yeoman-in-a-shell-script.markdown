@@ -20,12 +20,12 @@ Very convenient for piping to another program.
 
 Here's how I automated Yeoman to generate a new AngularJS app:
 
-``` shell
+``` bash
 # yeoman has a number of interactive prompts, and sadly doesn't support a batch mode
 # so we use the coreutils `yes` utility to accept all the default answers in yeoman;
 # yes is not part of msysgit, so skip this when running on windows without cygwin
 which yes > /dev/null
-if [ $? -eq 0]
+if [ $? -eq 0 ]
 then
 	yes | yo angular
 fi

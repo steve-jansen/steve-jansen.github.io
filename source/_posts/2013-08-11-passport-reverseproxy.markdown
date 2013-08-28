@@ -18,9 +18,11 @@ inspired by Passport's `passport-http` strategy for HTTP basic authentication.
 
 Installing the provider is as simple as:
 
-	npm install express
-	npm install passport
-	npm install passport-reverseproxy
+```bash
+npm install express
+npm install passport
+npm install passport-reverseproxy
+```
 
 I've also included a sample Express app using the reverse proxy stategy in [passport-reverseproxy/examples/app.js](https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples)
 

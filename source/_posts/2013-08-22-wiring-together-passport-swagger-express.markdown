@@ -26,10 +26,12 @@ In Node, you really have to write your REST APIs from the ground up using the Sw
 wacky part for me was you need two Express apps side-by-side to handle requests for both REST APIs and
 static content. 
 
-	var express = require('express'),
-	    app     = express(),
-	    subapp  = express(),;
-	    swagger = require('./lib/swagger/swagger');
+```js
+var express = require('express'),
+    app     = express(),
+    subapp  = express(),;
+    swagger = require('./lib/swagger/swagger');
+```
 
 As we'll see below, the `subapp` sandboxes the Swagger package to the `/api/*` route.
 
