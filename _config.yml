@@ -50,7 +50,7 @@ titlecase: true       # Converts page and post titles to titlecase
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [custom/asides/gravatar.html, custom/asides/about.html, custom/asides/guides.html, asides/recent_posts.html, asides/github.html, custom/asides/stackoverflow.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+default_asides: [custom/asides/gravatar.html, custom/asides/about.html, custom/asides/guides.html, asides/recent_posts.html, custom/asides/stackoverflow.html, custom/asides/coderwall.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
@@ -101,7 +101,7 @@ disqus_short_name: steve-jansen
 disqus_show_comment_count: true
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-43558425-1
 
 # Facebook Like
 facebook_like: false
