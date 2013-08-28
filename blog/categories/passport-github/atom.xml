@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: passport-github | /* steve jansen */]]></title>
-  <link href="http://steve-jansen.github.com/blog/categories/passport-github/atom.xml" rel="self"/>
-  <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-27T23:09:31-04:00</updated>
-  <id>http://steve-jansen.github.com/</id>
+  <link href="http://steve-jansen.github.io/blog/categories/passport-github/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2013-08-27T23:14:36-04:00</updated>
+  <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Wiring together Express, Passport OAuth, and Swagger in NodeJS]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/22/wiring-together-passport-swagger-express/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express/"/>
     <updated>2013-08-22T22:07:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/22/wiring-together-passport-swagger-express</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express</id>
     <content type="html"><![CDATA[<p>I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
 the <a href="http://passportjs.org/guide/">Passport authentication strategy for GitHub OAuth</a> with
 <a href="https://github.com/wordnik/swagger-node-express">Swagger for Express</a>.  Normally, this

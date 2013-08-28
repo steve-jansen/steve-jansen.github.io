@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: passport | /* steve jansen */]]></title>
-  <link href="http://steve-jansen.github.com/blog/categories/passport/atom.xml" rel="self"/>
-  <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-27T23:09:31-04:00</updated>
-  <id>http://steve-jansen.github.com/</id>
+  <link href="http://steve-jansen.github.io/blog/categories/passport/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2013-08-27T23:14:36-04:00</updated>
+  <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[passport-reverseproxy]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/"/>
     <updated>2013-08-11T19:38:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy</id>
     <content type="html"><![CDATA[<p>Just released a new "API" provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
 
 <p>After successful authentication, the proxy will forward the original request to the target web server/app server.

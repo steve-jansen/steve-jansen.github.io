@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: grunt | /* steve jansen */]]></title>
-  <link href="http://steve-jansen.github.com/blog/categories/grunt/atom.xml" rel="self"/>
-  <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-27T23:09:31-04:00</updated>
-  <id>http://steve-jansen.github.com/</id>
+  <link href="http://steve-jansen.github.io/blog/categories/grunt/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2013-08-27T23:14:36-04:00</updated>
+  <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
     <updated>2013-08-20T21:44:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
     <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 
 <p>If you haven't seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>

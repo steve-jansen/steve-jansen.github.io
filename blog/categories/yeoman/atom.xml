@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Yeoman | /* steve jansen */]]></title>
-  <link href="http://steve-jansen.github.com/blog/categories/yeoman/atom.xml" rel="self"/>
-  <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-27T23:09:31-04:00</updated>
-  <id>http://steve-jansen.github.com/</id>
+  <link href="http://steve-jansen.github.io/blog/categories/yeoman/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2013-08-27T23:14:36-04:00</updated>
+  <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Running Yeoman in a shell script]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script/"/>
     <updated>2013-08-27T15:44:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
     <content type="html"><![CDATA[<p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
 yeoman's insistance on interactive prompts.  As far as I can tell the prompting library,
 <a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least

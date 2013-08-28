@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[/* steve jansen */]]></title>
-  <link href="http://steve-jansen.github.com/atom.xml" rel="self"/>
-  <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-27T23:09:31-04:00</updated>
-  <id>http://steve-jansen.github.com/</id>
+  <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2013-08-27T23:14:36-04:00</updated>
+  <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Running Yeoman in a shell script]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script/"/>
     <updated>2013-08-27T15:44:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
     <content type="html"><![CDATA[<p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
 yeoman&#8217;s insistance on interactive prompts.  As far as I can tell the prompting library,
 <a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
@@ -53,9 +53,9 @@ Very convenient for piping to another program.</p>
   
   <entry>
     <title type="html"><![CDATA[Wiring together Express, Passport OAuth, and Swagger in NodeJS]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/22/wiring-together-passport-swagger-express/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express/"/>
     <updated>2013-08-22T22:07:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/22/wiring-together-passport-swagger-express</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express</id>
     <content type="html"><![CDATA[<p>I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
 the <a href="http://passportjs.org/guide/">Passport authentication strategy for GitHub OAuth</a> with
 <a href="https://github.com/wordnik/swagger-node-express">Swagger for Express</a>.  Normally, this
@@ -277,9 +277,9 @@ route <code>/api/doc</code>, and finally start the server.</p>
   
   <entry>
     <title type="html"><![CDATA[A Fantastic Video Tutorial on Sublime Text 2]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/"/>
     <updated>2013-08-21T12:29:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial</id>
     <content type="html"><![CDATA[<p>Jeffrey Way at Nettuts+ created a wonderul video tutorial on using Sublime Text 2
 to its fullest capabilities.</p>
 
@@ -293,9 +293,9 @@ You can read more about it at <a href="http://net.tutsplus.com/articles/news/per
   
   <entry>
     <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
     <updated>2013-08-20T21:44:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
     <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 
 <p>If you haven&#8217;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
@@ -444,9 +444,9 @@ If you install using <code>sudo npm install -g json-proxy</code>, you can invoke
   
   <entry>
     <title type="html"><![CDATA[passport-reverseproxy]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/"/>
     <updated>2013-08-11T19:38:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy</id>
     <content type="html"><![CDATA[<p>Just released a new &#8220;API&#8221; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
 
 <p>After successful authentication, the proxy will forward the original request to the target web server/app server.
@@ -474,9 +474,9 @@ inspired by Passport&#8217;s <code>passport-http</code> strategy for HTTP basic 
   
   <entry>
     <title type="html"><![CDATA[Update to the Cordova Email Plugin for iOS]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
     <updated>2013-08-06T23:45:00-04:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
+    <id>http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
     <content type="html"><![CDATA[<p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &#8211;
 v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
 
@@ -528,9 +528,9 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
   
   <entry>
     <title type="html"><![CDATA[How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/"/>
     <updated>2013-02-28T16:44:00-05:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service</id>
+    <id>http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service</id>
     <content type="html"><![CDATA[<p>I love shell scripting, which is probably why I seem to somehow get organically involved in &#8220;DevOps&#8221; on most of my project work.  I&#8217;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) - it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&#8217;s Web Deployment Agent service.</p>
 
 <p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&#8230;</p>
@@ -545,9 +545,9 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
   
   <entry>
     <title type="html"><![CDATA[Tailoring the Windows Command Prompt Shell]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/"/>
     <updated>2013-02-27T14:18:00-05:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell</id>
+    <id>http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell</id>
     <content type="html"><![CDATA[<p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&#8217;t know some of the tricks up the Command Prompt&#8217;s sleeve.  So allow me to share some of my favorite settings.</p>
 
 <!-- more -->
@@ -569,13 +569,13 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
 </ul>
 
 
-<p><img src="http://steve-jansen.github.com/images/posts/2013-02-27-A.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="http://steve-jansen.github.io/images/posts/2013-02-27-A.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
-<p><img src="http://steve-jansen.github.com/images/posts/2013-02-27-B.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="http://steve-jansen.github.io/images/posts/2013-02-27-B.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
-<p><img src="http://steve-jansen.github.com/images/posts/2013-02-27-C.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="http://steve-jansen.github.io/images/posts/2013-02-27-C.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
-<p><img src="http://steve-jansen.github.com/images/posts/2013-02-27-D.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="http://steve-jansen.github.io/images/posts/2013-02-27-D.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
 <h2>Tab and Filename Autocompletion</h2>
 
@@ -604,21 +604,21 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
 
 
 <p>Example of pressing <code>ALT</code>+<code>F7</code> to view the command history:
-<img src="http://steve-jansen.github.com/images/posts/2013-02-27-E.png" alt="Screenshot of the visual command history" /></p>
+<img src="http://steve-jansen.github.io/images/posts/2013-02-27-E.png" alt="Screenshot of the visual command history" /></p>
 
 <p>Example of pressing <code>F9</code> to recall a command by history number:
-<img src="http://steve-jansen.github.com/images/posts/2013-02-27-F.png" alt="Screenshot of the visual command history" /></p>
+<img src="http://steve-jansen.github.io/images/posts/2013-02-27-F.png" alt="Screenshot of the visual command history" /></p>
 
 <p>Example of pressing <code>F8</code> to cycle through history entries matching the text &#8220;D&#8221; already typed into the comamnd line buffer:
-<img src="http://steve-jansen.github.com/images/posts/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
+<img src="http://steve-jansen.github.io/images/posts/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[A ghost no more]]></title>
-    <link href="http://steve-jansen.github.com/blog/2013/02/25/a-ghost-no-more/"/>
+    <link href="http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more/"/>
     <updated>2013-02-25T12:49:00-05:00</updated>
-    <id>http://steve-jansen.github.com/blog/2013/02/25/a-ghost-no-more</id>
+    <id>http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more</id>
     <content type="html"><![CDATA[<p>Blogging has long been on my todo list &#8211; quite frankly too long.  A colleague shared <a href="http://www.troyhunt.com/2013/02/the-ghost-who-codes-how-anonymity-is.html">a great piece by Troy Hunt named &#8220;The ghost who codes: how anonymity is killing your career&#8221;</a>.  Troy inspired me that I need to make the time to just get it done.  So this is where I start giving back whatever small knowledge bits I may have.</p>
 
 <p>I am fortunate enough to be with a company now that encourages professional writing, which hasn&#8217;t always been the case.  Troy&#8217;s article really resonated with me that developers have an insatiatable appetite for consuming knowledge.  We take information all the time, and there&#8217;s a duty on all our parts to give back and not just take.  Thanks to both Troy any my colleague Alex for pushing me to do more!</p>

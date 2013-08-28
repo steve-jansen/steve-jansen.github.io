@@ -1,127 +1,125 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://steve-jansen.github.com/blog/2013/02/25/a-ghost-no-more/</loc>
+        <loc>http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more/</loc>
         <lastmod>2013-02-28T17:14:44-05:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/
+            http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/
         </loc>
         <lastmod>2013-03-03T15:16:13-05:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/
+            http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/
         </loc>
         <lastmod>2013-02-28T17:26:07-05:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update/
+            http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/
         </loc>
         <lastmod>2013-08-27T22:17:12-04:00</lastmod>
     </url>
     <url>
-        <loc>http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/</loc>
+        <loc>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/</loc>
         <lastmod>2013-08-27T22:16:42-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/
+            http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/
         </loc>
         <lastmod>2013-08-27T22:15:41-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/
+            http://steve-jansen.github.io/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/
         </loc>
         <lastmod>2013-08-21T16:16:34-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/blog/2013/08/22/wiring-together-passport-swagger-express/
+            http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express/
         </loc>
         <lastmod>2013-08-27T22:14:33-04:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script/
-        </loc>
+        <loc>http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script/</loc>
         <lastmod>2013-08-27T22:17:50-04:00</lastmod>
     </url>
     <url>
-        <loc>http://steve-jansen.github.com/blog/archives/</loc>
+        <loc>http://steve-jansen.github.io/blog/archives/</loc>
         <lastmod>2013-08-27T22:17:50-04:00</lastmod>
     </url>
     <url>
-        <loc>http://steve-jansen.github.com/guides/windows-batch-scripting/</loc>
+        <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
         <lastmod>2013-06-23T14:06:21-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-1-getting-started.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html
         </loc>
         <lastmod>2013-06-23T14:15:48-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-10-advanced-tricks.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-10-advanced-tricks.html
         </loc>
         <lastmod>2013-06-23T15:13:08-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-2-variables.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html
         </loc>
         <lastmod>2013-06-23T14:16:38-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-3-return-codes.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-3-return-codes.html
         </loc>
         <lastmod>2013-06-23T14:17:14-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html
         </loc>
         <lastmod>2013-06-23T14:17:50-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-5-if-then-conditionals.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-5-if-then-conditionals.html
         </loc>
         <lastmod>2013-06-23T14:18:25-04:00</lastmod>
     </url>
     <url>
-        <loc>http://steve-jansen.github.com/guides/windows-batch-scripting/part-6-loops.html</loc>
+        <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/part-6-loops.html</loc>
         <lastmod>2013-06-23T14:18:57-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-7-functions.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-7-functions.html
         </loc>
         <lastmod>2013-06-23T14:19:30-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-8-parsing-input.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-8-parsing-input.html
         </loc>
         <lastmod>2013-06-23T15:11:31-04:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.com/guides/windows-batch-scripting/part-9-logging.html
+            http://steve-jansen.github.io/guides/windows-batch-scripting/part-9-logging.html
         </loc>
         <lastmod>2013-06-23T14:21:06-04:00</lastmod>
     </url>
     <url>
-        <loc>http://steve-jansen.github.com/</loc>
+        <loc>http://steve-jansen.github.io/</loc>
         <lastmod>2013-08-27T22:17:50-04:00</lastmod>
     </url>
     <url>
-        <loc>http://steve-jansen.github.com/robots.txt</loc>
+        <loc>http://steve-jansen.github.io/robots.txt</loc>
         <lastmod>2013-02-28T17:14:44-05:00</lastmod>
     </url>
 </urlset>
