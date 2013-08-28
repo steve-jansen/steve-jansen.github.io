@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tools | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/tools/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2013-08-27T23:14:36-04:00</updated>
+  <updated>2013-08-27T23:19:29-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -39,13 +39,13 @@
 </ul>
 
 
-<p><img src="/images/posts/2013-02-27-A.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="/images/2013-02-27-A.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
-<p><img src="/images/posts/2013-02-27-B.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="/images/2013-02-27-B.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
-<p><img src="/images/posts/2013-02-27-C.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="/images/2013-02-27-C.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
-<p><img src="/images/posts/2013-02-27-D.png" alt="Screenshot of the Command Prompt Options tab" /></p>
+<p><img src="/images/2013-02-27-D.png" alt="Screenshot of the Command Prompt Options tab" /></p>
 
 <h2>Tab and Filename Autocompletion</h2>
 
@@ -74,13 +74,13 @@
 
 
 <p>Example of pressing <code>ALT</code>+<code>F7</code> to view the command history:
-<img src="/images/posts/2013-02-27-E.png" alt="Screenshot of the visual command history" /></p>
+<img src="/images/2013-02-27-E.png" alt="Screenshot of the visual command history" /></p>
 
 <p>Example of pressing <code>F9</code> to recall a command by history number:
-<img src="/images/posts/2013-02-27-F.png" alt="Screenshot of the visual command history" /></p>
+<img src="/images/2013-02-27-F.png" alt="Screenshot of the visual command history" /></p>
 
 <p>Example of pressing <code>F8</code> to cycle through history entries matching the text "D" already typed into the comamnd line buffer:
-<img src="/images/posts/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
+<img src="/images/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
 ]]></content>
   </entry>
   
