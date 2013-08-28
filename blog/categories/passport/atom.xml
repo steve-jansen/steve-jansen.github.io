@@ -4,7 +4,7 @@
   <title><![CDATA[Category: passport | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.com/blog/categories/passport/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-21T16:16:55-04:00</updated>
+  <updated>2013-08-27T22:18:30-04:00</updated>
   <id>http://steve-jansen.github.com/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -28,10 +28,11 @@ inspired by Passport's <code>passport-http</code> strategy for HTTP basic authen
 
 <p>Installing the provider is as simple as:</p>
 
-<pre><code>npm install express
+<p><code>bash
+npm install express
 npm install passport
 npm install passport-reverseproxy
-</code></pre>
+</code></p>
 
 <p>I've also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
 

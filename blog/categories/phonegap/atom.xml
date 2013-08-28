@@ -4,7 +4,7 @@
   <title><![CDATA[Category: phonegap | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.com/blog/categories/phonegap/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-21T16:16:55-04:00</updated>
+  <updated>2013-08-27T22:18:30-04:00</updated>
   <id>http://steve-jansen.github.com/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -23,15 +23,19 @@ v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-
 
 <p>You can give it a test drive with:</p>
 
-<pre><code>sudo npm install -g cordova
+<p>``` bash
+sudo npm install -g cordova
 cordova create ~/MyApp MyApp
 cd ~/MyApp
 cordova platform add ios
 cordova plugin add emailcomposer # using the http://plugins.cordova.io registry
-cordova build
-# manually update the www/index.html file to link to www/examples/EmailComposer.html
-# run the app in the iOS 5.x+ simulator via Xcode
-</code></pre>
+cordova build</p>
+
+<h1>manually update the www/index.html file to link to www/examples/EmailComposer.html</h1>
+
+<h1>run the app in the iOS 5.x+ simulator via Xcode</h1>
+
+<p>```</p>
 
 <p>Major changes to the plugin include:</p>
 

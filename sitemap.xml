@@ -20,17 +20,17 @@
         <loc>
             http://steve-jansen.github.com/blog/2013/08/06/cordova-email-plugin-for-ios-update/
         </loc>
-        <lastmod>2013-08-11T20:11:08-04:00</lastmod>
+        <lastmod>2013-08-27T22:17:12-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/blog/2013/08/11/passport-reverseproxy/</loc>
-        <lastmod>2013-08-11T20:11:27-04:00</lastmod>
+        <lastmod>2013-08-27T22:16:42-04:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.com/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/
         </loc>
-        <lastmod>2013-08-21T11:41:14-04:00</lastmod>
+        <lastmod>2013-08-27T22:15:41-04:00</lastmod>
     </url>
     <url>
         <loc>
@@ -39,8 +39,20 @@
         <lastmod>2013-08-21T16:16:34-04:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://steve-jansen.github.com/blog/2013/08/22/wiring-together-passport-swagger-express/
+        </loc>
+        <lastmod>2013-08-27T22:14:33-04:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script/
+        </loc>
+        <lastmod>2013-08-27T22:17:50-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://steve-jansen.github.com/blog/archives/</loc>
-        <lastmod>2013-08-21T16:16:34-04:00</lastmod>
+        <lastmod>2013-08-27T22:17:50-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/guides/windows-batch-scripting/</loc>
@@ -106,7 +118,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.com/</loc>
-        <lastmod>2013-08-21T16:16:34-04:00</lastmod>
+        <lastmod>2013-08-27T22:17:50-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.com/robots.txt</loc>

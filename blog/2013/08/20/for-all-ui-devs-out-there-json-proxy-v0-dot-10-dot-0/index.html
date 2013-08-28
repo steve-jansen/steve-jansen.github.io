@@ -107,36 +107,66 @@ like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No 
 
 <p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&#8217;s an example config from the scaffold project:</p>
 
-<pre><code>connect: {
-  options: {
-    port: 9000,
-    // Change this to '0.0.0.0' to access the server from outside.
-    hostname: 'localhost'
-  },
-  livereload: {
-    options: {
-      middleware: function (connect) {
-        return [
-          require('json-proxy').initialize({
-            proxy: {
-              forward: {
-                '/api/': 'http://integration-server:4040',
-                '/swagger/': 'http://integration-server:4040',
-              },
-              headers: {
-                'X-Forwarded-User': 'John Doe',
-                'X-Forwarded-User-Email': 'john.doe@example.com'
-              }
-            }
-          }),
-          lrSnippet,
-          mountFolder(connect, '.tmp'),
-          mountFolder(connect, yeomanConfig.app)
-        ];
-      }
-    }
-  },
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">connect</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">port</span><span class="o">:</span> <span class="mi">9000</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Change this to &#39;0.0.0.0&#39; to access the server from outside.</span>
+</span><span class='line'>    <span class="nx">hostname</span><span class="o">:</span> <span class="s1">&#39;localhost&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">livereload</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">middleware</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">connect</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span>
+</span><span class='line'>          <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;json-proxy&#39;</span><span class="p">).</span><span class="nx">initialize</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">forward</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;/api/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;/swagger/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">},</span>
+</span><span class='line'>              <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User&#39;</span><span class="o">:</span> <span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User-Email&#39;</span><span class="o">:</span> <span class="s1">&#39;john.doe@example.com&#39;</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>          <span class="p">}),</span>
+</span><span class='line'>          <span class="nx">lrSnippet</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="s1">&#39;.tmp&#39;</span><span class="p">),</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="nx">yeomanConfig</span><span class="p">.</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>Auth Headers</h3>
 
@@ -149,32 +179,58 @@ If you install using <code>sudo npm install -g json-proxy</code>, you can invoke
 
 <h3>CLI usage info:</h3>
 
-<pre><code> json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]
-             [-h header rule] [-html5mode [defaultFile]] [directory]
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>json-proxy <span class="o">[</span>-c configFile<span class="o">]</span> <span class="o">[</span>-p port<span class="o">]</span> <span class="o">[</span>-f proxy forwarding rule<span class="o">]</span>
+</span><span class='line'>             <span class="o">[</span>-h header rule<span class="o">]</span> <span class="o">[</span>-html5mode <span class="o">[</span>defaultFile<span class="o">]]</span> <span class="o">[</span>directory<span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>Examples:
+</span><span class='line'>   json-proxy -p 8080 -f <span class="s2">&quot;/api=http://server&quot;</span> -f <span class="s2">&quot;/=http://localhost:9000&quot;</span> .
+</span><span class='line'>   json-proxy -h <span class="s2">&quot;X-Forwarded-User=johndoe&quot;</span> /tmp/folder
+</span><span class='line'>   json-proxy -c <span class="s2">&quot;/tmp/config.json&quot;</span>
+</span><span class='line'>
+</span><span class='line'>By default, looks <span class="k">for </span>a config file at ./json-proxy.json
+</span><span class='line'>
+</span><span class='line'>Environmental variables:
+</span><span class='line'>  JSON_PROXY_PORT         see --port
+</span><span class='line'>  JSON_PROXY_WEBROOT      directory
+</span><span class='line'>  JSON_PROXY_GATEWAY      --gateway
+</span><span class='line'>  JSON_PROXY_GATEWAY_AUTH <span class="s2">&quot;username:password&quot;</span> credentials <span class="k">for</span> --gateway<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>Options:
+</span><span class='line'>  -p, --port     The TCP port <span class="k">for </span>the proxy server
+</span><span class='line'>  -f, --forward  a forwarding rule <span class="o">(</span>ex. /foo<span class="o">=</span>server/foo<span class="o">)</span>
+</span><span class='line'>  -h, --header   a custom request header <span class="o">(</span>ex. iv-user<span class="o">=</span>johndoel<span class="o">)</span>
+</span><span class='line'>  -c, --config   a config file
+</span><span class='line'>  -g, --gateway  URL <span class="k">for </span>a LAN HTTP proxy to use <span class="k">for </span>forwarding requests
+</span><span class='line'>  --html5mode    support AngularJS HTML5 mode by catching 404s
+</span><span class='line'>  -?, --help     about this utility
+</span><span class='line'>  --version      version info
+</span></code></pre></td></tr></table></div></figure>
 
-Examples:
-   json-proxy -p 8080 -f "/api=http://server" -f "/=http://localhost:9000" .
-   json-proxy -h "X-Forwarded-User=johndoe" /tmp/folder
-   json-proxy -c "/tmp/config.json"
-
-By default, looks for a config file at ./json-proxy.json
-
-Environmental variables:
-  JSON_PROXY_PORT         see --port
-  JSON_PROXY_WEBROOT      directory
-  JSON_PROXY_GATEWAY      --gateway
-  JSON_PROXY_GATEWAY_AUTH "username:password" credentials for --gateway)
-
-Options:
-  -p, --port     The TCP port for the proxy server                      
-  -f, --forward  a forwarding rule (ex. /foo=server/foo)                
-  -h, --header   a custom request header (ex. iv-user=johndoel)         
-  -c, --config   a config file                                          
-  -g, --gateway  URL for a LAN HTTP proxy to use for forwarding requests
-  --html5mode    support AngularJS HTML5 mode by catching 404s          
-  -?, --help     about this utility                                     
-  --version      version info            
-</code></pre>
 
 <p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
 <a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
@@ -274,6 +330,14 @@ Options:
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a shell script</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/22/wiring-together-passport-swagger-express/">Wiring together Express, Passport OAuth, and Swagger in NodeJS</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/">A Fantastic Video Tutorial on Sublime Text 2</a>
       </li>
     
@@ -283,14 +347,6 @@ Options:
     
       <li class="post">
         <a href="/blog/2013/08/11/passport-reverseproxy/">passport-reverseproxy</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/">Update to the Cordova Email Plugin for iOS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a>
       </li>
     
   </ul>

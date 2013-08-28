@@ -4,7 +4,7 @@
   <title><![CDATA[Category: proxy | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.com/blog/categories/proxy/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.com/"/>
-  <updated>2013-08-21T16:16:55-04:00</updated>
+  <updated>2013-08-27T22:18:30-04:00</updated>
   <id>http://steve-jansen.github.com/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -32,36 +32,43 @@ like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No 
 
 <p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here's an example config from the scaffold project:</p>
 
-<pre><code>connect: {
-  options: {
-    port: 9000,
-    // Change this to '0.0.0.0' to access the server from outside.
-    hostname: 'localhost'
-  },
-  livereload: {
-    options: {
-      middleware: function (connect) {
-        return [
-          require('json-proxy').initialize({
-            proxy: {
-              forward: {
-                '/api/': 'http://integration-server:4040',
-                '/swagger/': 'http://integration-server:4040',
-              },
-              headers: {
-                'X-Forwarded-User': 'John Doe',
-                'X-Forwarded-User-Email': 'john.doe@example.com'
-              }
-            }
-          }),
-          lrSnippet,
-          mountFolder(connect, '.tmp'),
-          mountFolder(connect, yeomanConfig.app)
-        ];
-      }
-    }
-  },
+<p>```js
+connect: {
+  options: {</p>
+
+<pre><code>port: 9000,
+// Change this to '0.0.0.0' to access the server from outside.
+hostname: 'localhost'
 </code></pre>
+
+<p>  },
+  livereload: {</p>
+
+<pre><code>options: {
+  middleware: function (connect) {
+    return [
+      require('json-proxy').initialize({
+        proxy: {
+          forward: {
+            '/api/': 'http://integration-server:4040',
+            '/swagger/': 'http://integration-server:4040',
+          },
+          headers: {
+            'X-Forwarded-User': 'John Doe',
+            'X-Forwarded-User-Email': 'john.doe@example.com'
+          }
+        }
+      }),
+      lrSnippet,
+      mountFolder(connect, '.tmp'),
+      mountFolder(connect, yeomanConfig.app)
+    ];
+  }
+}
+</code></pre>
+
+<p>  },
+```</p>
 
 <h3>Auth Headers</h3>
 
@@ -74,32 +81,35 @@ If you install using <code>sudo npm install -g json-proxy</code>, you can invoke
 
 <h3>CLI usage info:</h3>
 
-<pre><code> json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]
-             [-h header rule] [-html5mode [defaultFile]] [directory]
+<p>```bash
+json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]</p>
 
-Examples:
+<pre><code>         [-h header rule] [-html5mode [defaultFile]] [directory]
+</code></pre>
+
+<p>Examples:
    json-proxy -p 8080 -f "/api=http://server" -f "/=http://localhost:9000" .
    json-proxy -h "X-Forwarded-User=johndoe" /tmp/folder
-   json-proxy -c "/tmp/config.json"
+   json-proxy -c "/tmp/config.json"</p>
 
-By default, looks for a config file at ./json-proxy.json
+<p>By default, looks for a config file at ./json-proxy.json</p>
 
-Environmental variables:
+<p>Environmental variables:
   JSON_PROXY_PORT         see --port
   JSON_PROXY_WEBROOT      directory
   JSON_PROXY_GATEWAY      --gateway
-  JSON_PROXY_GATEWAY_AUTH "username:password" credentials for --gateway)
+  JSON_PROXY_GATEWAY_AUTH "username:password" credentials for --gateway)</p>
 
-Options:
-  -p, --port     The TCP port for the proxy server                      
-  -f, --forward  a forwarding rule (ex. /foo=server/foo)                
-  -h, --header   a custom request header (ex. iv-user=johndoel)         
-  -c, --config   a config file                                          
+<p>Options:
+  -p, --port     The TCP port for the proxy server                    <br/>
+  -f, --forward  a forwarding rule (ex. /foo=server/foo)              <br/>
+  -h, --header   a custom request header (ex. iv-user=johndoel)       <br/>
+  -c, --config   a config file                                        <br/>
   -g, --gateway  URL for a LAN HTTP proxy to use for forwarding requests
-  --html5mode    support AngularJS HTML5 mode by catching 404s          
-  -?, --help     about this utility                                     
-  --version      version info            
-</code></pre>
+  --html5mode    support AngularJS HTML5 mode by catching 404s        <br/>
+  -?, --help     about this utility                                   <br/>
+  --version      version info          <br/>
+```</p>
 
 <p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
 <a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>

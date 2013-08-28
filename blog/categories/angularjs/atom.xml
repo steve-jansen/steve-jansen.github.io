@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: AngularJS | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.com/blog/categories/angularjs/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.com/"/>
+  <updated>2013-08-27T22:18:30-04:00</updated>
+  <id>http://steve-jansen.github.com/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Running Yeoman in a shell script]]></title>
+    <link href="http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script/"/>
+    <updated>2013-08-27T15:44:00-04:00</updated>
+    <id>http://steve-jansen.github.com/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
+    <content type="html"><![CDATA[<p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
+yeoman's insistance on interactive prompts.  As far as I can tell the prompting library,
+<a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
+be commanded to run in non-interactive mode.</p>
+
+<p>Enter an old-school POSIX friend in core-utils... <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
+
+<p>The <code>yes</code> utility continuously outputs 'Y' followed by a newline as long as another process is reading the stdout stream.
+Very convenient for piping to another program.</p>
+
+<p>Here's how I automated Yeoman to generate a new AngularJS app:</p>
+
+<p>``` bash</p>
+
+<h1>yeoman has a number of interactive prompts, and sadly doesn't support a batch mode</h1>
+
+<h1>so we use the coreutils <code>yes</code> utility to accept all the default answers in yeoman;</h1>
+
+<h1>yes is not part of msysgit, so skip this when running on windows without cygwin</h1>
+
+<p>which yes > /dev/null
+if [ $? -eq 0 ]
+then</p>
+
+<pre><code>yes | yo angular
+</code></pre>
+
+<p>fi
+```</p>
+]]></content>
+  </entry>
+  
+</feed>
