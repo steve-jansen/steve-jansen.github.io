@@ -47,7 +47,7 @@ Another thing with names to consider is avoiding names that use the same name of
 ## Saving Batch Files in Windows
 Notepad by default tries to save all files as plain jane text files.  To get Notepad to save a file with a `.cmd` extension, you will need to change the "Save as type" to "All Files (*.*)".  See the screenshot below for an example of saving a script named "HelloWorld.cmd" in Notepad.  
 
-![Screenshot of saving a batch file in Notepad](/images/posts/2013-03-03-A.png)
+![Screenshot of saving a batch file in Notepad](/images/2013-03-03-A.png)
 
 > **SIDEBAR:** I've used a shortcut in this screenshot that you will learn more about later.  I've saved the file to my "user profile folder" by naming
 > the file `%USERPROFILE%\HelloWorld.cmd`.   The `%USERPROFILE%` keyword is the Windows environmental variable for the full path

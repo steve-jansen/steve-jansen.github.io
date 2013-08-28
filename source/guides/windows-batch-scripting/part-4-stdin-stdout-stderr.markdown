@@ -87,7 +87,7 @@ called `CON`, to a text file.  When you are done typing, hit `CTRL+Z`, which sen
 
     TYPE CON > output.txt
 
-![Screenshot of sending keyboard input to a file](/images/posts/2013-03-05-A.png)
+![Screenshot of sending keyboard input to a file](/images/2013-03-05-A.png)
 
 There are a number of other special files on DOS that you can redirect, however, most are a bit dated like like LPT1 for parallel portt printers
 or COM1 for serial devices like modems.

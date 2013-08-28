@@ -58,7 +58,7 @@ There are some special situations in which variables do not use this `%` syntax.
 ## Listing Existing Variables
 The `SET` command with no arguments will list all variables for the current command prompt session.   Most of these varaiables will be system-wide environmental variables, like `%PATH%` or `%TEMP%`.  
 
-![Screenshot of the SET command](/images/posts/2013-03-03-A.png)
+![Screenshot of the SET command](/images/2013-03-03-A.png)
 
 **NOTE:** Calling `SET` will list all regular (static) variables for the current session.  This listing excludes the dynamic environmental variables like `%DATE%` or `%CD%`.  You can list these dynamic variables by viewing the end of the help text for SET, invoked by calling `SET /?`
 
@@ -66,10 +66,10 @@ The `SET` command with no arguments will list all variables for the current comm
 By default, variables are global to your entire command prompt session.  Call the `SETLOCAL` command to make variables local to the scope of your script.  After calling `SETLOCAL`, any variable assignments revert upon calling `ENDLOCAL`, calling `EXIT`, or when execution reaches the end of file (EOF) in your script.
 
 This example demonstrates changing an existing variable named `foo` within a script named `HelloWorld.cmd`.  The shell restores the original value of `%foo%` when `HelloWorld.cmd` exits.
-![Demonstration of the SETLOCAL command](/images/posts/2013-03-03-B.png)
+![Demonstration of the SETLOCAL command](/images/2013-03-03-B.png)
 
 A real life example might be a script that modifies the system-wide `%PATH%` environmental variable, which is the list of directories to search for a command when executing a command.
-![Demonstration of the SETLOCAL command](/images/posts/2013-03-03-C.png)
+![Demonstration of the SETLOCAL command](/images/2013-03-03-C.png)
 
 ## Special Variables
 There are a few special situations where variables work a bit differently.  The arguments passed on the command line to your script are also variables, but, don't use the `%var%` syntax.  Rather, you read each argument using a single `%` with a digit 0-9, representing the ordinal position of the argument.
