@@ -167,7 +167,7 @@ bar
 
 <p>The <code>SET</code> command with no arguments will list all variables for the current command prompt session.   Most of these varaiables will be system-wide environmental variables, like <code>%PATH%</code> or <code>%TEMP%</code>.</p>
 
-<p><img src="/images/posts/2013-03-03-A.png" alt="Screenshot of the SET command" /></p>
+<p><img src="/images/2013-03-03-A.png" alt="Screenshot of the SET command" /></p>
 
 <p><strong>NOTE:</strong> Calling <code>SET</code> will list all regular (static) variables for the current session.  This listing excludes the dynamic environmental variables like <code>%DATE%</code> or <code>%CD%</code>.  You can list these dynamic variables by viewing the end of the help text for SET, invoked by calling <code>SET /?</code></p>
 
@@ -176,10 +176,10 @@ bar
 <p>By default, variables are global to your entire command prompt session.  Call the <code>SETLOCAL</code> command to make variables local to the scope of your script.  After calling <code>SETLOCAL</code>, any variable assignments revert upon calling <code>ENDLOCAL</code>, calling <code>EXIT</code>, or when execution reaches the end of file (EOF) in your script.</p>
 
 <p>This example demonstrates changing an existing variable named <code>foo</code> within a script named <code>HelloWorld.cmd</code>.  The shell restores the original value of <code>%foo%</code> when <code>HelloWorld.cmd</code> exits.
-<img src="/images/posts/2013-03-03-B.png" alt="Demonstration of the SETLOCAL command" /></p>
+<img src="/images/2013-03-03-B.png" alt="Demonstration of the SETLOCAL command" /></p>
 
 <p>A real life example might be a script that modifies the system-wide <code>%PATH%</code> environmental variable, which is the list of directories to search for a command when executing a command.
-<img src="/images/posts/2013-03-03-C.png" alt="Demonstration of the SETLOCAL command" /></p>
+<img src="/images/2013-03-03-C.png" alt="Demonstration of the SETLOCAL command" /></p>
 
 <h2>Special Variables</h2>
 
