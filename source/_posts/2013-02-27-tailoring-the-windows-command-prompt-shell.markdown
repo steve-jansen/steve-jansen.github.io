@@ -24,13 +24,13 @@ Right click the Command Prompt title bar and select "Properties" from the contex
 * simplify copying text to copy any selected text (by the mouse) when you press enter
 * simplify pasting text to paste on right click
 
-![Screenshot of the Command Prompt Options tab](/images/posts/2013-02-27-A.png)
+![Screenshot of the Command Prompt Options tab](/images/2013-02-27-A.png)
 
-![Screenshot of the Command Prompt Options tab](/images/posts/2013-02-27-B.png)
+![Screenshot of the Command Prompt Options tab](/images/2013-02-27-B.png)
 
-![Screenshot of the Command Prompt Options tab](/images/posts/2013-02-27-C.png)
+![Screenshot of the Command Prompt Options tab](/images/2013-02-27-C.png)
 
-![Screenshot of the Command Prompt Options tab](/images/posts/2013-02-27-D.png)
+![Screenshot of the Command Prompt Options tab](/images/2013-02-27-D.png)
 
 ## Tab and Filename Autocompletion
 The `Tab` key should auto complete the names of files and folders in the current working directory.  Each press of `Tab` should cycle to the next name.  The autocompletion is pretty smart - it will filter the choices based on what you have already typed.   For example, typing `D` then `Tab` will autocomplete the first file or folder that starts with the letter "D".  Tabbing again will display the next file or folder that start with D.  Tabbing will cycle through a ring of possible matches.  
@@ -54,11 +54,11 @@ Most developers (and even sysadmins) aren't aware of the advanced keyboard short
 * `F9` selects a command by number
 
 Example of pressing `ALT`+`F7` to view the command history:
-![Screenshot of the visual command history](/images/posts/2013-02-27-E.png)
+![Screenshot of the visual command history](/images/2013-02-27-E.png)
 
 Example of pressing `F9` to recall a command by history number:
-![Screenshot of the visual command history](/images/posts/2013-02-27-F.png)
+![Screenshot of the visual command history](/images/2013-02-27-F.png)
 
 Example of pressing `F8` to cycle through history entries matching the text "D" already typed into the comamnd line buffer:
-![Screenshot of the visual command history](/images/posts/2013-02-27-G.png)
+![Screenshot of the visual command history](/images/2013-02-27-G.png)
 
