@@ -55,8 +55,14 @@
         <lastmod>2013-09-10T21:52:40-04:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/
+        </loc>
+        <lastmod>2013-09-10T22:04:18-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2013-09-10T21:52:40-04:00</lastmod>
+        <lastmod>2013-09-10T22:04:18-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
@@ -122,7 +128,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2013-09-10T21:52:40-04:00</lastmod>
+        <lastmod>2013-09-10T22:04:18-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>
