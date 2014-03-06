@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jenkins | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/jenkins/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-05T21:14:34-05:00</updated>
+  <updated>2014-03-05T21:19:37-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -21,14 +21,18 @@
     <content type="html"><![CDATA[<p>I&rsquo;ve been helping an awesome colleague on DevOps for our Jenkins farm, which we use
 for continuous integration and continuous deployment to our preproduction environments.</p>
 
-<p>We are really trying to do it right:
-* Use Puppet to provision the Jenkins master, Linux VM build slaves, Windows VM slaves,
-  and even OS X bare metal slaves (for iOS builds)
-* Automated backups of Jenkins config files to a private GitHub repo for disster recovery
-* Patches the GitHub OAuth plugin to make sure you have the same collaborator permissions
-  (read/write/admin) in a Jenkins job as you do the GitHub repo.
-* Have a Jenkins staging environment to test upgrades to Jenkins and plugins to avoid surprises.
-* Run Jenkins on the Long Term Support (LTS) release channel to avoid surprises.</p>
+<p>We are really trying to do it right:</p>
+
+<ul>
+<li>Use Puppet to provision the Jenkins master, Linux VM build slaves, Windows VM slaves,
+and even OS X bare metal slaves (for iOS builds)</li>
+<li>Automated backups of Jenkins config files to a private GitHub repo for disster recovery</li>
+<li>Patches the GitHub OAuth plugin to make sure you have the same collaborator permissions
+(read/write/admin) in a Jenkins job as you do the GitHub repo.</li>
+<li>Have a Jenkins staging environment to test upgrades to Jenkins and plugins to avoid surprises.</li>
+<li>Run Jenkins on the Long Term Support (LTS) release channel to avoid surprises.</li>
+</ul>
+
 
 <p>I wish my shop used CentOS or Debian; sadly we are stuck on SUSE Enterprise.  SUSE is really
 good at turning 5 minute tasks on CentOS or Debian into uber frustrating hour-long ordeals.</p>
