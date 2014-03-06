@@ -12,6 +12,7 @@ I've been helping an awesome colleague on DevOps for our Jenkins farm, which we 
 for continuous integration and continuous deployment to our preproduction environments.
 
 We are really trying to do it right:
+
 * Use Puppet to provision the Jenkins master, Linux VM build slaves, Windows VM slaves,
   and even OS X bare metal slaves (for iOS builds)
 * Automated backups of Jenkins config files to a private GitHub repo for disster recovery
