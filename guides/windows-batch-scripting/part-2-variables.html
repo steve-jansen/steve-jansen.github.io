@@ -10,12 +10,11 @@
 
   
   <meta name="description" content="Overview
-Part 1 - Getting Started
-Part 2 - Variables
-Part 3 - Return Codes
-Part 4 - stdin, stdout, stderr
-Part 5 - If/Then Conditionals
-Part 6 - &hellip;">
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,26 +112,26 @@ Part 6 - &hellip;">
 
 <div class="entry-content"><ul>
 <li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
-<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
-<li>Part 2 - Variables</li>
-<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
-<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
-<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
-<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
-<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
-<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input</a></li>
-<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
-<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
+<li>Part 2 &ndash; Variables</li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
 </ul>
 
 
-<p>Today we&#8217;ll cover variables, which are going to be necessary in any non-trivial batch programs.  The syntax for variables can be a bit odd,
-so it will help to be able to understand a variable and how it&#8217;s being used.</p>
+<p>Today we&rsquo;ll cover variables, which are going to be necessary in any non-trivial batch programs.  The syntax for variables can be a bit odd,
+so it will help to be able to understand a variable and how it&rsquo;s being used.</p>
 
 <h2>Variable Declaration</h2>
 
 <p>DOS does not require declaration of variables.  The value of undeclared/uninitialized variables is an empty string, or <code>""</code>.  Most people like this, as
-it reduces the amount of code to write.  Personally, I&#8217;d like the option to require a variable is declared before it&#8217;s used, as this catches
+it reduces the amount of code to write.  Personally, I&rsquo;d like the option to require a variable is declared before it&rsquo;s used, as this catches
 silly bugs like typos in variable names.</p>
 
 <h2>Variable Assignment</h2>
@@ -148,9 +147,9 @@ silly bugs like typos in variable names.</p>
 4
 </code></pre>
 
-<p>A common convention is to use lowercase names for your script&#8217;s variables.  System-wide variables, known as environmental variables, use uppercase names.  These environmental describe where to find certain things in your system, such as <code>%TEMP%</code> which is  path for temporary files.  DOS is case insensitive, so this convention isn&#8217;t enforced but it&#8217;s a good idea to make your script&#8217;s easier to read and troubleshoot.</p>
+<p>A common convention is to use lowercase names for your script&rsquo;s variables.  System-wide variables, known as environmental variables, use uppercase names.  These environmental describe where to find certain things in your system, such as <code>%TEMP%</code> which is  path for temporary files.  DOS is case insensitive, so this convention isn&rsquo;t enforced but it&rsquo;s a good idea to make your script&rsquo;s easier to read and troubleshoot.</p>
 
-<p><strong>WARNING:</strong> <code>SET</code> will always overwrite (clobber) any existing variables.  It&#8217;s a good idea to verify you aren&#8217;t overwriting a system-wide variable when writing a script.  A quick <code>ECHO %foo%</code> will confirm that the variable <code>foo</code> isn&#8217;t an existing variable.  For example, it might be tempting to name a variable &#8220;temp&#8221;, but, that would change the meaning of the widely used &#8220;%TEMP%&#8221; environmental varible.   DOS includes some &#8220;dynamic&#8221; environmental variables that behave more like commands.  These dynamic varibles include <code>%DATE%</code>, <code>%RANDOM%</code>, and <code>%CD%</code>.  It would be a bad idea to overwrite these dynamic variables.</p>
+<p><strong>WARNING:</strong> <code>SET</code> will always overwrite (clobber) any existing variables.  It&rsquo;s a good idea to verify you aren&rsquo;t overwriting a system-wide variable when writing a script.  A quick <code>ECHO %foo%</code> will confirm that the variable <code>foo</code> isn&rsquo;t an existing variable.  For example, it might be tempting to name a variable &ldquo;temp&rdquo;, but, that would change the meaning of the widely used &ldquo;%TEMP%&rdquo; environmental varible.   DOS includes some &ldquo;dynamic&rdquo; environmental variables that behave more like commands.  These dynamic varibles include <code>%DATE%</code>, <code>%RANDOM%</code>, and <code>%CD%</code>.  It would be a bad idea to overwrite these dynamic variables.</p>
 
 <h2>Reading the Value of a Variable</h2>
 
@@ -161,7 +160,7 @@ C:\&gt; ECHO %foo%
 bar
 </code></pre>
 
-<p>There are some special situations in which variables do not use this <code>%</code> syntax.  We&#8217;ll discuss these special cases later in this series.</p>
+<p>There are some special situations in which variables do not use this <code>%</code> syntax.  We&rsquo;ll discuss these special cases later in this series.</p>
 
 <h2>Listing Existing Variables</h2>
 
@@ -183,30 +182,30 @@ bar
 
 <h2>Special Variables</h2>
 
-<p>There are a few special situations where variables work a bit differently.  The arguments passed on the command line to your script are also variables, but, don&#8217;t use the <code>%var%</code> syntax.  Rather, you read each argument using a single <code>%</code> with a digit 0-9, representing the ordinal position of the argument.
-You&#8217;ll see this same style used later with a hack to create functions/subroutines in batch scripts.</p>
+<p>There are a few special situations where variables work a bit differently.  The arguments passed on the command line to your script are also variables, but, don&rsquo;t use the <code>%var%</code> syntax.  Rather, you read each argument using a single <code>%</code> with a digit 0-9, representing the ordinal position of the argument.
+You&rsquo;ll see this same style used later with a hack to create functions/subroutines in batch scripts.</p>
 
 <p>There is also a variable syntax using <code>!</code>, like <code>!var!</code>.  This is a special type of situation called delayed expansion.
-You&#8217;ll learn more about delayed expansion in when we discuss conditionals (if/then) and looping.</p>
+You&rsquo;ll learn more about delayed expansion in when we discuss conditionals (if/then) and looping.</p>
 
 <h3>Command Line Arguments to Your Script</h3>
 
-<p>You can read the command line arguments passed to your script using a special syntax.  The syntax is a single <code>%</code> character followed by the ordinal position of the argument from <code>0</code> - <code>9</code>. The zero ordinal argument is the name of the batch file itself.  So the variable <code>%0</code> in our script <code>HelloWorld.cmd</code> will be &#8220;HelloWorld.cmd&#8221;.</p>
+<p>You can read the command line arguments passed to your script using a special syntax.  The syntax is a single <code>%</code> character followed by the ordinal position of the argument from <code>0</code> &ndash; <code>9</code>. The zero ordinal argument is the name of the batch file itself.  So the variable <code>%0</code> in our script <code>HelloWorld.cmd</code> will be &ldquo;HelloWorld.cmd&rdquo;.</p>
 
 <p>The command line argument variables are
 * <code>%0</code>: the name of the script/program as called on the command line; always a non-empty value
 * <code>%1</code>: the first command line argument; empty if no arguments were provided
-* <code>%2</code>: the second command line argument; empty if a second argument wasn&#8217;t provided
-* &#8230;:
+* <code>%2</code>: the second command line argument; empty if a second argument wasn&rsquo;t provided
+* &hellip;:
 * <code>%9</code>: the ninth command line argument</p>
 
-<p><strong>NOTE:</strong> DOS does support more than 9 command line arguments, however, you cannot directly read the 10th argument of higher. This is because the special variable syntax doesn&#8217;t recognize <code>%10</code> or higher.  In fact, the shell reads <code>%10</code> as postfix the <code>%0</code> command line argument with the string &#8220;0&#8221;.  Use the <code>SHIFT</code> command to pop the first argument from the list of arguments, which &#8220;shifts&#8221; all arguments one place to the left.  For example, the the second argument shifts from position <code>%2</code> to <code>%1</code>, which then exposes the 10th argument as <code>%9</code>.  You will learn how to process a large number of arguments in a loop later in this series.</p>
+<p><strong>NOTE:</strong> DOS does support more than 9 command line arguments, however, you cannot directly read the 10th argument of higher. This is because the special variable syntax doesn&rsquo;t recognize <code>%10</code> or higher.  In fact, the shell reads <code>%10</code> as postfix the <code>%0</code> command line argument with the string &ldquo;0&rdquo;.  Use the <code>SHIFT</code> command to pop the first argument from the list of arguments, which &ldquo;shifts&rdquo; all arguments one place to the left.  For example, the the second argument shifts from position <code>%2</code> to <code>%1</code>, which then exposes the 10th argument as <code>%9</code>.  You will learn how to process a large number of arguments in a loop later in this series.</p>
 
 <h3>Tricks with Command Line Arguments</h3>
 
 <p>Command Line Arguments also support some really useful optional syntax to run quasi-macros on command line arguments that are file paths.  These macros
 are called variable substitution support and can resolve the path, timestamp, or size of file that is a command line argument.  The documentation for
-this super useful feature is a bit hard to find - run &#8216;FOR /?&#8217; and page to the end of the output.</p>
+this super useful feature is a bit hard to find &ndash; run &lsquo;FOR /?&rsquo; and page to the end of the output.</p>
 
 <ul>
 <li><code>%~1</code> removes quotes from the first command line argument, which is super useful when working with arguments to file paths.  You will need to quote any file paths, but, quoting a file path twice will cause a file not found error.</li>
@@ -218,12 +217,12 @@ this super useful feature is a bit hard to find - run &#8216;FOR /?&#8217; and p
 <ul>
 <li><p><code>%~f1</code> is the full path to the folder of the first command line argument</p></li>
 <li><p><code>%~fs1</code> is the same as above but the extra <code>s</code> option yields the DOS 8.3 short name path to the first command line argument (e.g., <code>C:\PROGRA~1</code> is
-usually the 8.3 short name variant of <code>C:\Program Files</code>).  This can be helpful when using third party scripts or programs that don&#8217;t handle spaces
+usually the 8.3 short name variant of <code>C:\Program Files</code>).  This can be helpful when using third party scripts or programs that don&rsquo;t handle spaces
 in file paths.</p></li>
 <li><p><code>%~dp1</code> is the full path to the parent folder of the first command line argument.  I use this trick in nearly every batch file I write to determine
 where the script file itself lives.  The syntax <code>SET parent=%~dp0</code> will put the path of the folder for the script file in the variable <code>%parent%</code>.</p></li>
 <li><p><code>%~nx1</code> is just the file name and file extension of the first command line argument.  I also use this trick frequently to determine the
-name of the script at runtime. If I need to print messages to the user, I like to prefix the message with the script&#8217;s name, like
+name of the script at runtime. If I need to print messages to the user, I like to prefix the message with the script&rsquo;s name, like
 <code>ECHO %~n0: some message</code> instead of <code>ECHO some message</code> . The prefixing helps the end user by knowing the output is
 from the script and not another program being called by the script.  It may sound silly until you spend hours trying to track down
 an obtuse error message generated by a script. This is a nice piece of polish
@@ -240,17 +239,17 @@ SET me=%~n0
 SET parent=%~dp0
 </code></pre>
 
-<p>The <code>SETLOCAL</code> command ensures that I don&#8217;t clobber any existing variables after my script exits.  The <code>ENABLEEXTENSIONS</code> argument turns on a very
+<p>The <code>SETLOCAL</code> command ensures that I don&rsquo;t clobber any existing variables after my script exits.  The <code>ENABLEEXTENSIONS</code> argument turns on a very
 helpful feature called command processor extensions.  Trust me, you want command processor extensions.  I also store the name of the script
 (without the file extension) in a variable named <code>%me%</code>; I use this variable as the prefix to any printed messages (e.g. <code>ECHO %me%: some message</code>).
 I also store the parent path to the script in a variable named <code>%parent%</code>.  I use this variable to make fully qualified filepaths to any
 other files in the same directory as our script.</p>
 
 <p><span class="basic-alignment left">
-<a href="/guides/windows-batch-scripting/part-1-getting-started.html">&lt;&lt; Part 1 - Getting Started</a>
+<a href="/guides/windows-batch-scripting/part-1-getting-started.html">&lt;&lt; Part 1 &ndash; Getting Started</a>
 </span>
 <span class="basic-alignment right">
-<a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes >></a>
+<a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes >></a>
 </span></p>
 </div>
 
@@ -342,6 +341,14 @@ other files in the same directory as our script.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash's curl command</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
       </li>
     
@@ -351,14 +358,6 @@ other files in the same directory as our script.</p>
     
       <li class="post">
         <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a shell script</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/22/wiring-together-passport-swagger-express/">Wiring together Express, Passport OAuth, and Swagger in NodeJS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/">A Fantastic Video Tutorial on Sublime Text 2</a>
       </li>
     
   </ul>
@@ -371,12 +370,13 @@ other files in the same directory as our script.</p>
       <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
     
     <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
     <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
     <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
   </ul>
 </section>
 
-<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
 
 
 
@@ -388,7 +388,7 @@ other files in the same directory as our script.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Steve Jansen -
+  Copyright &copy; 2014 - Steve Jansen -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

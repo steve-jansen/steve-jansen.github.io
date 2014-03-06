@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Yeoman | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/yeoman/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2013-09-12T22:32:21-04:00</updated>
+  <updated>2014-03-05T21:00:47-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -19,20 +19,20 @@
     <updated>2013-08-27T15:44:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
     <content type="html"><![CDATA[<p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
-yeoman's insistance on interactive prompts.  As far as I can tell the prompting library,
+yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,
 <a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
 be commanded to run in non-interactive mode.</p>
 
-<p>Enter an old-school POSIX friend in core-utils... <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
+<p>Enter an old-school POSIX friend in core-utils&hellip; <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
 
-<p>The <code>yes</code> utility continuously outputs 'Y' followed by a newline as long as another process is reading the stdout stream.
+<p>The <code>yes</code> utility continuously outputs &lsquo;Y&rsquo; followed by a newline as long as another process is reading the stdout stream.
 Very convenient for piping to another program.</p>
 
-<p>Here's how I automated Yeoman to generate a new AngularJS app:</p>
+<p>Here&rsquo;s how I automated Yeoman to generate a new AngularJS app:</p>
 
 <p>``` bash</p>
 
-<h1>yeoman has a number of interactive prompts, and sadly doesn't support a batch mode</h1>
+<h1>yeoman has a number of interactive prompts, and sadly doesn&rsquo;t support a batch mode</h1>
 
 <h1>so we use the coreutils <code>yes</code> utility to accept all the default answers in yeoman;</h1>
 

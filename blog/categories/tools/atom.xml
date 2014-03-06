@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tools | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/tools/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2013-09-12T22:32:21-04:00</updated>
+  <updated>2014-03-05T21:00:47-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -18,18 +18,18 @@
     <link href="http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/"/>
     <updated>2013-02-27T14:18:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell</id>
-    <content type="html"><![CDATA[<p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don't know some of the tricks up the Command Prompt's sleeve.  So allow me to share some of my favorite settings.</p>
+    <content type="html"><![CDATA[<p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&rsquo;t know some of the tricks up the Command Prompt&rsquo;s sleeve.  So allow me to share some of my favorite settings.</p>
 
 <!-- more -->
 
 
 <h2>Launching the Command Prompt</h2>
 
-<p>Windows gurus launch the command prompt using the keyboard shortcut <code>Windows Logo Key</code>+<code>R</code> (i.e., "Run") > Type <code>cmd.exe</code> then <code>Enter</code>.  This is way faster than navigating the Windows Start Menu to find the Command Prompt.</p>
+<p>Windows gurus launch the command prompt using the keyboard shortcut <code>Windows Logo Key</code>+<code>R</code> (i.e., &ldquo;Run&rdquo;) > Type <code>cmd.exe</code> then <code>Enter</code>.  This is way faster than navigating the Windows Start Menu to find the Command Prompt.</p>
 
 <h2>Preferences</h2>
 
-<p>Right click the Command Prompt title bar and select "Properties" from the context menu.  I modify the preferences highlighted in below screenshots to accomplish a few things:</p>
+<p>Right click the Command Prompt title bar and select &ldquo;Properties&rdquo; from the context menu.  I modify the preferences highlighted in below screenshots to accomplish a few things:</p>
 
 <ul>
 <li>make the shell easier on our overtaxed eyes ;)</li>
@@ -49,9 +49,9 @@
 
 <h2>Tab and Filename Autocompletion</h2>
 
-<p>The <code>Tab</code> key should auto complete the names of files and folders in the current working directory.  Each press of <code>Tab</code> should cycle to the next name.  The autocompletion is pretty smart - it will filter the choices based on what you have already typed.   For example, typing <code>D</code> then <code>Tab</code> will autocomplete the first file or folder that starts with the letter "D".  Tabbing again will display the next file or folder that start with D.  Tabbing will cycle through a ring of possible matches.</p>
+<p>The <code>Tab</code> key should auto complete the names of files and folders in the current working directory.  Each press of <code>Tab</code> should cycle to the next name.  The autocompletion is pretty smart &ndash; it will filter the choices based on what you have already typed.   For example, typing <code>D</code> then <code>Tab</code> will autocomplete the first file or folder that starts with the letter &ldquo;D&rdquo;.  Tabbing again will display the next file or folder that start with D.  Tabbing will cycle through a ring of possible matches.</p>
 
-<p>For example, tabbing through the letter "D" in your user profile directory on Windows 7 might autocomplete "Desktop", "Documents", "Downloads", and then back to "Desktop".  Autocomplete will even quote paths with spaces, which is a nice trick.  I often see experienced developers stuggle to find a filepath, repeatedly doing <code>DIR</code> and <code>CD</code> commands to just run a single batch script.</p>
+<p>For example, tabbing through the letter &ldquo;D&rdquo; in your user profile directory on Windows 7 might autocomplete &ldquo;Desktop&rdquo;, &ldquo;Documents&rdquo;, &ldquo;Downloads&rdquo;, and then back to &ldquo;Desktop&rdquo;.  Autocomplete will even quote paths with spaces, which is a nice trick.  I often see experienced developers stuggle to find a filepath, repeatedly doing <code>DIR</code> and <code>CD</code> commands to just run a single batch script.</p>
 
 <p>One small shortcoming is autocomlete cannot expand environmental variables like <code>%ProgramFiles%</code> or <code>%UserProfile%</code>.  Although you can use <code>Windows logo key</code> + <code>R</code> Run dialog to autocomplete environmental variables.</p>
 
@@ -61,7 +61,7 @@
 
 <p>The <code>DOSKEY</code> utility is similar to the <code>history</code> utility on Unix/Linux shells.  Most developers know you can press the up arrow or down arrow to cycle through the history of issued commands.</p>
 
-<p>Most developers (and even sysadmins) aren't aware of the advanced keyboard shortcuts wired to <code>DOSKEY</code>:</p>
+<p>Most developers (and even sysadmins) aren&rsquo;t aware of the advanced keyboard shortcuts wired to <code>DOSKEY</code>:</p>
 
 <ul>
 <li>UP and DOWN ARROWS recall commands</li>
@@ -79,7 +79,7 @@
 <p>Example of pressing <code>F9</code> to recall a command by history number:
 <img src="/images/2013-02-27-F.png" alt="Screenshot of the visual command history" /></p>
 
-<p>Example of pressing <code>F8</code> to cycle through history entries matching the text "D" already typed into the comamnd line buffer:
+<p>Example of pressing <code>F8</code> to cycle through history entries matching the text &ldquo;D&rdquo; already typed into the comamnd line buffer:
 <img src="/images/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
 ]]></content>
   </entry>

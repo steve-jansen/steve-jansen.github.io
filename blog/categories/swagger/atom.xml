@@ -4,7 +4,7 @@
   <title><![CDATA[Category: swagger | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/swagger/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2013-09-12T22:32:21-04:00</updated>
+  <updated>2014-03-05T21:00:47-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -24,8 +24,8 @@ the <a href="http://passportjs.org/guide/">Passport authentication strategy for 
 would be fairly straightforward.  A wrinkle with other examples is I needed to disallow
 all anonymous access for an intranet app.</p>
 
-<p>I'm a big fan of Swagger UI - it's a great, DRY way to auto-document your REST APIs. I expected Swagger
-to be a natural fit with NodeJS.  Suprisingly, I found the Swagger.Net implmentation for .Net's WebAPI
+<p>I&rsquo;m a big fan of Swagger UI &ndash; it&rsquo;s a great, DRY way to auto-document your REST APIs. I expected Swagger
+to be a natural fit with NodeJS.  Suprisingly, I found the Swagger.Net implmentation for .Net&rsquo;s WebAPI
 to be considerably easier to use compared to the NodeJS implementation.
 Swagger.Net easily drops into an existing WebAPI project.  Not so with NodeJS.</p>
 
@@ -34,7 +34,7 @@ wacky part for me was you need two Express apps side-by-side to handle requests 
 static content.</p>
 
 <p>```js
-var express = require('express'),</p>
+var express = require(&lsquo;express&rsquo;),</p>
 
 <pre><code>app     = express(),
 subapp  = express(),;
@@ -43,7 +43,7 @@ swagger = require('./lib/swagger/swagger');
 
 <p>```</p>
 
-<p>As we'll see below, the <code>subapp</code> sandboxes the Swagger package to the <code>/api/*</code> route.</p>
+<p>As we&rsquo;ll see below, the <code>subapp</code> sandboxes the Swagger package to the <code>/api/*</code> route.</p>
 
 <p><em>(I use a local copy of the swagger-node-express package downloaded to my source tree because I found that
 the npm package was considerably outdated compared to the master branch of the swagger-node-express repo.)</em></p>
@@ -52,7 +52,7 @@ the npm package was considerably outdated compared to the master branch of the s
 <code>/auth/github/callback</code> upon successful authentication.</p>
 
 <p>```js
-var passport       = require('passport'),</p>
+var passport       = require(&lsquo;passport&rsquo;),</p>
 
 <pre><code>GitHubStrategy = require('passport-github').Strategy;
 </code></pre>
@@ -102,7 +102,7 @@ function authenticate(req, res, next) {
 </code></pre>
 
 <p>  }
-  if (req.headers['x-requested-with'] === 'XMLHttpRequest') {</p>
+  if (req.headers[&lsquo;x-requested-with&rsquo;] === &lsquo;XMLHttpRequest&rsquo;) {</p>
 
 <pre><code>res.send("Authentication required", 401);
 </code></pre>
@@ -125,7 +125,7 @@ subpath.configure(function() {
   subpath.use(express.cookieParser());
   subpath.use(express.bodyParser());
   subpath.use(express.methodOverride());
-  subpath.use(express.session({ secret: config['SESSION_TOKEN'] }));
+  subpath.use(express.session({ secret: config[&lsquo;SESSION_TOKEN&rsquo;] }));
   subpath.use(passport.initialize());
   subpath.use(passport.session());
   subpath.use(authenticate);
@@ -137,14 +137,14 @@ app.configure(function() {
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.session({ secret: config['SESSION_TOKEN'] }));
+  app.use(express.session({ secret: config[&lsquo;SESSION_TOKEN&rsquo;] }));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
   app.use(authenticate);
-  app.use('/api', subpath); /<em> mount <code>/api</code> using the subapp </em>/
+  app.use(&lsquo;/api&rsquo;, subpath); /<em> mount <code>/api</code> using the subapp </em>/
   // default document middleware for swagger/index.html
-  app.use('/swagger', function(req, res, next) {</p>
+  app.use(&lsquo;/swagger&rsquo;, function(req, res, next) {</p>
 
 <pre><code>if (req.url === '/swagger') {
   res.redirect('/swagger/');
@@ -153,8 +153,8 @@ next();
 </code></pre>
 
 <p>  });
-  app.use('/swagger', express.static(path.join(<strong>dirname, 'public/swagger')));
-  app.use(express.static(path.join(</strong>dirname, 'public/client')));
+  app.use(&lsquo;/swagger&rsquo;, express.static(path.join(<strong>dirname, &lsquo;public/swagger&rsquo;)));
+  app.use(express.static(path.join(</strong>dirname, &lsquo;public/client&rsquo;)));
 });
 ```</p>
 
@@ -163,14 +163,14 @@ route <code>/api/doc</code>, and finally start the server.</p>
 
 <p>``` js
 // GitHub OAuth routes
-app.get('/login', passport.authenticate('github'));
-app.get('/auth/github/callback',  passport.authenticate('github', { successReturnToOrRedirect: '/', failureRedirect: '/login' }));</p>
+app.get(&lsquo;/login&rsquo;, passport.authenticate(&lsquo;github&rsquo;));
+app.get(&lsquo;/auth/github/callback&rsquo;,  passport.authenticate(&lsquo;github&rsquo;, { successReturnToOrRedirect: &lsquo;/&rsquo;, failureRedirect: &lsquo;/login&rsquo; }));</p>
 
 <p>// Swagger configuration
-swagger.addModels(require('./models'));
-swagger.addGet(require('./controllers/user').get);
-swagger.configureSwaggerPaths('', '/doc', '');
-swagger.configure('', require('../package.json').version);</p>
+swagger.addModels(require(&lsquo;./models&rsquo;));
+swagger.addGet(require(&lsquo;./controllers/user&rsquo;).get);
+swagger.configureSwaggerPaths(&lsquo;&rsquo;, &lsquo;/doc&rsquo;, &lsquo;&rsquo;);
+swagger.configure(&lsquo;&rsquo;, require(&lsquo;../package.json&rsquo;).version);</p>
 
 <p>app.listen(8080);
 ```</p>

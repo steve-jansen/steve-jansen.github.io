@@ -10,12 +10,11 @@
 
   
   <meta name="description" content="Overview
-Part 1 - Getting Started
-Part 2 - Variables
-Part 3 - Return Codes
-Part 4 - stdin, stdout, stderr
-Part 5 - If/Then Conditionals
-Part 6 - &hellip;">
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,23 +112,23 @@ Part 6 - &hellip;">
 
 <div class="entry-content"><ul>
 <li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
-<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
-<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
-<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 - Return Codes</a></li>
-<li>Part 4 - stdin, stdout, stderr</li>
-<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
-<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
-<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
-<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input</a></li>
-<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
-<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
+<li>Part 4 &ndash; stdin, stdout, stderr</li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
 </ul>
 
 
-<p>DOS, like Unix/Linux, uses the three universal &#8220;files&#8221; for keyboard input, printing text on the screen, and the
-printing errors on the screen.  The &#8220;Standard In&#8221; file, known as stdin, contains the input to the program/script.
-The &#8220;Standard Out&#8221; file, known as stdout, is used to write output for display on the screen.  Finally, the
-&#8220;Standard Err&#8221; file, known as stderr, contains any error messages for display on the screen.</p>
+<p>DOS, like Unix/Linux, uses the three universal &ldquo;files&rdquo; for keyboard input, printing text on the screen, and the
+printing errors on the screen.  The &ldquo;Standard In&rdquo; file, known as stdin, contains the input to the program/script.
+The &ldquo;Standard Out&rdquo; file, known as stdout, is used to write output for display on the screen.  Finally, the
+&ldquo;Standard Err&rdquo; file, known as stderr, contains any error messages for display on the screen.</p>
 
 <h2>File Numbers</h2>
 
@@ -184,15 +183,15 @@ against the loopback address.  We redirect stdout to the <code>NUL</code> device
 
 <h2>Redirecting Program Output As Input to Another Program</h2>
 
-<p>Let&#8217;s say you want to chain together the output of one program as input to another.  This is known as &#8220;piping&#8221; output to another program,
-and not suprisingly we use the pipe character <code>|</code> to get the job done.  We&#8217;ll sort the output of the DIR commmand.</p>
+<p>Let&rsquo;s say you want to chain together the output of one program as input to another.  This is known as &ldquo;piping&rdquo; output to another program,
+and not suprisingly we use the pipe character <code>|</code> to get the job done.  We&rsquo;ll sort the output of the DIR commmand.</p>
 
 <pre><code>DIR /B | SORT
 </code></pre>
 
 <h2>A Cool Party Trick</h2>
 
-<p>You can quickly create a new text file, say maybe a batch script, from just the command line by redirecting the command prompt&#8217;s own stdin,
+<p>You can quickly create a new text file, say maybe a batch script, from just the command line by redirecting the command prompt&rsquo;s own stdin,
 called <code>CON</code>, to a text file.  When you are done typing, hit <code>CTRL+Z</code>, which sends the end-of-file (EOF) character.</p>
 
 <pre><code>TYPE CON &gt; output.txt
@@ -204,10 +203,10 @@ called <code>CON</code>, to a text file.  When you are done typing, hit <code>CT
 or COM1 for serial devices like modems.</p>
 
 <p><span class="basic-alignment left">
-<a href="/guides/windows-batch-scripting/part-3-return-codes.html">&lt;&lt; Part 3 - Return Codes</a>
+<a href="/guides/windows-batch-scripting/part-3-return-codes.html">&lt;&lt; Part 3 &ndash; Return Codes</a>
 </span>
 <span class="basic-alignment right">
-<a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals >></a>
+<a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals >></a>
 </span></p>
 </div>
 
@@ -299,6 +298,14 @@ or COM1 for serial devices like modems.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash's curl command</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
       </li>
     
@@ -308,14 +315,6 @@ or COM1 for serial devices like modems.</p>
     
       <li class="post">
         <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a shell script</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/22/wiring-together-passport-swagger-express/">Wiring together Express, Passport OAuth, and Swagger in NodeJS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/">A Fantastic Video Tutorial on Sublime Text 2</a>
       </li>
     
   </ul>
@@ -328,12 +327,13 @@ or COM1 for serial devices like modems.</p>
       <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
     
     <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
     <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
     <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
   </ul>
 </section>
 
-<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
 
 
 
@@ -345,7 +345,7 @@ or COM1 for serial devices like modems.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Steve Jansen -
+  Copyright &copy; 2014 - Steve Jansen -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

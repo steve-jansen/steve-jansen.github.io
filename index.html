@@ -9,7 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="My wondeful wife pointed to me this outstanding visualization of left vs. right brain expression. It made me thing that a great developer is probably &hellip;">
+  <meta name="description" content="I&rsquo;ve been helping an awesome colleague on DevOps for our Jenkins farm, which we use
+for continuous integration and continuous deployment to our &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,141 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to Port 80 on SUSE Linux</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T18:09:00-05:00" pubdate data-updated="true">Mar 5<span>th</span>, 2014</time>
+        
+         | <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;ve been helping an awesome colleague on DevOps for our Jenkins farm, which we use
+for continuous integration and continuous deployment to our preproduction environments.</p>
+
+<p>We are really trying to do it right:
+* Use Puppet to provision the Jenkins master, Linux VM build slaves, Windows VM slaves,
+  and even OS X bare metal slaves (for iOS builds)
+* Automated backups of Jenkins config files to a private GitHub repo for disster recovery
+* Patches the GitHub OAuth plugin to make sure you have the same collaborator permissions
+  (read/write/admin) in a Jenkins job as you do the GitHub repo.
+* Have a Jenkins staging environment to test upgrades to Jenkins and plugins to avoid surprises.
+* Run Jenkins on the Long Term Support (LTS) release channel to avoid surprises.</p>
+
+<p>I wish my shop used CentOS or Debian; sadly we are stuck on SUSE Enterprise.  SUSE is really
+good at turning 5 minute tasks on CentOS or Debian into uber frustrating hour-long ordeals.</p>
+
+<p>One of the glitches we faced was running the Jenkins web UI on port 80.  SUSE lacks the
+authbind package for binding to port below port 1024 as a non-root user.  We wanted to run the
+Jenkins deamon as a regular privilege user, so running as root was not an option.</p>
+
+<p>We are currently smoke testing this LSB <code>/etc/init.d/jenkins.portforwarding</code> script, which is
+just a wrapper around <code>iptables</code>.  So far, it seems to get the job done.</p>
+
+<div><script src='https://gist.github.com/9361161.js'></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/9361161&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>If all goes well, I will merge this logic into a pull request for the <a href="https://github.com/jenkinsci/jenkins/blob/master/opensuse/SOURCES/jenkins.init.in">Jenkins init.d script for OpenSuse</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A Better FTP Client for Windows You Already Have: Git Bash&#8217;s Curl Command</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T17:24:00-05:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+         | <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>My shop has a couple of internal FTP servers to mirror commonly used installers for .Net devs.
+Installers for apps like Visual Studio can be huge, so GitHub isn&rsquo;t the best place for this, and
+it would also smoke most of our Dropbox quotas.  So an FTP server seems like the 3rd best option.</p>
+
+<p>We are a geographically distributed team, with a VPN to access internal servers.  Even with a reliable
+VPN session over ISP fiber connection, I&rsquo;ve experience lots of realiability problems downloading large files
+with the native Windows Explorer / Internet Explorer FTP.</p>
+
+<p>The Windows ftp command line client can be a pain to work with.  Fortunately, the Git bash emulator for Windows
+(msysgit) includes a MinGW port of the awesome <code>curl</code> utility.  The <code>curl</code> utility has all kinds of awesome features
+for downloading large files.</p>
+
+<p>Here&rsquo;s a few options I found really useful:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -C - -v -O <span class="s2">&quot;ftp://ftp.example.com/path/to/file.zip&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>-C -</code> option tells bash to automatically continue an interrupted download, if the server supports this feature.</li>
+<li><code>-v</code> prints verbose stats, including an dynamic progress info</li>
+<li><code>-O</code> automatically saves the file using the remote file name to the current working directory</li>
+</ul>
+
+
+<p>I crafted this gist to enable downloading a large number of binaries related to .Net development from our FTP server.</p>
+
+<div><script src='https://gist.github.com/9378219.js'></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/9378219&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+
+
+<p>Be warned, this hack spawns a new command prompt window for each download, so it can get a bit crazy.  This seemed like
+the best worst way to download in parallel while also making sense of each download&rsquo;s status.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -170,9 +306,9 @@ of a remote workers, particularly developers:</p>
 
 <p>One of the most memorable quotations from the interview is:</p>
 
-<blockquote><p>&#8220;Companies that aren&#8217;t distributed can&#8217;t possibly say that they hire the best people.&#8221;</p></blockquote>
+<blockquote><p>&ldquo;Companies that aren&rsquo;t distributed can&rsquo;t possibly say that they hire the best people.&rdquo;</p></blockquote>
 
-<p>I have the privilege of working at a great employer that also &#8220;gets it&#8221;.  Most of my colleagues are remote workers across
+<p>I have the privilege of working at a great employer that also &ldquo;gets it&rdquo;.  Most of my colleagues are remote workers across
 nearly every time zone.  Constraining your team to a single city is a self-imposed barrier,
 particularly for creative work like coding that fits brilliantly with remote collaboration.</p>
 </div>
@@ -213,16 +349,16 @@ particularly for creative work like coding that fits brilliantly with remote col
 
 
   <div class="entry-content"><p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
-yeoman&#8217;s insistance on interactive prompts.  As far as I can tell the prompting library,
+yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,
 <a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
 be commanded to run in non-interactive mode.</p>
 
-<p>Enter an old-school POSIX friend in core-utils&#8230; <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
+<p>Enter an old-school POSIX friend in core-utils&hellip; <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
 
-<p>The <code>yes</code> utility continuously outputs &#8216;Y&#8217; followed by a newline as long as another process is reading the stdout stream.
+<p>The <code>yes</code> utility continuously outputs &lsquo;Y&rsquo; followed by a newline as long as another process is reading the stdout stream.
 Very convenient for piping to another program.</p>
 
-<p>Here&#8217;s how I automated Yeoman to generate a new AngularJS app:</p>
+<p>Here&rsquo;s how I automated Yeoman to generate a new AngularJS app:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -285,8 +421,8 @@ the <a href="http://passportjs.org/guide/">Passport authentication strategy for 
 would be fairly straightforward.  A wrinkle with other examples is I needed to disallow
 all anonymous access for an intranet app.</p>
 
-<p>I&#8217;m a big fan of Swagger UI - it&#8217;s a great, DRY way to auto-document your REST APIs. I expected Swagger
-to be a natural fit with NodeJS.  Suprisingly, I found the Swagger.Net implmentation for .Net&#8217;s WebAPI
+<p>I&rsquo;m a big fan of Swagger UI &ndash; it&rsquo;s a great, DRY way to auto-document your REST APIs. I expected Swagger
+to be a natural fit with NodeJS.  Suprisingly, I found the Swagger.Net implmentation for .Net&rsquo;s WebAPI
 to be considerably easier to use compared to the NodeJS implementation.
 Swagger.Net easily drops into an existing WebAPI project.  Not so with NodeJS.</p>
 
@@ -305,7 +441,7 @@ static content.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>As we&#8217;ll see below, the <code>subapp</code> sandboxes the Swagger package to the <code>/api/*</code> route.</p>
+<p>As we&rsquo;ll see below, the <code>subapp</code> sandboxes the Swagger package to the <code>/api/*</code> route.</p>
 
 <p><em>(I use a local copy of the swagger-node-express package downloaded to my source tree because I found that
 the npm package was considerably outdated compared to the master branch of the swagger-node-express repo.)</em></p>
@@ -579,7 +715,7 @@ You can read more about it at <a href="http://net.tutsplus.com/articles/news/per
 
   <div class="entry-content"><p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 
-<p>If you haven&#8217;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
+<p>If you haven&rsquo;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
 
 <p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
 Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
@@ -589,7 +725,7 @@ like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No 
 
 <h3>Grunt</h3>
 
-<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&#8217;s an example config from the scaffold project:</p>
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&rsquo;s an example config from the scaffold project:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -757,13 +893,13 @@ If you install using <code>sudo npm install -g json-proxy</code>, you can invoke
   </header>
 
 
-  <div class="entry-content"><p>Just released a new &#8220;API&#8221; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
+  <div class="entry-content"><p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
 
 <p>After successful authentication, the proxy will forward the original request to the target web server/app server.
-Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&#8217;s WebSeal application for SSO does exactly this.</p>
+Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&rsquo;s WebSeal application for SSO does exactly this.</p>
 
 <p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
-inspired by Passport&#8217;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
+inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
 
 <p>Installing the provider is as simple as:</p>
 
@@ -776,9 +912,9 @@ inspired by Passport&#8217;s <code>passport-http</code> strategy for HTTP basic 
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I&#8217;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
+<p>I&rsquo;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
 
-<p>Overall, I think Passport is a great library - both easy to use and easy to implement custom strategies.</p>
+<p>Overall, I think Passport is a great library &ndash; both easy to use and easy to implement custom strategies.</p>
 </div>
   
   
@@ -816,7 +952,7 @@ inspired by Passport&#8217;s <code>passport-http</code> strategy for HTTP basic 
   </header>
 
 
-  <div class="entry-content"><p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &#8211;
+  <div class="entry-content"><p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
 v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
 
 <p>You can give it a test drive with:</p>
@@ -859,100 +995,11 @@ per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-
 
 <p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
 <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
-As a courtesy, I&#8217;ve asked the original contributors to these two plugins to give their blessing.</p>
+As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
 
-<p>I&#8217;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&#8217;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
+<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
 </div>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to Modify the TCP/IP Port Binding for the Microsoft Web Deployment Agent Service</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-28T16:44:00-05:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I love shell scripting, which is probably why I seem to somehow get organically involved in &#8220;DevOps&#8221; on most of my project work.  I&#8217;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) - it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&#8217;s Web Deployment Agent service.</p>
-
-<p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&#8230;</p>
-
-<div><script src='https://gist.github.com/5060329.js'></script>
-<noscript><pre><code></code></pre></noscript></div>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">Tailoring the Windows Command Prompt Shell</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-27T14:18:00-05:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&#8217;t know some of the tricks up the Command Prompt&#8217;s sleeve.  So allow me to share some of my favorite settings.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">Read on &rarr;</a>
-    </footer>
   
 
 
@@ -998,6 +1045,14 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash&#8217;s curl command</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
       </li>
     
@@ -1007,14 +1062,6 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
     
       <li class="post">
         <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a shell script</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/22/wiring-together-passport-swagger-express/">Wiring together Express, Passport OAuth, and Swagger in NodeJS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/">A Fantastic Video Tutorial on Sublime Text 2</a>
       </li>
     
   </ul>
@@ -1027,12 +1074,13 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
       <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
     
     <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
     <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
     <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
   </ul>
 </section>
 
-<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>&#8211;>
 
 
 
@@ -1043,7 +1091,7 @@ As a courtesy, I&#8217;ve asked the original contributors to these two plugins t
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Steve Jansen -
+  Copyright &copy; 2014 - Steve Jansen -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

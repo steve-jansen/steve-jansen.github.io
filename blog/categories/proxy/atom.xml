@@ -4,7 +4,7 @@
   <title><![CDATA[Category: proxy | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/proxy/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2013-09-12T22:32:21-04:00</updated>
+  <updated>2014-03-05T21:00:47-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -20,7 +20,7 @@
     <id>http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
     <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 
-<p>If you haven't seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
+<p>If you haven&rsquo;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
 
 <p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
 Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
@@ -30,7 +30,7 @@ like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No 
 
 <h3>Grunt</h3>
 
-<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here's an example config from the scaffold project:</p>
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&rsquo;s an example config from the scaffold project:</p>
 
 <p>```js
 connect: {
@@ -88,27 +88,27 @@ json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]</p>
 </code></pre>
 
 <p>Examples:
-   json-proxy -p 8080 -f "/api=http://server" -f "/=http://localhost:9000" .
-   json-proxy -h "X-Forwarded-User=johndoe" /tmp/folder
-   json-proxy -c "/tmp/config.json"</p>
+   json-proxy -p 8080 -f &ldquo;/api=<a href="http://server">http://server</a>&rdquo; -f &ldquo;/=<a href="http://localhost:9000">http://localhost:9000</a>&rdquo; .
+   json-proxy -h &ldquo;X-Forwarded-User=johndoe&rdquo; /tmp/folder
+   json-proxy -c &ldquo;/tmp/config.json&rdquo;</p>
 
 <p>By default, looks for a config file at ./json-proxy.json</p>
 
 <p>Environmental variables:
-  JSON_PROXY_PORT         see --port
+  JSON_PROXY_PORT         see &mdash;port
   JSON_PROXY_WEBROOT      directory
-  JSON_PROXY_GATEWAY      --gateway
-  JSON_PROXY_GATEWAY_AUTH "username:password" credentials for --gateway)</p>
+  JSON_PROXY_GATEWAY      &mdash;gateway
+  JSON_PROXY_GATEWAY_AUTH &ldquo;username:password&rdquo; credentials for &mdash;gateway)</p>
 
 <p>Options:
-  -p, --port     The TCP port for the proxy server                    <br/>
-  -f, --forward  a forwarding rule (ex. /foo=server/foo)              <br/>
-  -h, --header   a custom request header (ex. iv-user=johndoel)       <br/>
-  -c, --config   a config file                                        <br/>
-  -g, --gateway  URL for a LAN HTTP proxy to use for forwarding requests
-  --html5mode    support AngularJS HTML5 mode by catching 404s        <br/>
-  -?, --help     about this utility                                   <br/>
-  --version      version info          <br/>
+  -p, &mdash;port     The TCP port for the proxy server                    <br/>
+  -f, &mdash;forward  a forwarding rule (ex. /foo=server/foo)              <br/>
+  -h, &mdash;header   a custom request header (ex. iv-user=johndoel)       <br/>
+  -c, &mdash;config   a config file                                        <br/>
+  -g, &mdash;gateway  URL for a LAN HTTP proxy to use for forwarding requests
+  &mdash;html5mode    support AngularJS HTML5 mode by catching 404s        <br/>
+  &ndash;?, &mdash;help     about this utility                                   <br/>
+  &mdash;version      version info          <br/>
 ```</p>
 
 <p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and

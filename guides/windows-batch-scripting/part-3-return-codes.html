@@ -10,12 +10,11 @@
 
   
   <meta name="description" content="Overview
-Part 1 - Getting Started
-Part 2 - Variables
-Part 3 - Return Codes
-Part 4 - stdin, stdout, stderr
-Part 5 - If/Then Conditionals
-Part 6 - &hellip;">
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,26 +112,26 @@ Part 6 - &hellip;">
 
 <div class="entry-content"><ul>
 <li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
-<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 - Getting Started</a></li>
-<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 - Variables</a></li>
-<li>Part 3 - Return Codes</li>
-<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr</a></li>
-<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 - If/Then Conditionals</a></li>
-<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 - Loops</a></li>
-<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 - Functions</a></li>
-<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 - Parsing Input</a></li>
-<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 - Logging</a></li>
-<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 - Advanced Tricks</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
+<li>Part 3 &ndash; Return Codes</li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
 </ul>
 
 
-<p>Today we&#8217;ll cover return codes as the right way to communicate the outcome of your script&#8217;s execution to the world.  Sadly, even
+<p>Today we&rsquo;ll cover return codes as the right way to communicate the outcome of your script&rsquo;s execution to the world.  Sadly, even
 skilled Windows programmers overlook the importance of return codes.</p>
 
 <h2>Return Code Conventions</h2>
 
 <p>By convention, command line execution should return zero when execution succeeds and non-zero when execution fails.  Warning messages
-typically don&#8217;t effect the return code.  What matters is did the script work or not?</p>
+typically don&rsquo;t effect the return code.  What matters is did the script work or not?</p>
 
 <h2>Checking Return Codes In Your Script Commands</h2>
 
@@ -155,8 +154,8 @@ the built-in DOS commands like <code>ECHO</code>, <code>IF</code>, and <code>SET
 
 <p>  )</p>
 
-<p>The <code>ERRORLEVEL 1</code> statement is true when the return code is any number equal to or greater than 1.  However, I don&#8217;t use this technique because
-programs can return negative numbers as well as positive numbers.  Most programs rarely document every possible return code, so I&#8217;d rather explicity
+<p>The <code>ERRORLEVEL 1</code> statement is true when the return code is any number equal to or greater than 1.  However, I don&rsquo;t use this technique because
+programs can return negative numbers as well as positive numbers.  Most programs rarely document every possible return code, so I&rsquo;d rather explicity
 check for non-zero with the <code>NEQ 0</code> style than assuming return codes will be 1 or greater on error.</p>
 
 <p>You may also want to check for specific error codes.  For example, you can test that an executable program or script is in your PATH by simply
@@ -168,12 +167,12 @@ IF %ERRORLEVEL% EQU 9009 (
 )
 </code></pre>
 
-<p>It&#8217;s hard to know this stuff upfront - I generally just use trial and error to figure out the best way to check the return code of the program or
-script I&#8217;m calling.  Remember, this is duct tape programming.  It isn&#8217;t always pretty, but, it gets the job done.</p>
+<p>It&rsquo;s hard to know this stuff upfront &ndash; I generally just use trial and error to figure out the best way to check the return code of the program or
+script I&rsquo;m calling.  Remember, this is duct tape programming.  It isn&rsquo;t always pretty, but, it gets the job done.</p>
 
 <h2>Conditional Execution Using the Return Code</h2>
 
-<p>There&#8217;s a super cool shorthand you can use to execute a second command based on the success or failure of a command.  The first program/script must
+<p>There&rsquo;s a super cool shorthand you can use to execute a second command based on the success or failure of a command.  The first program/script must
 conform to the convention of returning 0 on success and non-0 on failure for this to work.</p>
 
 <p>To execute a follow-on command after sucess, we use the <code>&amp;&amp;</code> operator:</p>
@@ -212,8 +211,8 @@ because other callers may use the <code>IF ERRORLEVEL 1</code> syntax to check y
 SET /A ERROR_FILE_NOT_FOUND=2
 </code></pre>
 
-<p>Note that I break my own convention here and use uppercase variable names - I do this to denote that the variable is constant and should not
-be modified elsewhere.  Too bad DOS doesn&#8217;t support constant values like Unix/Linux shells.</p>
+<p>Note that I break my own convention here and use uppercase variable names &ndash; I do this to denote that the variable is constant and should not
+be modified elsewhere.  Too bad DOS doesn&rsquo;t support constant values like Unix/Linux shells.</p>
 
 <h2>Some Final Polish</h2>
 
@@ -226,7 +225,7 @@ SET /A ERROR_UNKNOWN=8
 </code></pre>
 
 <p>This gives me the flexibility to bitwise OR multiple error numbers together if I want to record numerous problems in one error code.
-This is rare for scripts intended for interactive use, but, it can be super helpful when writing scripts you support but you don&#8217;t
+This is rare for scripts intended for interactive use, but, it can be super helpful when writing scripts you support but you don&rsquo;t
 have access to the target systems.</p>
 
 <pre><code>@ECHO OFF
@@ -253,10 +252,10 @@ me that both errors were raised.  Even better, I can repeatedly call the bitwise
 raised.</p>
 
 <p><span class="basic-alignment left">
-<a href="/guides/windows-batch-scripting/part-2-variables.html">&lt;&lt; Part 2 - Variables</a>
+<a href="/guides/windows-batch-scripting/part-2-variables.html">&lt;&lt; Part 2 &ndash; Variables</a>
 </span>
 <span class="basic-alignment right">
-<a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 - stdin, stdout, stderr >></a>
+<a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr >></a>
 </span></p>
 </div>
 
@@ -348,6 +347,14 @@ raised.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash's curl command</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
       </li>
     
@@ -357,14 +364,6 @@ raised.</p>
     
       <li class="post">
         <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a shell script</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/22/wiring-together-passport-swagger-express/">Wiring together Express, Passport OAuth, and Swagger in NodeJS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/">A Fantastic Video Tutorial on Sublime Text 2</a>
       </li>
     
   </ul>
@@ -377,12 +376,13 @@ raised.</p>
       <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
     
     <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
     <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
     <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
   </ul>
 </section>
 
-<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
 
 
 
@@ -394,7 +394,7 @@ raised.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Steve Jansen -
+  Copyright &copy; 2014 - Steve Jansen -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
