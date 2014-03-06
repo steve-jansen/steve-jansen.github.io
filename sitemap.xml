@@ -62,6 +62,12 @@
     </url>
     <url>
         <loc>
+            http://steve-jansen.github.io/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/
+        </loc>
+        <lastmod>2014-03-05T22:01:14-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
             http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/
         </loc>
         <lastmod>2014-03-05T21:07:03-05:00</lastmod>
@@ -74,7 +80,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2014-03-05T21:18:50-05:00</lastmod>
+        <lastmod>2014-03-05T22:01:14-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
@@ -140,7 +146,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2014-03-05T21:18:50-05:00</lastmod>
+        <lastmod>2014-03-05T22:01:14-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>
