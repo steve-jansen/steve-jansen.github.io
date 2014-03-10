@@ -9,7 +9,7 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I love shell scripting, which is probably why I seem to somehow get organically involved in &#8220;DevOps&#8221; on most of my project work. I&#8217; &hellip;">
+  <meta name="description" content="I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work. I&rsquo; &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -30,6 +30,18 @@
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
 
 </head>
 
@@ -49,7 +61,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:steve-jansen.github.com" />
+    <input type="hidden" name="q" value="site:steve-jansen.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -57,6 +69,7 @@
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
+  <!--<li><a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a></li>-->
 </ul>
 
 </nav>
@@ -92,9 +105,9 @@
   </header>
 
 
-<div class="entry-content"><p>I love shell scripting, which is probably why I seem to somehow get organically involved in &#8220;DevOps&#8221; on most of my project work.  I&#8217;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) - it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&#8217;s Web Deployment Agent service.</p>
+<div class="entry-content"><p>I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work.  I&rsquo;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) &ndash; it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&rsquo;s Web Deployment Agent service.</p>
 
-<p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&#8230;</p>
+<p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&hellip;</p>
 
 <div><script src='https://gist.github.com/5060329.js'></script>
 <noscript><pre><code></code></pre></noscript></div>
@@ -137,7 +150,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/" data-via="" data-counturl="http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/" >Tweet</a>
   
   
   
@@ -148,6 +161,8 @@
       
         <a class="basic-alignment left" href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/" title="Previous Post: Tailoring the Windows Command Prompt Shell">&laquo; Tailoring the Windows Command Prompt Shell</a>
       
+      
+        <a class="basic-alignment right" href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/" title="Next Post: Update to the Cordova Email Plugin for iOS">Update to the Cordova Email Plugin for iOS &raquo;</a>
       
     </p>
   </footer>
@@ -181,53 +196,39 @@
   </p>
 </section>
 <section>
+  <h1>Favorite Posts</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a>
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">Tailoring the Windows Command Prompt Shell</a>
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash's curl command</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/02/25/a-ghost-no-more/">A ghost no more</a>
+        <a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB memory barrier of 32-bit Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub sings the praises of a distributed workforce</a>
       </li>
     
   </ul>
 </section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <!--<a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub-->
-  
-  <script type="text/javascript">
-    $.domReady(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'steve-jansen',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
 
 <section>
   <h1>Social Stuff</h1>
@@ -236,12 +237,13 @@
       <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
     
     <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
     <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
     <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
   </ul>
 </section>
 
-
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
 
 
 
@@ -253,7 +255,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Steve Jansen -
+  Copyright &copy; 2014 - Steve Jansen -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -265,8 +267,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/';
-        var disqus_url = 'http://steve-jansen.github.com/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/';
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/';
         var disqus_script = 'embed.js';
       
     (function () {

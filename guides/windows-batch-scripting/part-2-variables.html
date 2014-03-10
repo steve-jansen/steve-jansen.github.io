@@ -1,0 +1,435 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Windows Batch Scripting: Variables - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Overview
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:steve-jansen.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!--<li><a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a></li>-->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Variables</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
+<li>Part 2 &ndash; Variables</li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
+</ul>
+
+
+<p>Today we&rsquo;ll cover variables, which are going to be necessary in any non-trivial batch programs.  The syntax for variables can be a bit odd,
+so it will help to be able to understand a variable and how it&rsquo;s being used.</p>
+
+<h2>Variable Declaration</h2>
+
+<p>DOS does not require declaration of variables.  The value of undeclared/uninitialized variables is an empty string, or <code>""</code>.  Most people like this, as
+it reduces the amount of code to write.  Personally, I&rsquo;d like the option to require a variable is declared before it&rsquo;s used, as this catches
+silly bugs like typos in variable names.</p>
+
+<h2>Variable Assignment</h2>
+
+<p>The <code>SET</code> command assigns a value to a variable.</p>
+
+<pre><code>SET foo=bar
+</code></pre>
+
+<p>The <code>/A</code> switch supports arthimetic operations during assigments.  This is a useful tool if you need to validated that user input is a numerical value.</p>
+
+<pre><code>SET /A four=2+2
+4
+</code></pre>
+
+<p>A common convention is to use lowercase names for your script&rsquo;s variables.  System-wide variables, known as environmental variables, use uppercase names.  These environmental describe where to find certain things in your system, such as <code>%TEMP%</code> which is  path for temporary files.  DOS is case insensitive, so this convention isn&rsquo;t enforced but it&rsquo;s a good idea to make your script&rsquo;s easier to read and troubleshoot.</p>
+
+<p><strong>WARNING:</strong> <code>SET</code> will always overwrite (clobber) any existing variables.  It&rsquo;s a good idea to verify you aren&rsquo;t overwriting a system-wide variable when writing a script.  A quick <code>ECHO %foo%</code> will confirm that the variable <code>foo</code> isn&rsquo;t an existing variable.  For example, it might be tempting to name a variable &ldquo;temp&rdquo;, but, that would change the meaning of the widely used &ldquo;%TEMP%&rdquo; environmental varible.   DOS includes some &ldquo;dynamic&rdquo; environmental variables that behave more like commands.  These dynamic varibles include <code>%DATE%</code>, <code>%RANDOM%</code>, and <code>%CD%</code>.  It would be a bad idea to overwrite these dynamic variables.</p>
+
+<h2>Reading the Value of a Variable</h2>
+
+<p>In most situations you can read the value of a variable by prefixing and postfixing the variable name with the <code>%</code> operator.  The example below prints the current value of the variable <code>foo</code> to the console output.</p>
+
+<pre><code>C:\&gt; SET foo=bar
+C:\&gt; ECHO %foo%
+bar
+</code></pre>
+
+<p>There are some special situations in which variables do not use this <code>%</code> syntax.  We&rsquo;ll discuss these special cases later in this series.</p>
+
+<h2>Listing Existing Variables</h2>
+
+<p>The <code>SET</code> command with no arguments will list all variables for the current command prompt session.   Most of these varaiables will be system-wide environmental variables, like <code>%PATH%</code> or <code>%TEMP%</code>.</p>
+
+<p><img src="/images/2013-03-03-A.png" alt="Screenshot of the SET command" /></p>
+
+<p><strong>NOTE:</strong> Calling <code>SET</code> will list all regular (static) variables for the current session.  This listing excludes the dynamic environmental variables like <code>%DATE%</code> or <code>%CD%</code>.  You can list these dynamic variables by viewing the end of the help text for SET, invoked by calling <code>SET /?</code></p>
+
+<h2>Variable Scope (Global vs Local)</h2>
+
+<p>By default, variables are global to your entire command prompt session.  Call the <code>SETLOCAL</code> command to make variables local to the scope of your script.  After calling <code>SETLOCAL</code>, any variable assignments revert upon calling <code>ENDLOCAL</code>, calling <code>EXIT</code>, or when execution reaches the end of file (EOF) in your script.</p>
+
+<p>This example demonstrates changing an existing variable named <code>foo</code> within a script named <code>HelloWorld.cmd</code>.  The shell restores the original value of <code>%foo%</code> when <code>HelloWorld.cmd</code> exits.
+<img src="/images/2013-03-03-B.png" alt="Demonstration of the SETLOCAL command" /></p>
+
+<p>A real life example might be a script that modifies the system-wide <code>%PATH%</code> environmental variable, which is the list of directories to search for a command when executing a command.
+<img src="/images/2013-03-03-C.png" alt="Demonstration of the SETLOCAL command" /></p>
+
+<h2>Special Variables</h2>
+
+<p>There are a few special situations where variables work a bit differently.  The arguments passed on the command line to your script are also variables, but, don&rsquo;t use the <code>%var%</code> syntax.  Rather, you read each argument using a single <code>%</code> with a digit 0-9, representing the ordinal position of the argument.
+You&rsquo;ll see this same style used later with a hack to create functions/subroutines in batch scripts.</p>
+
+<p>There is also a variable syntax using <code>!</code>, like <code>!var!</code>.  This is a special type of situation called delayed expansion.
+You&rsquo;ll learn more about delayed expansion in when we discuss conditionals (if/then) and looping.</p>
+
+<h3>Command Line Arguments to Your Script</h3>
+
+<p>You can read the command line arguments passed to your script using a special syntax.  The syntax is a single <code>%</code> character followed by the ordinal position of the argument from <code>0</code> &ndash; <code>9</code>. The zero ordinal argument is the name of the batch file itself.  So the variable <code>%0</code> in our script <code>HelloWorld.cmd</code> will be &ldquo;HelloWorld.cmd&rdquo;.</p>
+
+<p>The command line argument variables are
+* <code>%0</code>: the name of the script/program as called on the command line; always a non-empty value
+* <code>%1</code>: the first command line argument; empty if no arguments were provided
+* <code>%2</code>: the second command line argument; empty if a second argument wasn&rsquo;t provided
+* &hellip;:
+* <code>%9</code>: the ninth command line argument</p>
+
+<p><strong>NOTE:</strong> DOS does support more than 9 command line arguments, however, you cannot directly read the 10th argument of higher. This is because the special variable syntax doesn&rsquo;t recognize <code>%10</code> or higher.  In fact, the shell reads <code>%10</code> as postfix the <code>%0</code> command line argument with the string &ldquo;0&rdquo;.  Use the <code>SHIFT</code> command to pop the first argument from the list of arguments, which &ldquo;shifts&rdquo; all arguments one place to the left.  For example, the the second argument shifts from position <code>%2</code> to <code>%1</code>, which then exposes the 10th argument as <code>%9</code>.  You will learn how to process a large number of arguments in a loop later in this series.</p>
+
+<h3>Tricks with Command Line Arguments</h3>
+
+<p>Command Line Arguments also support some really useful optional syntax to run quasi-macros on command line arguments that are file paths.  These macros
+are called variable substitution support and can resolve the path, timestamp, or size of file that is a command line argument.  The documentation for
+this super useful feature is a bit hard to find &ndash; run &lsquo;FOR /?&rsquo; and page to the end of the output.</p>
+
+<ul>
+<li><code>%~1</code> removes quotes from the first command line argument, which is super useful when working with arguments to file paths.  You will need to quote any file paths, but, quoting a file path twice will cause a file not found error.</li>
+</ul>
+
+
+<p><code>SET myvar=%~1</code></p>
+
+<ul>
+<li><p><code>%~f1</code> is the full path to the folder of the first command line argument</p></li>
+<li><p><code>%~fs1</code> is the same as above but the extra <code>s</code> option yields the DOS 8.3 short name path to the first command line argument (e.g., <code>C:\PROGRA~1</code> is
+usually the 8.3 short name variant of <code>C:\Program Files</code>).  This can be helpful when using third party scripts or programs that don&rsquo;t handle spaces
+in file paths.</p></li>
+<li><p><code>%~dp1</code> is the full path to the parent folder of the first command line argument.  I use this trick in nearly every batch file I write to determine
+where the script file itself lives.  The syntax <code>SET parent=%~dp0</code> will put the path of the folder for the script file in the variable <code>%parent%</code>.</p></li>
+<li><p><code>%~nx1</code> is just the file name and file extension of the first command line argument.  I also use this trick frequently to determine the
+name of the script at runtime. If I need to print messages to the user, I like to prefix the message with the script&rsquo;s name, like
+<code>ECHO %~n0: some message</code> instead of <code>ECHO some message</code> . The prefixing helps the end user by knowing the output is
+from the script and not another program being called by the script.  It may sound silly until you spend hours trying to track down
+an obtuse error message generated by a script. This is a nice piece of polish
+I picked up from the Unix/Linux world.</p></li>
+</ul>
+
+
+<h2>Some Final Polish</h2>
+
+<p>I always include these commands at the top of my batch scripts:</p>
+
+<pre><code>SETLOCAL ENABLEEXTENSIONS
+SET me=%~n0
+SET parent=%~dp0
+</code></pre>
+
+<p>The <code>SETLOCAL</code> command ensures that I don&rsquo;t clobber any existing variables after my script exits.  The <code>ENABLEEXTENSIONS</code> argument turns on a very
+helpful feature called command processor extensions.  Trust me, you want command processor extensions.  I also store the name of the script
+(without the file extension) in a variable named <code>%me%</code>; I use this variable as the prefix to any printed messages (e.g. <code>ECHO %me%: some message</code>).
+I also store the parent path to the script in a variable named <code>%parent%</code>.  I use this variable to make fully qualified filepaths to any
+other files in the same directory as our script.</p>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-1-getting-started.html">&lt;&lt; Part 1 &ndash; Getting Started</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes >></a>
+</span></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html" data-via="" data-counturl="http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" class="right" style="display: block" />
+	</span>
+</section>
+<section>
+  <h1>About Me</h1>
+  <p>
+    Hi, I'm Steve and I like to code.  
+    I'm also an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>.
+    More importantly, I'm an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+<section>
+  <h1>Favorite Posts</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash's curl command</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB memory barrier of 32-bit Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub sings the praises of a distributed workforce</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html';
+        var disqus_url = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

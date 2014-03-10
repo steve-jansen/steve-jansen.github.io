@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: phonegap | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/phonegap/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-03-05T22:01:20-05:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Update to the Cordova Email Plugin for iOS]]></title>
+    <link href="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
+    <updated>2013-08-06T23:45:00-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
+    <content type="html"><![CDATA[<p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
+v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
+
+<p>You can give it a test drive with:</p>
+
+<p>``` bash
+sudo npm install -g cordova
+cordova create ~/MyApp MyApp
+cd ~/MyApp
+cordova platform add ios
+cordova plugin add emailcomposer # using the <a href="http://plugins.cordova.io">http://plugins.cordova.io</a> registry
+cordova build</p>
+
+<h1>manually update the www/index.html file to link to www/examples/EmailComposer.html</h1>
+
+<h1>run the app in the iOS 5.x+ simulator via Xcode</h1>
+
+<p>```</p>
+
+<p>Major changes to the plugin include:</p>
+
+<ul>
+<li>Support for file attachments using files paths, or file contents as encoded strings</li>
+<li>Simpler JavaScript API</li>
+<li>Support for cordova.require to load the plugin in JavaScript which means less global namespace pollution</li>
+<li>Cordova 2.0+ plugin spec implemented (i.e., <code>- (void) show:(CDVInvokedUrlCommand*)command</code>)</li>
+<li>ARC support</li>
+<li>Ran git subtree to extract the history into a standalone repo,
+per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/">the new Cordova plugin respository guidelines</a></li>
+<li>Backwards compatibility with the JS API for the 1.x plugin</li>
+<li>Backwards compatibility with the iOS/EmailComposerWithAttachments plugin</li>
+<li>Jasmine unit tests for the JS part of the plugin</li>
+<li>Xcode unit tests for the obj-c part of the plugin</li>
+</ul>
+
+
+<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
+<a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
+As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
+
+<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: developers | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/developers/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-03-05T22:01:20-05:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Are great developers both left and right brain expressive?]]></title>
+    <link href="http://steve-jansen.github.io/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/"/>
+    <updated>2013-09-12T22:57:00-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive</id>
+    <content type="html"><![CDATA[<p>My wondeful wife pointed to me this outstanding visualization of left vs. right brain expression.</p>
+
+<p>It made me thing that a great developer is probably expressive on both sides: you clearly need the academic
+properties of the left brain: logic, analysis, objectivity.</p>
+
+<p>But the right side creativity is also going to
+be needed to create something worth using, something that impacts our daily lives, something with an
+outstanding user experience.</p>
+
+<p><img src="/images/vaxzine.png" alt="Creative Commons visualization by VaXzine" /></p>
+
+<p><a href="http://www.flickr.com/people/vaxzine/">CC visualization by VaXzine</a></p>
+
+<p>What do you think?  Are great devs truly ambidextrous of the mind?</p>
+]]></content>
+  </entry>
+  
+</feed>

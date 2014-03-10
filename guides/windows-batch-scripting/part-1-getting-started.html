@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Windows Batch Scripting: Getting Started - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Overview
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:steve-jansen.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!--<li><a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a></li>-->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Getting Started</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li>Part 1 &ndash; Getting Started</li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
+</ul>
+
+
+<h2>Getting Started with Windows Batch Scripting</h2>
+
+<p>Windows batch scripting is incredibly accessible &ndash; it works on just about any modern Windows machine.  You can create and modify batch scripts on just about any modern Windows machine.  The tools come out of the box: the Windows command prompt and a text editor like Notepad.exe.  It&rsquo;s definitely far from
+the best shell scripting langauge, but, it gets the job done.  It&rsquo;s my &ldquo;duct tape&rdquo; for Windows.</p>
+
+<h2>Launching the Command Prompt</h2>
+
+<p>Windows gurus launch the command prompt using the keyboard shortcut <code>Windows Logo Key</code>+<code>R</code> (i.e., &ldquo;Run&rdquo;) > Type <code>cmd.exe</code> then <code>Enter</code>.  This is way faster than navigating the Windows Start Menu to find the Command Prompt.</p>
+
+<h2>Editing Batch Files</h2>
+
+<p>The universal text editor for batch files is Notepad (<code>Windows Logo Key</code> + <code>R</code> > Type <code>notepad</code> then <code>Enter</code>).  Since batch files are just ASCII text, you can probably use just about any text editor or word processor.  Very few editors do anything special for Batch files like syntax highlighting or keyword support, so notepad is good enough fine and will likely be installed on just about every Windows system you encounter.</p>
+
+<h2>Viewing Batch Files</h2>
+
+<p>I would stick with Notepad for viewing the contents of a batch file.  In Windows Explorer (aka, &ldquo;My Computer&rdquo;), you should be able to view a batch file in Notepad by right clicking the file and seleting <code>Edit</code> from the context menu. If you need to view the contents within a command prompt window itself, you can use a DOS command like <code>TYPE myscript.cmd</code> or <code>MORE myscript.cmd</code> or <code>EDIT myscript.cmd</code></p>
+
+<h2>Batch File Names and File Extensions</h2>
+
+<p>Assuming you are using Windows XP or newer, I recommend saving your batch files with the file extension <code>.cmd</code>.  Some seriously outdated Windows versions used <code>.bat</code>, though I recommend sticking with the more modern <code>.cmd</code> to <a href="http://waynes-world-it.blogspot.fr/2008/08/difference-between-bat-and-cmd.html">avoid some rare side effects with .bat files</a>.</p>
+
+<p>With the <code>.cmd</code> file extension, you can use just about filename you like.  I recommend avoiding spaces in filenames, as spaces only create headaches in shell scripting.  Pascal casing your filenames is an easy way to avoid spaces (e.g., <code>HelloWorld.cmd</code> instead of <code>Hello World.cmd</code>).  You can also use punctuation characters like <code>.</code> or <code>-</code> or <code>_</code> (e.g. <code>Hello.World.cmd</code>, <code>Hello-World.cmd</code>, <code>Hello_World.cmd</code>).</p>
+
+<p>Another thing with names to consider is avoiding names that use the same name of any built-in commands, system binaries, or popular programs.  For example, I would avoid naming a script <code>ping.cmd</code> since there is a widely used system binary named <code>ping.exe</code>.  Things might get very confusing if you try to run <code>ping</code> and inadvertently call <code>ping.cmd</code> when you really wanted <code>ping.cmd</code>.  (Stay tuned for how this could happen.)  I might called the script <code>RemoteHeartbeat.cmd</code> or something similar to add some context to the script&rsquo;s name and also avoid any naming collisions with any other executable files.  Of course, there could be a very unique circumstance in which you want to modify the default behavior of <code>ping</code> in which this naming suggestion would not apply.</p>
+
+<h2>Saving Batch Files in Windows</h2>
+
+<p>Notepad by default tries to save all files as plain jane text files.  To get Notepad to save a file with a <code>.cmd</code> extension, you will need to change the &ldquo;Save as type&rdquo; to &ldquo;All Files (<em>.</em>)&rdquo;.  See the screenshot below for an example of saving a script named &ldquo;HelloWorld.cmd&rdquo; in Notepad.</p>
+
+<p><img src="/images/2013-03-03-A.png" alt="Screenshot of saving a batch file in Notepad" /></p>
+
+<blockquote><p><strong>SIDEBAR:</strong> I&rsquo;ve used a shortcut in this screenshot that you will learn more about later.  I&rsquo;ve saved the file to my &ldquo;user profile folder&rdquo; by naming
+the file <code>%USERPROFILE%\HelloWorld.cmd</code>.   The <code>%USERPROFILE%</code> keyword is the Windows environmental variable for the full path
+to your user profile folder.  On newer Windows systems, your user profile folder will typically be <code>C:\Users\&lt;your username&gt;</code>.  This shortcut
+saves a little bit of time because a new command prompt will generally default the &ldquo;working directory&rdquo; to your user profile folder. This lets you run
+<code>HelloWorld.cmd</code> in a new command prompt without changing directories beforehand or needing to specify the path to the script.</p></blockquote>
+
+<h2>Running your Batch File</h2>
+
+<p>The easy way to run your batch file in Windows is to just double click the batch file in Windows Explorer (aka &ldquo;My Computer&rdquo;).  Unfortunately, the command prompt will not give you much of a chance to see the output and any errors.  The command prompt window for the script will disappear as soon as the script exits.  (We will learn how to handle this problem in <a href="/blog/2012/03/DD/title/">Part 10 &ndash; Advanced Tricks</a> ).</p>
+
+<p>When editing a new script, you will likely need to run the batch file in an existing command window.  For newbies, I think the easiest foolproof way to
+run your script is to drag and drop the script into a command prompt window.  The command prompt will enter the full path to your script on the
+command line, and will quote any paths containing spaces.</p>
+
+<p>Some other tips to running batch files:</p>
+
+<ul>
+<li>You can recall previous commands using the up arrow and down arrow keys to navigate the command line history.</li>
+<li>I usually run the script as
+<code>%COMPSPEC% /C /D "C:\Users\User\SomeScriptPath.cmd" Arg1 Arg2 Arg3</code>
+This runs your script in a new command prompt child process.  The <code>/C</code> option instructs the child process to quit when your script quits.
+The <code>/D</code> disables any auto-run scripts (this is optional, but, I use auto-run scripts).  The reason I do this is to keep the command prompt
+window from automatically closing should my script, or a called script, call the <code>EXIT</code> command.  The <code>EXIT</code> command automatically closes
+the command prompt window unless the <code>EXIT</code> is called from a child command prompt process.  This is annoying because you lose any messages
+printed by your script.</li>
+</ul>
+
+
+<h2>Comments</h2>
+
+<p>The official way to add a comment to a batch file is with the <code>REM</code> (Remark) keyword:</p>
+
+<pre><code> REM This is a comment!
+</code></pre>
+
+<p>The power user method is to use <code>::</code>, which is a hack to uses the the label operator <code>:</code> twice, which is almost always ignored.</p>
+
+<p>Most power authors find the <code>::</code> to be less distracting than <code>REM</code>.  Be warned though there are a few places where <code>::</code> will cause errors.</p>
+
+<pre><code>  :: This is a comment too!! (usually!)
+</code></pre>
+
+<p>For example, a <code>FOR</code> loop will error out with <code>::</code> style comments.  Simply fall back to using <code>REM</code> if you think you have a situation like this.</p>
+
+<h2>Silencing Display of Commands in Batch Files</h2>
+
+<p>The first non-comment line of a batch file is usually a command to turn off printing (ECHO&#8217;ing) of each batch file line.</p>
+
+<pre><code> @ECHO OFF
+</code></pre>
+
+<p>The <code>@</code> is a special operator to suppress printing of the command line.  Once we set ECHO&#8217;ing to off, we won&rsquo;t need the <code>@</code> operator again
+in our script commands.</p>
+
+<p>You restore printing of commands in your script with:</p>
+
+<pre><code>ECHO ON
+</code></pre>
+
+<p>Upon exit of your script, the command prompt will automatically restore ECHO to it&rsquo;s previous state.</p>
+
+<h2>Debugging Your Scripts</h2>
+
+<p>Batch files invole a lot of trial and error coding.  Sadly, I don&rsquo;t know of any true debugger for Windows batch scripts.  Worse yet, I don&rsquo;t
+know of a way to put the command processor into a verbose state to help troubleshoot the script (this is the common technique for Unix/Linux
+scripts.)  Printing custom ad-hoc debugging messages is about your only option using the <code>ECHO</code> command.  Advanced script writers can do
+some trickery to selectively print debugging messages, though, I prefer to remove the debugging/instrumentation code once my script is
+functioning as desired.</p>
+
+<p><span class="basic-alignment left">
+  <a href="/guides/windows-batch-scripting/index.html">&lt;&lt; Overview</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables >></a>
+</span></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html" data-via="" data-counturl="http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" class="right" style="display: block" />
+	</span>
+</section>
+<section>
+  <h1>About Me</h1>
+  <p>
+    Hi, I'm Steve and I like to code.  
+    I'm also an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>.
+    More importantly, I'm an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+<section>
+  <h1>Favorite Posts</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash's curl command</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB memory barrier of 32-bit Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub sings the praises of a distributed workforce</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html';
+        var disqus_url = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

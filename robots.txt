@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://steve-jansen.github.com/sitemap.xml 
+Sitemap: http://steve-jansen.github.io/sitemap.xml 

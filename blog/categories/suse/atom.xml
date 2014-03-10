@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: suse | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/suse/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-03-05T22:01:20-05:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Binding Jenkins to port 80 on SUSE Linux]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/"/>
+    <updated>2014-03-05T18:09:00-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/05/binding-jenkins-to-port-80-on-suse</id>
+    <content type="html"><![CDATA[<p>I&rsquo;ve been helping an awesome colleague on DevOps for our Jenkins farm, which we use
+for continuous integration and continuous deployment to our preproduction environments.</p>
+
+<p>We are really trying to do it right:</p>
+
+<ul>
+<li>Use Puppet to provision the Jenkins master, Linux VM build slaves, Windows VM slaves,
+and even OS X bare metal slaves (for iOS builds)</li>
+<li>Automated backups of Jenkins config files to a private GitHub repo for disster recovery</li>
+<li>Patches the GitHub OAuth plugin to make sure you have the same collaborator permissions
+(read/write/admin) in a Jenkins job as you do the GitHub repo.</li>
+<li>Have a Jenkins staging environment to test upgrades to Jenkins and plugins to avoid surprises.</li>
+<li>Run Jenkins on the Long Term Support (LTS) release channel to avoid surprises.</li>
+</ul>
+
+
+<p>I wish my shop used CentOS or Debian; sadly we are stuck on SUSE Enterprise.  SUSE is really
+good at turning 5 minute tasks on CentOS or Debian into uber frustrating hour-long ordeals.</p>
+
+<p>One of the glitches we faced was running the Jenkins web UI on port 80.  SUSE lacks the
+authbind package for binding to port below port 1024 as a non-root user.  We wanted to run the
+Jenkins deamon as a regular privilege user, so running as root was not an option.</p>
+
+<p>We are currently smoke testing this LSB <code>/etc/init.d/jenkins.portforwarding</code> script, which is
+just a wrapper around <code>iptables</code>.  So far, it seems to get the job done.</p>
+
+<p><div><script src='https://gist.github.com/9361161.js'></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/9361161&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+</p>
+
+<p>If all goes well, I will merge this logic into a pull request for the <a href="https://github.com/jenkinsci/jenkins/blob/master/opensuse/SOURCES/jenkins.init.in">Jenkins init.d script for OpenSuse</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

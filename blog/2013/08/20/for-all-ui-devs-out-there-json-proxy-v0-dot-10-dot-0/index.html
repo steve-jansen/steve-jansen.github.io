@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>For all UI devs out there...json-proxy v0.10.0 - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine. If you haven&rsquo;t seen the proxy before &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:steve-jansen.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!--<li><a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a></li>-->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">For All UI Devs Out there...json-proxy v0.10.0</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-20T21:44:00-04:00" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
+
+<p>If you haven&rsquo;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
+
+<p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
+Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
+
+<p>Well, the proxy lets you transparently reroute <code>http://localhost/api/foo/1</code> from your local laptop to an integration server
+like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No nonsense.</p>
+
+<h3>Grunt</h3>
+
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&rsquo;s an example config from the scaffold project:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">connect</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">port</span><span class="o">:</span> <span class="mi">9000</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Change this to &#39;0.0.0.0&#39; to access the server from outside.</span>
+</span><span class='line'>    <span class="nx">hostname</span><span class="o">:</span> <span class="s1">&#39;localhost&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">livereload</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">middleware</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">connect</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span>
+</span><span class='line'>          <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;json-proxy&#39;</span><span class="p">).</span><span class="nx">initialize</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">forward</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;/api/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;/swagger/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">},</span>
+</span><span class='line'>              <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User&#39;</span><span class="o">:</span> <span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User-Email&#39;</span><span class="o">:</span> <span class="s1">&#39;john.doe@example.com&#39;</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>          <span class="p">}),</span>
+</span><span class='line'>          <span class="nx">lrSnippet</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="s1">&#39;.tmp&#39;</span><span class="p">),</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="nx">yeomanConfig</span><span class="p">.</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Auth Headers</h3>
+
+<p>Even better, you can inject headers into proxied request.  So if you remote server requires an Authorization header with an OAuth-style token, or sits behind an Enterprise SSO appliance, you can add the headers to deal with bypassing the remote server authentication.</p>
+
+<h3>CLI</h3>
+
+<p>The CLI utility is also improved.  The CLI properly supports global installation.
+If you install using <code>sudo npm install -g json-proxy</code>, you can invoke the proxy simply as <code>json-proxy</code> with whatever args you want.</p>
+
+<h3>CLI usage info:</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>json-proxy <span class="o">[</span>-c configFile<span class="o">]</span> <span class="o">[</span>-p port<span class="o">]</span> <span class="o">[</span>-f proxy forwarding rule<span class="o">]</span>
+</span><span class='line'>             <span class="o">[</span>-h header rule<span class="o">]</span> <span class="o">[</span>-html5mode <span class="o">[</span>defaultFile<span class="o">]]</span> <span class="o">[</span>directory<span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>Examples:
+</span><span class='line'>   json-proxy -p 8080 -f <span class="s2">&quot;/api=http://server&quot;</span> -f <span class="s2">&quot;/=http://localhost:9000&quot;</span> .
+</span><span class='line'>   json-proxy -h <span class="s2">&quot;X-Forwarded-User=johndoe&quot;</span> /tmp/folder
+</span><span class='line'>   json-proxy -c <span class="s2">&quot;/tmp/config.json&quot;</span>
+</span><span class='line'>
+</span><span class='line'>By default, looks <span class="k">for </span>a config file at ./json-proxy.json
+</span><span class='line'>
+</span><span class='line'>Environmental variables:
+</span><span class='line'>  JSON_PROXY_PORT         see --port
+</span><span class='line'>  JSON_PROXY_WEBROOT      directory
+</span><span class='line'>  JSON_PROXY_GATEWAY      --gateway
+</span><span class='line'>  JSON_PROXY_GATEWAY_AUTH <span class="s2">&quot;username:password&quot;</span> credentials <span class="k">for</span> --gateway<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>Options:
+</span><span class='line'>  -p, --port     The TCP port <span class="k">for </span>the proxy server
+</span><span class='line'>  -f, --forward  a forwarding rule <span class="o">(</span>ex. /foo<span class="o">=</span>server/foo<span class="o">)</span>
+</span><span class='line'>  -h, --header   a custom request header <span class="o">(</span>ex. iv-user<span class="o">=</span>johndoel<span class="o">)</span>
+</span><span class='line'>  -c, --config   a config file
+</span><span class='line'>  -g, --gateway  URL <span class="k">for </span>a LAN HTTP proxy to use <span class="k">for </span>forwarding requests
+</span><span class='line'>  --html5mode    support AngularJS HTML5 mode by catching 404s
+</span><span class='line'>  -?, --help     about this utility
+</span><span class='line'>  --version      version info
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
+<a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
+
+<p>Enjoy!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-20T21:44:00-04:00" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/grunt/'>grunt</a>, <a class='category' href='/blog/categories/node/'>node</a>, <a class='category' href='/blog/categories/proxy/'>proxy</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/11/passport-reverseproxy/" title="Previous Post: passport-reverseproxy">&laquo; passport-reverseproxy</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/" title="Next Post: A Fantastic Video Tutorial on Sublime Text 2">A Fantastic Video Tutorial on Sublime Text 2 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" class="right" style="display: block" />
+	</span>
+</section>
+<section>
+  <h1>About Me</h1>
+  <p>
+    Hi, I'm Steve and I like to code.  
+    I'm also an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>.
+    More importantly, I'm an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+<section>
+  <h1>Favorite Posts</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash's curl command</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB memory barrier of 32-bit Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub sings the praises of a distributed workforce</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

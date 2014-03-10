@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>/* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
+v2.0 of the plugin now lives @ https:// &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/page/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:steve-jansen.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!--<li><a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a></li>-->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/">Update to the Cordova Email Plugin for iOS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-06T23:45:00-04:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
+v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
+
+<p>You can give it a test drive with:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo npm install -g cordova
+</span><span class='line'>cordova create ~/MyApp MyApp
+</span><span class='line'><span class="nb">cd</span> ~/MyApp
+</span><span class='line'>cordova platform add ios
+</span><span class='line'>cordova plugin add emailcomposer <span class="c"># using the http://plugins.cordova.io registry</span>
+</span><span class='line'>cordova build
+</span><span class='line'><span class="c"># manually update the www/index.html file to link to www/examples/EmailComposer.html</span>
+</span><span class='line'><span class="c"># run the app in the iOS 5.x+ simulator via Xcode</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Major changes to the plugin include:</p>
+
+<ul>
+<li>Support for file attachments using files paths, or file contents as encoded strings</li>
+<li>Simpler JavaScript API</li>
+<li>Support for cordova.require to load the plugin in JavaScript which means less global namespace pollution</li>
+<li>Cordova 2.0+ plugin spec implemented (i.e., <code>- (void) show:(CDVInvokedUrlCommand*)command</code>)</li>
+<li>ARC support</li>
+<li>Ran git subtree to extract the history into a standalone repo,
+per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/">the new Cordova plugin respository guidelines</a></li>
+<li>Backwards compatibility with the JS API for the 1.x plugin</li>
+<li>Backwards compatibility with the iOS/EmailComposerWithAttachments plugin</li>
+<li>Jasmine unit tests for the JS part of the plugin</li>
+<li>Xcode unit tests for the obj-c part of the plugin</li>
+</ul>
+
+
+<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
+<a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
+As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
+
+<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to Modify the TCP/IP Port Binding for the Microsoft Web Deployment Agent Service</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-28T16:44:00-05:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work.  I&rsquo;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) &ndash; it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&rsquo;s Web Deployment Agent service.</p>
+
+<p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&hellip;</p>
+
+<div><script src='https://gist.github.com/5060329.js'></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">Tailoring the Windows Command Prompt Shell</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-27T14:18:00-05:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&rsquo;t know some of the tricks up the Command Prompt&rsquo;s sleeve.  So allow me to share some of my favorite settings.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/25/a-ghost-no-more/">A Ghost No More</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-25T12:49:00-05:00" pubdate data-updated="true">Feb 25<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/25/a-ghost-no-more/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Blogging has long been on my todo list &mdash; quite frankly too long.  A colleague shared <a href="http://www.troyhunt.com/2013/02/the-ghost-who-codes-how-anonymity-is.html">a great piece by Troy Hunt named &ldquo;The ghost who codes: how anonymity is killing your career&rdquo;</a>.  Troy inspired me that I need to make the time to just get it done.  So this is where I start giving back whatever small knowledge bits I may have.</p>
+
+<p>I am fortunate enough to be with a company now that encourages professional writing, which hasn&rsquo;t always been the case.  Troy&rsquo;s article really resonated with me that developers have an insatiatable appetite for consuming knowledge.  We take information all the time, and there&rsquo;s a duty on all our parts to give back and not just take.  Thanks to both Troy any my colleague Alex for pushing me to do more!</p>
+
+<p>Many years ago I learned an metaphor from a very accomplished veteran of the US military that is quite applicable to coding: &ldquo;you have to either be tough or smart to succeed&rdquo;.  Say you want to navigate from point A to point B, and there just happens to be a tall mountain between the two points.  The tough guy takes a straight line route, ardously ascending and descending the mountain.  The smart guy circumnavigates the mountain, saving time and energy.</p>
+
+<p>I know developers like to be the smartest person in the room, but, I am self-aware enough to admit I often fall into the &ldquo;tough&rdquo; camp &ndash; hacking into the late hours until the job is done.  I suppose this blog will be a true measure of how many (or how few) smart/clever ideas I have up my sleeve!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" class="right" style="display: block" />
+	</span>
+</section>
+<section>
+  <h1>About Me</h1>
+  <p>
+    Hi, I&#8217;m Steve and I like to code.  
+    I&#8217;m also an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>.
+    More importantly, I&#8217;m an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I&#8217;m not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+<section>
+  <h1>Favorite Posts</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash&#8217;s curl command</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB memory barrier of 32-bit Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub sings the praises of a distributed workforce</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>&#8211;>
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

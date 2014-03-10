@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: git | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-03-05T22:01:20-05:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A better FTP client for Windows you already have: Git bash's curl command]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/"/>
+    <updated>2014-02-15T17:24:00-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command</id>
+    <content type="html"><![CDATA[<p>My shop has a couple of internal FTP servers to mirror commonly used installers for .Net devs.
+Installers for apps like Visual Studio can be huge, so GitHub isn&rsquo;t the best place for this, and
+it would also smoke most of our Dropbox quotas.  So an FTP server seems like the 3rd best option.</p>
+
+<p>We are a geographically distributed team, with a VPN to access internal servers.  Even with a reliable
+VPN session over ISP fiber connection, I&rsquo;ve experience lots of realiability problems downloading large files
+with the native Windows Explorer / Internet Explorer FTP.</p>
+
+<p>The Windows ftp command line client can be a pain to work with.  Fortunately, the Git bash emulator for Windows
+(msysgit) includes a MinGW port of the awesome <code>curl</code> utility.  The <code>curl</code> utility has all kinds of awesome features
+for downloading large files.</p>
+
+<p>Here&rsquo;s a few options I found really useful:</p>
+
+<p><code>bash
+curl -C - -v -O "ftp://ftp.example.com/path/to/file.zip"
+</code></p>
+
+<ul>
+<li><code>-C -</code> option tells bash to automatically continue an interrupted download, if the server supports this feature.</li>
+<li><code>-v</code> prints verbose stats, including an dynamic progress info</li>
+<li><code>-O</code> automatically saves the file using the remote file name to the current working directory</li>
+</ul>
+
+
+<p>I crafted this gist to enable downloading a large number of binaries related to .Net development from our FTP server.</p>
+
+<p><div><script src='https://gist.github.com/9378219.js'></script>
+<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/9378219&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+</p>
+
+<p>Be warned, this hack spawns a new command prompt window for each download, so it can get a bit crazy.  This seemed like
+the best worst way to download in parallel while also making sense of each download&rsquo;s status.</p>
+]]></content>
+  </entry>
+  
+</feed>
