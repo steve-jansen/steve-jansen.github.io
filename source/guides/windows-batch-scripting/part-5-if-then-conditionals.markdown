@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: If/Then Conditionals"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,7 +21,7 @@ categories:
 * [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
 * [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 * [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
 Computers are all about 1's and 0's, right?  So, we need a way to handle when some condition is 1, or else do something different
 when it's 0.
@@ -31,7 +31,7 @@ The good news is DOS has pretty decent support for if/then/else conditions.
 ## Checking that a File or Folder Exists
 
     IF EXIST "temp.txt" ECHO found
- 
+
 Or the converse:
 
     IF NOT EXIST "temp.txt" ECHO not found

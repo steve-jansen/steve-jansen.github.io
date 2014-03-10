@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: stdin, stdout, stderr"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,16 +21,16 @@ categories:
 * [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
 * [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 * [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
-DOS, like Unix/Linux, uses the three universal "files" for keyboard input, printing text on the screen, and the 
+DOS, like Unix/Linux, uses the three universal "files" for keyboard input, printing text on the screen, and the
 printing errors on the screen.  The "Standard In" file, known as stdin, contains the input to the program/script.
 The "Standard Out" file, known as stdout, is used to write output for display on the screen.  Finally, the
 "Standard Err" file, known as stderr, contains any error messages for display on the screen.
 
 ## File Numbers
 Each of these three standard files, otherwise known as the standard streams, are referernced using the numbers 0, 1, and 2.
-Stdin is file 0, stdout is file 1, and stderr is file 2.  
+Stdin is file 0, stdout is file 1, and stderr is file 2.
 
 ## Redirection
 A very common task in batch files is sending the output of a program to a log file.   The `>` operator sends, or redirects,
@@ -59,7 +59,7 @@ This is useful if you want to write both stdout and stderr to a single log file.
 
     DIR SomeFile.txt > output.txt 2>&1
 
-To use the contents of a file as the input to a program, instead of typing the input from the keyboard, use the `<` operator.  
+To use the contents of a file as the input to a program, instead of typing the input from the keyboard, use the `<` operator.
 
     TYPE < SomeFile.txt
 

@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: Parsing Input"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,15 +21,15 @@ categories:
 * [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
 * Part 8 - Parsing Input
 * [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
 Robust parsing of command line input separates a good script from a great script.  I'll share some tips on how I parse input.
 
 # The Easy Way to read Command Line Arguments
 
-By far the easiest way to parse command line arguments is to read required arguments by ordinal position.  
+By far the easiest way to parse command line arguments is to read required arguments by ordinal position.
 
-Here we get the full path to a local file passed as the first argument.  We write an error message to stderr if the file does not exist and exit 
+Here we get the full path to a local file passed as the first argument.  We write an error message to stderr if the file does not exist and exit
 our script:
 
     SET filepath=%~f1

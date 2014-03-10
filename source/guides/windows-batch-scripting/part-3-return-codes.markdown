@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: Return Codes"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,7 +21,7 @@ categories:
 * [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
 * [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 * [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
 Today we'll cover return codes as the right way to communicate the outcome of your script's execution to the world.  Sadly, even
 skilled Windows programmers overlook the importance of return codes.
@@ -29,12 +29,12 @@ skilled Windows programmers overlook the importance of return codes.
 ## Return Code Conventions
 
 By convention, command line execution should return zero when execution succeeds and non-zero when execution fails.  Warning messages
-typically don't effect the return code.  What matters is did the script work or not? 
+typically don't effect the return code.  What matters is did the script work or not?
 
 
 ## Checking Return Codes In Your Script Commands
 
-The environmental variable `%ERRORLEVEL%` contains the return code of the last executed program or script.  A very helpful feature is 
+The environmental variable `%ERRORLEVEL%` contains the return code of the last executed program or script.  A very helpful feature is
 the built-in DOS commands like `ECHO`, `IF`, and `SET` will preserve the existing value of `%ERRORLEVEL%`.
 
 The conventional technique to check for a non-zero return code using the `NEQ` (Not-Equal-To) operator of the `IF` command:
@@ -54,19 +54,19 @@ programs can return negative numbers as well as positive numbers.  Most programs
 check for non-zero with the `NEQ 0` style than assuming return codes will be 1 or greater on error.
 
 You may also want to check for specific error codes.  For example, you can test that an executable program or script is in your PATH by simply
-calling the program and checking for return code 9009.  
+calling the program and checking for return code 9009.
 
     SomeFile.exe
     IF %ERRORLEVEL% EQU 9009 (
       ECHO error - SomeFile.exe not found in your PATH
     )
 
-It's hard to know this stuff upfront - I generally just use trial and error to figure out the best way to check the return code of the program or 
+It's hard to know this stuff upfront - I generally just use trial and error to figure out the best way to check the return code of the program or
 script I'm calling.  Remember, this is duct tape programming.  It isn't always pretty, but, it gets the job done.
 
 ## Conditional Execution Using the Return Code
 
-There's a super cool shorthand you can use to execute a second command based on the success or failure of a command.  The first program/script must 
+There's a super cool shorthand you can use to execute a second command based on the success or failure of a command.  The first program/script must
 conform to the convention of returning 0 on success and non-0 on failure for this to work.
 
 To execute a follow-on command after sucess, we use the `&&` operator:
@@ -106,7 +106,7 @@ be modified elsewhere.  Too bad DOS doesn't support constant values like Unix/Li
 
 ## Some Final Polish
 
-One small piece of polish I like is using return codes that are a power of 2.  
+One small piece of polish I like is using return codes that are a power of 2.
 
     SET /A ERROR_HELP_SCREEN=1
     SET /A ERROR_FILE_NOT_FOUND=2
@@ -115,17 +115,17 @@ One small piece of polish I like is using return codes that are a power of 2.
 
 This gives me the flexibility to bitwise OR multiple error numbers together if I want to record numerous problems in one error code.
 This is rare for scripts intended for interactive use, but, it can be super helpful when writing scripts you support but you don't
-have access to the target systems.  
+have access to the target systems.
 
 
     @ECHO OFF
     SETLOCAL ENABLEEXTENSIONS
 
-    SET /A errno=0  
+    SET /A errno=0
     SET /A ERROR_HELP_SCREEN=1
     SET /A ERROR_SOMECOMMAND_NOT_FOUND=2
     SET /A ERROR_OTHERCOMMAND_FAILED=4
-    
+
     SomeCommand.exe
     IF %ERRORLEVEL% NEQ 0 SET /A errno^|=%ERROR_SOMECOMMAND_NOT_FOUND%
 

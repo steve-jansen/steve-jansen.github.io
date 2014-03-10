@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: Loops"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,7 +21,7 @@ categories:
 * [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
 * [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 * [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
 Looping through items in a collection is a frequent task for scripts.  It could be looping through files in a directory, or reading a text file one
 line at a time.

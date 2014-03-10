@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: Logging"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,11 +21,11 @@ categories:
 * [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
 * [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 * Part 9 - Logging
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
 
 I use basic logging facilities in my scripts to support troubleshooting both during execution and after execution.  I use basic logging as a way to instrument what my scripts are doing at runtime and why.  I remember watching a network operations center trying to troubleshoot a legacy batch process
-where the sysadmins literrally had to try to read the lines of a console window as they trickled by.  This technique worked fine for years when the 
+where the sysadmins literrally had to try to read the lines of a console window as they trickled by.  This technique worked fine for years when the
 batch machines used dial-up modems for connectivity to remote resources.  However, the advent of brooadband meant the batch script executed faster than
 anyone could read the output.  A simple log file would have made troubleshooting work much easier for these sysadmins.
 
@@ -74,7 +74,7 @@ This technique drastically helps to sort who is complaining in the case of an er
 I also like to display the various runtime conditions for non-interactive scripts, like something that will be run on a build server and redirected to a
 the build log.
 
-Sadly, I don't know of any DOS tricks (yet) to discrimintate non-interactive sessions from interactive sessions.  C# and .Net has the `System.Environment.UserInteractive` property to detect if this situation; *nix has some tricks with tty file descriptors.  You could probably hack up a solution 
+Sadly, I don't know of any DOS tricks (yet) to discrimintate non-interactive sessions from interactive sessions.  C# and .Net has the `System.Environment.UserInteractive` property to detect if this situation; *nix has some tricks with tty file descriptors.  You could probably hack up a solution
 by inspecting a custom environmental variable like `%MYSCRIPT_DEBUG%` that defaults to being false.
 
 
@@ -82,5 +82,5 @@ by inspecting a custom environmental variable like `%MYSCRIPT_DEBUG%` that defau
 [<< Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 </span>
 <span class="basic-alignment right">
-[Part 10 - Advanced Tricks >>](/guides/windows-batch-scripting/part-advanced-tricks.html)
+[Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 </span>

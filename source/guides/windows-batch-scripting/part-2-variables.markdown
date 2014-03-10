@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: Variables"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,7 +21,7 @@ categories:
 * [Part 7 - Functions](/guides/windows-batch-scripting/part-7-functions.html)
 * [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 * [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
 Today we'll cover variables, which are going to be necessary in any non-trivial batch programs.  The syntax for variables can be a bit odd,
 so it will help to be able to understand a variable and how it's being used.
@@ -33,7 +33,7 @@ silly bugs like typos in variable names.
 
 
 ## Variable Assignment
-The `SET` command assigns a value to a variable.  
+The `SET` command assigns a value to a variable.
 
     SET foo=bar
 
@@ -42,12 +42,12 @@ The `/A` switch supports arthimetic operations during assigments.  This is a use
     SET /A four=2+2
     4
 
-A common convention is to use lowercase names for your script's variables.  System-wide variables, known as environmental variables, use uppercase names.  These environmental describe where to find certain things in your system, such as `%TEMP%` which is  path for temporary files.  DOS is case insensitive, so this convention isn't enforced but it's a good idea to make your script's easier to read and troubleshoot.  
+A common convention is to use lowercase names for your script's variables.  System-wide variables, known as environmental variables, use uppercase names.  These environmental describe where to find certain things in your system, such as `%TEMP%` which is  path for temporary files.  DOS is case insensitive, so this convention isn't enforced but it's a good idea to make your script's easier to read and troubleshoot.
 
 **WARNING:** `SET` will always overwrite (clobber) any existing variables.  It's a good idea to verify you aren't overwriting a system-wide variable when writing a script.  A quick `ECHO %foo%` will confirm that the variable `foo` isn't an existing variable.  For example, it might be tempting to name a variable "temp", but, that would change the meaning of the widely used "%TEMP%" environmental varible.   DOS includes some "dynamic" environmental variables that behave more like commands.  These dynamic varibles include `%DATE%`, `%RANDOM%`, and `%CD%`.  It would be a bad idea to overwrite these dynamic variables.
 
 ## Reading the Value of a Variable
-In most situations you can read the value of a variable by prefixing and postfixing the variable name with the `%` operator.  The example below prints the current value of the variable `foo` to the console output. 
+In most situations you can read the value of a variable by prefixing and postfixing the variable name with the `%` operator.  The example below prints the current value of the variable `foo` to the console output.
 
     C:\> SET foo=bar
     C:\> ECHO %foo%
@@ -56,7 +56,7 @@ In most situations you can read the value of a variable by prefixing and postfix
 There are some special situations in which variables do not use this `%` syntax.  We'll discuss these special cases later in this series.
 
 ## Listing Existing Variables
-The `SET` command with no arguments will list all variables for the current command prompt session.   Most of these varaiables will be system-wide environmental variables, like `%PATH%` or `%TEMP%`.  
+The `SET` command with no arguments will list all variables for the current command prompt session.   Most of these varaiables will be system-wide environmental variables, like `%PATH%` or `%TEMP%`.
 
 ![Screenshot of the SET command](/images/2013-03-03-A.png)
 
@@ -75,7 +75,7 @@ A real life example might be a script that modifies the system-wide `%PATH%` env
 There are a few special situations where variables work a bit differently.  The arguments passed on the command line to your script are also variables, but, don't use the `%var%` syntax.  Rather, you read each argument using a single `%` with a digit 0-9, representing the ordinal position of the argument.
 You'll see this same style used later with a hack to create functions/subroutines in batch scripts.
 
-There is also a variable syntax using `!`, like `!var!`.  This is a special type of situation called delayed expansion. 
+There is also a variable syntax using `!`, like `!var!`.  This is a special type of situation called delayed expansion.
 You'll learn more about delayed expansion in when we discuss conditionals (if/then) and looping.
 
 ### Command Line Arguments to Your Script
@@ -109,7 +109,7 @@ this super useful feature is a bit hard to find - run 'FOR /?' and page to the e
 where the script file itself lives.  The syntax `SET parent=%~dp0` will put the path of the folder for the script file in the variable `%parent%`.
 
 * `%~nx1` is just the file name and file extension of the first command line argument.  I also use this trick frequently to determine the
-name of the script at runtime. If I need to print messages to the user, I like to prefix the message with the script's name, like 
+name of the script at runtime. If I need to print messages to the user, I like to prefix the message with the script's name, like
 `ECHO %~n0: some message` instead of `ECHO some message` . The prefixing helps the end user by knowing the output is
 from the script and not another program being called by the script.  It may sound silly until you spend hours trying to track down
 an obtuse error message generated by a script. This is a nice piece of polish
@@ -124,10 +124,10 @@ I always include these commands at the top of my batch scripts:
     SET parent=%~dp0
 
 The `SETLOCAL` command ensures that I don't clobber any existing variables after my script exits.  The `ENABLEEXTENSIONS` argument turns on a very
-helpful feature called command processor extensions.  Trust me, you want command processor extensions.  I also store the name of the script 
+helpful feature called command processor extensions.  Trust me, you want command processor extensions.  I also store the name of the script
 (without the file extension) in a variable named `%me%`; I use this variable as the prefix to any printed messages (e.g. `ECHO %me%: some message`).
 I also store the parent path to the script in a variable named `%parent%`.  I use this variable to make fully qualified filepaths to any
-other files in the same directory as our script. 
+other files in the same directory as our script.
 
 <span class="basic-alignment left">
 [<< Part 1 - Getting Started](/guides/windows-batch-scripting/part-1-getting-started.html)

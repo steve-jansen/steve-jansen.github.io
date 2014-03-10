@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: Advanced Tricks"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -25,7 +25,7 @@ categories:
 
 # Boilplate info
 
-I like to include a header on all of scripts that documents the who/what/when/why/how.  You can use the `::` comemnt trick to make
+I like to include a header on all of scripts that documents the who/what/when/why/how.  You can use the `::` comment trick to make
 this header info more readable:
 
     :: Name:     MyScript.cmd
@@ -54,7 +54,7 @@ The `&&` syntax is the AND opeartor to invoke a 2nd command when the first comma
 
     DIR myfile.txt >NUL 2>&1 && TYPE myfile.txt
 
-The `||` syntax is an OR operator to invoke a 2nd command when the first command returns a non-zero (failure) exit code.  
+The `||` syntax is an OR operator to invoke a 2nd command when the first command returns a non-zero (failure) exit code.
 
     DIR myfile.txt >NUL 2>&1 || CALL :WARNING file not found - myfile.txt
 
