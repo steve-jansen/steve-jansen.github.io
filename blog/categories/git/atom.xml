@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-05T22:01:20-05:00</updated>
+  <updated>2014-03-10T20:05:19-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -46,7 +46,33 @@ curl -C - -v -O "ftp://ftp.example.com/path/to/file.zip"
 <p>I crafted this gist to enable downloading a large number of binaries related to .Net development from our FTP server.</p>
 
 <p><div><script src='https://gist.github.com/9378219.js'></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/9378219&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+<noscript><pre><code>SETLOCAL
+PUSHD &quot;%USERPROFILE%\Downloads&quot;
+
+IF NOT EXIST &quot;installers&quot; MKDIR &quot;installers&quot;
+CD &quot;installers&quot;
+
+ECHO @ECHO OFF &gt; curl.cmd
+ECHO TITLE &quot;%~1&quot; &gt;&gt; curl.cmd
+ECHO IF NOT &quot;.%~p1&quot;==&quot;.\&quot; IF NOT EXIST &quot;.%~p1&quot; MKDIR &quot;.%~p1&quot; &gt;&gt; curl.cmd
+ECHO PUSHD &quot;.%~p1&quot; &gt;&gt; curl.cmd
+ECHO &quot;%ProgramFiles%\Git\bin\curl.exe&quot; -C - -v -O &quot;ftp://ftp.example.com/path/to/installers%~1&quot; ^&amp;^&amp; PAUSE &gt;&gt; curl.cmd
+
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/dotNetFx40_Full_x86_x64.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Internet Information Services 7.5 Express/iisexpress_1_11_x86_en-US.msi^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Internet Information Services 7.5 Express/rewrite_2.0_rtw_x86.msi^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2008 Express R2 SP1/SQLEXPRWT_x86_ENU.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Visual Studio 2010/VS2010PREM_ENU.zip^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Visual Studio 2010 SP1/VS10sp1-KB983509.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server Data Tools/SSDT_10.3.31009.2_EN.iso.zip^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2012 Tools/SQLManagementStudio_x86_ENU.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2012 Tools/x86/SqlLocaLDB.MSI^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Web Deploy V3/WebDeploy_x86_en-US.msi^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/MSBuild Extension Pack 4.0/MSBuild Extension Pack 4.0.msi^&quot;&quot;
+
+DEL /Q curl.cmd
+POPD
+ENDLOCAL</code></pre></noscript></div>
 </p>
 
 <p>Be warned, this hack spawns a new command prompt window for each download, so it can get a bit crazy.  This seemed like

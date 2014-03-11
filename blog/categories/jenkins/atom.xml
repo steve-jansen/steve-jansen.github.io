@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jenkins | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/jenkins/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-05T22:01:20-05:00</updated>
+  <updated>2014-03-10T20:05:19-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -45,7 +45,148 @@ Jenkins deamon as a regular privilege user, so running as root was not an option
 just a wrapper around <code>iptables</code>.  So far, it seems to get the job done.</p>
 
 <p><div><script src='https://gist.github.com/9361161.js'></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/9361161&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
+<noscript><pre><code>#!/bin/sh
+#
+#     SUSE system statup script for port forwarding port 80 to the port
+#     for the Jenkins continuous build server.
+#
+#     Jenkins normally does not run as root, thus /etc/init.d/jenkins cannot
+#     bind to ports &lt; 1024 since SUSE does not support authbind (or similar).
+#
+#     The MIT License (MIT)
+#
+#     Copyright (C) 2014 Steve Jansen
+#
+#     Permission is hereby granted, free of charge, to any person obtaining a copy
+#     of this software and associated documentation files (the &quot;Software&quot;), to deal
+#     in the Software without restriction, including without limitation the rights
+#     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#     copies of the Software, and to permit persons to whom the Software is
+#     furnished to do so, subject to the following conditions:
+#
+#     The above copyright notice and this permission notice shall be included in
+#     all copies or substantial portions of the Software.
+#
+#     THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#     THE SOFTWARE.
+#
+### BEGIN INIT INFO
+# Provides:          jenkins.portforwarding
+# Required-Start:    jenkins
+# Should-Start:
+# Required-Stop:     jenkins
+# Should-Stop:
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Short-Description: Port forwarding for Jenkins continuous build server
+# Description:       Forward port 80 traffic to the Jenkins continuous build server
+### END INIT INFO
+
+# Check for existence of needed config file and read it
+JENKINS_CONFIG=/etc/sysconfig/jenkins
+JENKINS_FORWARD_PORT=80
+
+test -r &quot;$JENKINS_CONFIG&quot; || { echo &quot;$JENKINS_CONFIG not existing&quot;;
+  if [ &quot;$1&quot; = &quot;stop&quot; ]; then exit 0;
+  else exit 6; fi; }
+
+# Read config
+. &quot;$JENKINS_CONFIG&quot;
+
+. /etc/rc.status
+rc_reset # Reset status of this service
+
+if [ &quot;$JENKINS_PORT&quot; -eq &quot;$JENKINS_FORWARD_PORT&quot; ]
+then
+  echo &quot;Jenkins already running on port $JENKINS_FORWARD_PORT, skipping port forwarding&quot;
+  rc_exit
+fi
+
+readonly iptables_table=&quot;-t nat&quot;
+readonly base_rule=&quot;-p tcp --dport $JENKINS_FORWARD_PORT -j REDIRECT --to-ports $JENKINS_PORT&quot;
+readonly external_rule=&quot;PREROUTING -p tcp -m tcp --dport $JENKINS_FORWARD_PORT -j REDIRECT --to-ports $JENKINS_PORT&quot;
+readonly loopback_rule=&quot;OUTPUT -p tcp -m tcp --dport $JENKINS_FORWARD_PORT -j REDIRECT --to-ports $JENKINS_PORT&quot;
+
+check_status ()
+{
+  iptables-save $iptables_table | grep -- &quot;$external_rule&quot; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; iptables-save $iptables_table | grep -- &quot;$loopback_rule&quot; &gt; /dev/null 2&gt;&amp;1
+  return $?
+}
+
+case &quot;$1&quot; in
+  start)
+      check_status
+      if [ $? -eq 0 ]
+      then
+        echo &quot;Jenkins port forwarding already forwarding port $JENKINS_FORWARD_PORT to port $JENKINS_PORT&quot;
+        rc_exit
+      fi
+
+      echo &quot;Starting Jenkins port forwarding&quot;
+      echo &quot;Enabling iptables port forwarding from port $JENKINS_FORWARD_PORT to port $JENKINS_PORT&quot;
+      iptables $iptables_table -A $external_interface $external_rule &amp;&amp; iptables $iptables_table -A $loopback_rule
+      result=$?
+
+      if [ $result -eq 0 ]
+      then
+        rc_status -v
+      else
+        rc_failed $result
+        rc_status -v
+      fi
+    ;;
+  stop)
+      check_status
+      if [ $? -ne 0 ]
+      then
+        echo &quot;Jenkins port forwarding already stopped&quot;
+        rc_exit
+      fi
+
+      echo &quot;Disabling iptables port forwarding from port $JENKINS_FORWARD_PORT to port $JENKINS_PORT&quot;
+      iptables $iptables_table -D $external_interface $external_rule &amp;&amp; iptables $iptables_table -D $loopback_rule
+      result=$?
+
+      if [ $result -eq 0 ]
+      then
+        rc_status -v
+      else
+        rc_failed $result
+        rc_status -v
+      fi
+    ;;
+  restart)
+      $0 stop
+      $0 start
+      rc_status
+    ;;
+    status)
+      echo &quot;Checking status of iptables port forwarding from port $JENKINS_FORWARD_PORT to port $JENKINS_PORT&quot;
+      check_status
+      result=$?
+
+      if [ $result -eq 0 ]
+      then
+        echo &quot;Port forwarding from port $JENKINS_FORWARD_PORT to port $JENKINS_PORT is enabled&quot;
+        rc_status -v
+      else
+        echo &quot;Port forwarding from port $JENKINS_FORWARD_PORT to port $JENKINS_PORT is disabled&quot;
+        rc_failed $result
+        rc_status -v
+      fi
+    ;;
+  *)
+      echo &quot;Usage: $0 {start|stop|status}&quot;
+      exit 1
+    ;;
+esac
+rc_exit
+</code></pre></noscript></div>
 </p>
 
 <p>If all goes well, I will merge this logic into a pull request for the <a href="https://github.com/jenkinsci/jenkins/blob/master/opensuse/SOURCES/jenkins.init.in">Jenkins init.d script for OpenSuse</a>.</p>

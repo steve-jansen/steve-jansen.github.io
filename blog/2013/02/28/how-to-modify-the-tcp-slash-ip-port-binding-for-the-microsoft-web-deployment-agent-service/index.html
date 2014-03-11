@@ -110,7 +110,102 @@
 <p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&hellip;</p>
 
 <div><script src='https://gist.github.com/5060329.js'></script>
-<noscript><pre><code></code></pre></noscript></div>
+<noscript><pre><code>:: Name:     MsDepSvc.Port.cmd
+:: Purpose:  Modifies the TCP/IP port that the Web Deployment Agent Service
+::           (MsDepSvc) listens on.  Tested on Win7 Enterprise 32-bit.
+:: Author:   stevejansen_github@icloud.com
+:: Revision: January 2013
+
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS
+SETLOCAL ENABLEDELAYEDEXPANSION
+
+:: variables
+SET me=%~n0
+SET url=
+SET port=
+IF NOT &quot;%~1&quot;==&quot;&quot; (
+  SET /A port=%~1
+)
+
+ECHO %me%: Web Deployment Agent Service (MsDepSvc) port change script
+
+:: default argument values
+IF &quot;%port%&quot;==&quot;&quot; (
+  SET /A port=8172
+  ECHO %me%: INFO - using default port value of 8172
+)
+
+SC.EXE query msdepsvc &gt;NUL 2&gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - MsDepSvc not installed
+  ECHO %me%: exiting
+  EXIT /B 1
+)
+
+ECHO %me%: stopping MsDepSvc
+NET STOP msdepsvc &gt;NUL 2&gt;NUL
+
+:: check if the default port is set
+REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl &gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - MsDepSvc ListenUrl registry key not found
+  REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters
+  ECHO %me%: exiting
+  EXIT /B 2
+)
+
+FOR /F &quot;tokens=3&quot; %%I IN ('REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl') DO (
+  SET url=%%I
+)
+ECHO %me%: INFO - MsDepSvc current reservation is &quot;%url%&quot;
+
+NETSH.EXE http show urlacl &quot;%url%&quot; &gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - reservation for &quot;%url%&quot; not found
+  EXIT /B 4
+)
+
+:: save the existing urlacl properties for User, Listen, Delegate, and SDDL
+FOR /F &quot;tokens=1,* delims=: &quot; %%A IN ('NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;') DO (
+  SET URLACL.%%A=%%B
+)
+
+IF NOT DEFINED URLACL.User     ECHO %me%: Failed to read the exising URLACL setting for User     &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.Listen   ECHO %me%: Failed to read the exising URLACL setting for Listen   &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.Delegate ECHO %me%: Failed to read the exising URLACL setting for Delegate &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.SDDL     ECHO %me%: Failed to read the exising URLACL setting for SDDL     &amp;&amp;GOTO :ERROR
+
+ECHO %me%: updating MsDepSvc to listen on port %port%
+REG.EXE ADD HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl /t REG_SZ /f /d &quot;http://+:%port%/MSDEPLOYAGENTSERVICE/&quot;
+
+ECHO %me%: deleting the existing reservation for MsDepSvc
+NETSH.EXE http delete urlacl &quot;%url%&quot; || GOTO :ERROR
+
+ECHO %me%: adding the port %port% reservation for MsDepSvc
+NETSH.EXE http add urlacl url=http://+:%port%/MsDeployAgentService/ user=&quot;%URLACL.User%&quot; listen=&quot;%URLACL.Listen%&quot; delegate=&quot;%URLACL.Delegate%&quot; SDDL=&quot;%URLACL.SDDL%&quot;  || GOTO :ERROR
+
+ECHO %me%: starting MsDepSvc
+NET START msdepsvc &gt;NUL 2&gt;NUL
+
+ECHO %me%: process info for MsDepSvc
+QUERY.EXE PROCESS MSDEPSVC.EXE
+ECHO.
+ECHO %me%: port bindings for MsDepSvc
+NETSTAT.EXE -a -n -o | FINDSTR /R &quot;TCP.*:%port%.*LISTENING Proto&quot;
+ECHO.
+ECHO %me%: finished
+
+:END
+ENDLOCAL
+ECHO ON
+@EXIT /B 0
+
+:ERROR
+ECHO %me%: ERROR - exiting with errorlevel %ERRORLEVEL%
+ECHO ON
+@EXIT/B %ERRORLEVEL%
+</code></pre></noscript></div>
 
 
 
