@@ -184,7 +184,21 @@ PING.EXE -N 2 127.0.0.1 &gt; NUL
 
 <h1>Supporting &ldquo;double-click&rdquo; execution (aka invoking from Windows Explorer)</h1>
 
-<p>Test %CMDCMDLINE% is equal to %COMSPEC%  If so, enable a PAUSE at the end of the script.  Also remember to CD to a valid working directory if needed.</p>
+<p>Test if <code>%CMDCMDLINE%</code> is equal to <code>%COMSPEC%</code>  If they are equal, we can assume that we are running in an interactive session.
+If not equal, we can inject a PAUSE into the end of the script to show the output.  You may also want to change to a valid
+working directory.</p>
+
+<pre><code>@ECHO OFF
+SET interactive=0
+
+ECHO %CMDCMDLINE% | FINDSTR /L %COMSPEC% &gt;NUL 2&gt;&amp;1
+IF %ERRORLEVEL% == 0 SET interactive=1
+
+ECHO do work
+
+IF "%interactive%"=="0" PAUSE
+EXIT /B 0
+</code></pre>
 
 <p><span class="basic-alignment left">
 <a href="/guides/windows-batch-scripting/part-9-logging.html">&lt;&lt; Part 9 &ndash; Logging</a>
