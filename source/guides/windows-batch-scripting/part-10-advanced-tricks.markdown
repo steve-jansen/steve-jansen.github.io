@@ -79,7 +79,21 @@ You can use `PING.EXE` to fake a real *nix style `sleep` command.
 
 # Supporting "double-click" execution (aka invoking from Windows Explorer)
 
-Test %CMDCMDLINE% is equal to %COMSPEC%  If so, enable a PAUSE at the end of the script.  Also remember to CD to a valid working directory if needed.
+Test if `%CMDCMDLINE%` is equal to `%COMSPEC%`  If they are equal, we can assume that we are running in an interactive session.
+If not equal, we can inject a PAUSE into the end of the script to show the output.  You may also want to change to a valid
+working directory.
+
+    @ECHO OFF
+    SET interactive=0
+
+    ECHO %CMDCMDLINE% | FINDSTR /L %COMSPEC% >NUL 2>&1
+    IF %ERRORLEVEL% == 0 SET interactive=1
+
+    ECHO do work
+
+    IF "%interactive%"=="0" PAUSE
+    EXIT /B 0
+
 
 <span class="basic-alignment left">
 [<< Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
