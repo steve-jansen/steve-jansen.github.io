@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-10T20:24:41-04:00</updated>
+  <updated>2014-03-13T16:41:45-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,127 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Tips for Vagrant on Windows]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows/"/>
+    <updated>2014-03-13T05:55:12-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows</id>
+    <content type="html"><![CDATA[<p>I learned some interesting things today about running Vagrant on a Windows machine.
+Vagrant is an amazing tool for running a VM on your local dev box with a target platform (e.g., Linux)
+provisioned by code (e.g., Chef/Puppet/shell scripts).</p>
+
+<h2>Spaces in Paths</h2>
+
+<p>A hard lesson about Vagrant on Windows was Vagrant uses Ruby heavily, and Ruby on Windows
+really, really doesn&rsquo;t like spaces in paths.</p>
+
+<p>The Vagrant installer can&rsquo;t comply with the Windows Installer and Logo requirement to
+default to <code>%ProgramFiles%</code> folder <a href="https://github.com/mitchellh/vagrant/issues/1652">due to Ruby&rsquo;s known issues with spaces in paths like C:\Program Files</a>.</p>
+
+<p>I was able to work around this with a symlink:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">IF NOT EXIST &quot;%ProgramFiles%\Vagrant&quot; MKDIR &quot;%ProgramFiles%\Vagrant&quot;</span>
+</span><span class='line'><span class="go">MKLINK /D &quot;%SystemRoot%\vagrant&quot; &quot;%ProgramFiles%\Vagrant&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I then ran the <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox-4.3.8-92456-Win.exe</a> installer using all defaults
+except for the USB support and Python scripting.</p>
+
+<p><strong>TIP:</strong> do not install VirtualBox&rsquo;s USB drivers if you have an enterprise USB device blocker/filter</p>
+
+<p>I then followed with installing <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">Vagrant_1.4.3.msi</a> to <code>C:\vagrant</code>.</p>
+
+<p><strong>TIP:</strong> <a href="https://github.com/mitchellh/vagrant/issues/3131">the Vagrant v1.5.0 installer is broken for Windows</a>; use <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">v1.4.3</a> until <a href="http://www.vagrantup.com/downloads.html">v1.5.1</a> is released.</p>
+
+<h2>VirtualBox in XP SP3 compatability mode</h2>
+
+<p>I needed to configure a few VirtualBox binaries to run in XP SP3 compatability mode for my Windows 7 SP1 Enterprise laptop.  YMMV.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">REM run VirtualBox in XP SP3 mode</span>
+</span><span class='line'><span class="go">REG ADD &quot;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&quot; ^</span>
+</span><span class='line'><span class="go">        /v &quot;%ProgramFiles%\Oracle\VirtualBox\VirtualBox.exe&quot; ^</span>
+</span><span class='line'><span class="go">        /t REG_SZ  ^</span>
+</span><span class='line'><span class="go">        /d WINXPSP3</span>
+</span><span class='line'><span class="go">REG ADD &quot;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&quot; ^</span>
+</span><span class='line'><span class="go">        /v &quot;%ProgramFiles%\Oracle\VirtualBox\VBoxSVC.exe&quot; ^</span>
+</span><span class='line'><span class="go">        /t REG_SZ  ^</span>
+</span><span class='line'><span class="go">        /d WINXPSP3</span>
+</span><span class='line'><span class="go">REG ADD &quot;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&quot; ^</span>
+</span><span class='line'><span class="go">        /v &quot;%ProgramFiles%\Oracle\VirtualBox\VBoxManage.exe&quot; ^</span>
+</span><span class='line'><span class="go">        /t REG_SZ  ^</span>
+</span><span class='line'><span class="go">        /d WINXPSP3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Spaces in your home folder path</h2>
+
+<p>If your Windows username (or <code>%USERPROFILE%</code> path) include spaces, you will need to set an environmental variable <code>%VAGRANT_HOME%</code> to a path that
+does not use spaces.  This caused many non-obvious errors with <code>vagrant plugin install berkshelf</code> and <code>vagrant plugin install omnibus</code>.</p>
+
+<p>A simple fix was setting <code>%VAGRANT_HOME%</code> to &ldquo;C:\VagrantHome&rdquo;</p>
+
+<h2>Example running a simple 32-bit Ubuntu LTS box on 32-bit Windows 7 SP1</h2>
+
+<p>I don&rsquo;t really need the omnibus plugin here, but, this proves it can install a plugin that would
+otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">SETLOCAL</span>
+</span><span class='line'><span class="go">IF NOT EXIST C:\VagrantHome MKDIR C:\VagrantHome</span>
+</span><span class='line'><span class="go">PUSHD C:\VagrantHome</span>
+</span><span class='line'><span class="go">SET VAGRANT_HOME=C:\VagrantHome</span>
+</span><span class='line'><span class="go">PUSHD %TEMP%</span>
+</span><span class='line'><span class="go">MKDIR VagrantTest</span>
+</span><span class='line'><span class="go">CD VagrantTest</span>
+</span><span class='line'><span class="go">vagrant init hashicorp/precise32</span>
+</span><span class='line'><span class="go">vagrant box add hashicorp/precise32 https://vagrantcloud.com/hashicorp/precise32/version/1/provider/virtualbox.box</span>
+</span><span class='line'><span class="go">vagrant plugin install omnibus</span>
+</span><span class='line'><span class="go">vagrant up --provision</span>
+</span><span class='line'><span class="go">PAUSE</span>
+</span><span class='line'><span class="go">vagrant halt</span>
+</span><span class='line'><span class="go">vagrant destroy --force</span>
+</span><span class='line'><span class="go">CD ..</span>
+</span><span class='line'><span class="go">RMDIR /S /Q &quot;%TEMP%\VagrantTest&quot;</span>
+</span><span class='line'><span class="go">POPD</span>
+</span><span class='line'><span class="go">ENDLOCAL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Binding Jenkins to port 80 on SUSE Linux]]></title>

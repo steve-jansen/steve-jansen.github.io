@@ -9,8 +9,7 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
-v2.0 of the plugin now lives @ https:// &hellip;">
+  <meta name="description" content="Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware Passport. The ReverseProxy API provider enables NodeJS apps &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +77,65 @@ v2.0 of the plugin now lives @ https:// &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/11/passport-reverseproxy/">Passport-reverseproxy</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-11T19:38:00-04:00" pubdate data-updated="true">Aug 11<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/11/passport-reverseproxy/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
+
+<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
+Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&rsquo;s WebSeal application for SSO does exactly this.</p>
+
+<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
+inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
+
+<p>Installing the provider is as simple as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install express
+</span><span class='line'>npm install passport
+</span><span class='line'>npm install passport-reverseproxy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&rsquo;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
+
+<p>Overall, I think Passport is a great library &ndash; both easy to use and easy to implement custom strategies.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -430,6 +488,10 @@ ECHO ON
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/13/tips-for-vagrant-on-windows/">Tips for Vagrant on Windows</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
       </li>
     
@@ -443,10 +505,6 @@ ECHO ON
     
       <li class="post">
         <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/">Are great developers both left and right brain expressive?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub sings the praises of a distributed workforce</a>
       </li>
     
   </ul>
