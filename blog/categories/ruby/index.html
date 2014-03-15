@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Update to the Cordova Email Plugin for iOS - /* steve jansen */</title>
+  <title>Category: ruby - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
-v2.0 of the plugin now lives @ https:// &hellip;">
+  <meta name="description" content="Category: ruby">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ v2.0 of the plugin now lives @ https:// &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/categories/ruby/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,140 +76,36 @@ v2.0 of the plugin now lives @ https:// &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Update to the Cordova Email Plugin for iOS</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-06T23:45:00-04:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
-        
-         | <a href="#disqus_thread">Comments</a>
-        
-      </p>
+    <h1 class="entry-title">Category: Ruby</h1>
     
   </header>
-
-
-<div class="entry-content"><p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
-v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
-
-<p>You can give it a test drive with:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo npm install -g cordova
-</span><span class='line'>cordova create ~/MyApp MyApp
-</span><span class='line'><span class="nb">cd</span> ~/MyApp
-</span><span class='line'>cordova platform add ios
-</span><span class='line'>cordova plugin add emailcomposer <span class="c"># using the http://plugins.cordova.io registry</span>
-</span><span class='line'>cordova build
-</span><span class='line'><span class="c"># manually update the www/index.html file to link to www/examples/EmailComposer.html</span>
-</span><span class='line'><span class="c"># run the app in the iOS 5.x+ simulator via Xcode</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Major changes to the plugin include:</p>
-
-<ul>
-<li>Support for file attachments using files paths, or file contents as encoded strings</li>
-<li>Simpler JavaScript API</li>
-<li>Support for cordova.require to load the plugin in JavaScript which means less global namespace pollution</li>
-<li>Cordova 2.0+ plugin spec implemented (i.e., <code>- (void) show:(CDVInvokedUrlCommand*)command</code>)</li>
-<li>ARC support</li>
-<li>Ran git subtree to extract the history into a standalone repo,
-per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/">the new Cordova plugin respository guidelines</a></li>
-<li>Backwards compatibility with the JS API for the 1.x plugin</li>
-<li>Backwards compatibility with the iOS/EmailComposerWithAttachments plugin</li>
-<li>Jasmine unit tests for the JS part of the plugin</li>
-<li>Xcode unit tests for the obj-c part of the plugin</li>
-</ul>
-
-
-<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
-<a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
-As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
-
-<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2014</h2>
+
+<article>
+  
+<h1><a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a></h1>
+<time datetime="2014-03-14T20:06:26-04:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/vagrant/'>vagrant</a>, <a class='category' href='/blog/categories/windows/'>windows</a></span>
+</footer>
 
 
-<time datetime="2013-08-06T23:45:00-04:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/cordova/'>cordova</a>, <a class='category' href='/blog/categories/phonegap/'>phonegap</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/" title="Previous Post: How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service">&laquo; How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2013/08/11/passport-reverseproxy/" title="Next Post: passport-reverseproxy">passport-reverseproxy &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -304,10 +199,7 @@ As a courtesy, I&rsquo;ve asked the original contributors to these two plugins t
       var disqus_shortname = 'steve-jansen';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/';
-        var disqus_url = 'http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

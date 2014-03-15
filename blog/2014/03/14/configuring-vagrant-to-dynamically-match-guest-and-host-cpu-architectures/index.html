@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Update to the Cordova Email Plugin for iOS - /* steve jansen */</title>
+  <title>Configuring Vagrant to dynamically match guest and host CPU architectures - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
-v2.0 of the plugin now lives @ https:// &hellip;">
+  <meta name="description" content="Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops. Vagrant
+is sweet for DevOps. The Vagrant file &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ v2.0 of the plugin now lives @ https:// &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -81,7 +81,7 @@ v2.0 of the plugin now lives @ https:// &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Update to the Cordova Email Plugin for iOS</h1>
+      <h1 class="entry-title">Configuring Vagrant to Dynamically Match Guest and Host CPU Architectures</h1>
     
     
       <p class="meta">
@@ -97,7 +97,7 @@ v2.0 of the plugin now lives @ https:// &hellip;">
   
 
 
-<time datetime="2013-08-06T23:45:00-04:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
+<time datetime="2014-03-14T20:06:26-04:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -106,10 +106,25 @@ v2.0 of the plugin now lives @ https:// &hellip;">
   </header>
 
 
-<div class="entry-content"><p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
-v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
+<div class="entry-content"><p>Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops.  <a href="http://www.vagrantup.com">Vagrant</a>
+is sweet for DevOps.  The Vagrant file worked great on his Macbook Pro.
+But it was no dice running on my Windows box &ndash; the VM was a 64-bit Linux VM (why wouldn&rsquo;t a server be 32-bit?) and I&rsquo;m on a
+32-bit laptop (don&rsquo;t ask why my corporate IT still issues 32-bit Windows images on 64-bit hardware!).</p>
 
-<p>You can give it a test drive with:</p>
+<p>To my surprise, VirtualBox can actually a 64-bit guest VM on a 32-bit host OS:</p>
+
+<blockquote><p>If you want to use 64-bit guest support on a 32-bit host operating system, you must also select a 64-bit operating system for the particular VM. Since supporting 64 bits on 32-bit hosts incurs additional overhead, VirtualBox only enables this support upon explicit request.</p>
+
+<p>Source: <a href="http://www.virtualbox.org/manual/ch03.html">http://www.virtualbox.org/manual/ch03.html</a></p></blockquote>
+
+<p>However, I learned Vagrant cloud boxes <a href="https://github.com/mitchellh/vagrant/issues/932">may forget to explicity declare they want VirtualBox to enable  64-on-32 support</a>.  While changing the box &ldquo;Operating System Type&rdquo; from &ldquo;Ubuntu&rdquo; to &ldquo;Ubuntu (64 bit)&rdquo; would be
+an easy fix, I decided to see if Vagrant could dynamically choose the right guest CPU architecture based on the host OS&#8217; CPU architecture.
+Our app would run as either 32 or 64, so it made sense to run 32 on 32 and 64 on 64, right?</p>
+
+<p>Turns out it is quite easy.  The power of ruby as the config language for Vagrant really shines here:</p>
+
+<p>Here the relevant changes to our Vagrantfile to get Vagrant to run a 64-bit Linux guest on 64-bit hosts,
+and a 32-bit Linux guest on 32-bit hosts:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -119,39 +134,36 @@ v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo npm install -g cordova
-</span><span class='line'>cordova create ~/MyApp MyApp
-</span><span class='line'><span class="nb">cd</span> ~/MyApp
-</span><span class='line'>cordova platform add ios
-</span><span class='line'>cordova plugin add emailcomposer <span class="c"># using the http://plugins.cordova.io registry</span>
-</span><span class='line'>cordova build
-</span><span class='line'><span class="c"># manually update the www/index.html file to link to www/examples/EmailComposer.html</span>
-</span><span class='line'><span class="c"># run the app in the iOS 5.x+ simulator via Xcode</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># -*- mode: ruby -*-</span>
+</span><span class='line'><span class="c1"># vi: set ft=ruby :</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;hashicorp/precise64&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># support 32 windows hosts :(</span>
+</span><span class='line'>  <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;PROCESSOR_ARCHITECTURE&quot;</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;x86&quot;</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;falling back to 32-bit guest architecture&quot;</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;hashicorp/precise32&quot;</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://vagrantcloud.com/hashicorp/precise32/current/provider/virtualbox.box&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># ... lots more vagrant plugin and chef goodness ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Major changes to the plugin include:</p>
 
-<ul>
-<li>Support for file attachments using files paths, or file contents as encoded strings</li>
-<li>Simpler JavaScript API</li>
-<li>Support for cordova.require to load the plugin in JavaScript which means less global namespace pollution</li>
-<li>Cordova 2.0+ plugin spec implemented (i.e., <code>- (void) show:(CDVInvokedUrlCommand*)command</code>)</li>
-<li>ARC support</li>
-<li>Ran git subtree to extract the history into a standalone repo,
-per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/">the new Cordova plugin respository guidelines</a></li>
-<li>Backwards compatibility with the JS API for the 1.x plugin</li>
-<li>Backwards compatibility with the iOS/EmailComposerWithAttachments plugin</li>
-<li>Jasmine unit tests for the JS part of the plugin</li>
-<li>Xcode unit tests for the obj-c part of the plugin</li>
-</ul>
-
-
-<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
-<a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
-As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
-
-<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
 </div>
 
 
@@ -174,12 +186,12 @@ As a courtesy, I&rsquo;ve asked the original contributors to these two plugins t
   
 
 
-<time datetime="2013-08-06T23:45:00-04:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
+<time datetime="2014-03-14T20:06:26-04:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/cordova/'>cordova</a>, <a class='category' href='/blog/categories/phonegap/'>phonegap</a>
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/vagrant/'>vagrant</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
   
 </span>
 
@@ -188,7 +200,7 @@ As a courtesy, I&rsquo;ve asked the original contributors to these two plugins t
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/" >Tweet</a>
   
   
   
@@ -197,10 +209,8 @@ As a courtesy, I&rsquo;ve asked the original contributors to these two plugins t
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/" title="Previous Post: How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service">&laquo; How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service</a>
+        <a class="basic-alignment left" href="/blog/2014/03/13/tips-for-vagrant-on-windows/" title="Previous Post: Tips for Vagrant on Windows">&laquo; Tips for Vagrant on Windows</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/08/11/passport-reverseproxy/" title="Next Post: passport-reverseproxy">passport-reverseproxy &raquo;</a>
       
     </p>
   </footer>
@@ -305,8 +315,8 @@ As a courtesy, I&rsquo;ve asked the original contributors to these two plugins t
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/';
-        var disqus_url = 'http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/';
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/';
         var disqus_script = 'embed.js';
       
     (function () {
