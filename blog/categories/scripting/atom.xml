@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: scripting | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/scripting/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-03-15T19:01:12-04:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/"/>
+    <updated>2014-03-15T18:50:08-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script</id>
+    <content type="html"><![CDATA[<p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
+to verify that one of my batch scripts was running with administrative privileges.</p>
+
+<p>Turns out this problem is easy to solve these days as long as you don&rsquo;t need to support
+XP.  Thanks to <a href="http://stackoverflow.com/a/21295806/1995977">and31415 on SO</a> for the
+great post on using <code>fsutil</code>!</p>
+
+<p>Here&rsquo;s a working example:</p>
+
+<p>``` console
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS</p>
+
+<p>:: verify we have admin privileges
+CALL :IsAdmin || (ECHO %~n0: ERROR &ndash; administrative privileges required &amp;&amp; EXIT /B 1)</p>
+
+<p>ECHO &ldquo;Hello, Admin!&rdquo;</p>
+
+<p>:EXIT
+EXIT /B</p>
+
+<p>:: function to verify admin/UAC privileges
+:: CREDIT: <a href="http://stackoverflow.com/a/21295806/1995977">http://stackoverflow.com/a/21295806/1995977</a>
+:IsAdmin
+IF NOT EXIST &ldquo;%SYSTEMROOT%\system32\fsutil.exe&rdquo; (
+  ECHO %~n0: WARNING &ndash; fsutil command not found; cannot verify adminstrative rights
+) ELSE (
+  &ldquo;%SYSTEMROOT%\system32\fsutil.exe&rdquo; dirty query &ldquo;%SystemDrive%&rdquo; >NUL 2>&amp;1
+)
+EXIT /B
+```
+Shameless plug &ndash; learn more tips and tricks for batch scripting in my <a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a>!</p>
+]]></content>
+  </entry>
+  
+</feed>

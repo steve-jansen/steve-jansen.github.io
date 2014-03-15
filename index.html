@@ -9,8 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops. Vagrant
-is sweet for DevOps. The Vagrant file &hellip;">
+  <meta name="description" content="While working on automated provisioning of a Jenkins slave server on Windows, I needed
+to verify that one of my batch scripts was running with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -60,6 +60,96 @@ is sweet for DevOps. The Vagrant file &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How to Verify Administrative Rights in a Windows Batch Script</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-15T18:50:08-04:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+        
+         | <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
+to verify that one of my batch scripts was running with administrative privileges.</p>
+
+<p>Turns out this problem is easy to solve these days as long as you don&rsquo;t need to support
+XP.  Thanks to <a href="http://stackoverflow.com/a/21295806/1995977">and31415 on SO</a> for the
+great post on using <code>fsutil</code>!</p>
+
+<p>Here&rsquo;s a working example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">@ECHO OFF</span>
+</span><span class='line'><span class="go">SETLOCAL ENABLEEXTENSIONS</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">:: verify we have admin privileges</span>
+</span><span class='line'><span class="go">CALL :IsAdmin || (ECHO %~n0: ERROR - administrative privileges required &amp;&amp; EXIT /B 1)</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">ECHO &quot;Hello, Admin!&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">:EXIT</span>
+</span><span class='line'><span class="go">EXIT /B</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">:: function to verify admin/UAC privileges</span>
+</span><span class='line'><span class="go">:: CREDIT: http://stackoverflow.com/a/21295806/1995977</span>
+</span><span class='line'><span class="go">:IsAdmin</span>
+</span><span class='line'><span class="go">IF NOT EXIST &quot;%SYSTEMROOT%\system32\fsutil.exe&quot; (</span>
+</span><span class='line'><span class="go">  ECHO %~n0: WARNING - fsutil command not found; cannot verify adminstrative rights</span>
+</span><span class='line'><span class="go">) ELSE (</span>
+</span><span class='line'><span class="go">  &quot;%SYSTEMROOT%\system32\fsutil.exe&quot; dirty query &quot;%SystemDrive%&quot; &gt;NUL 2&gt;&amp;1</span>
+</span><span class='line'><span class="go">)</span>
+</span><span class='line'><span class="go">EXIT /B</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Shameless plug &ndash; learn more tips and tricks for batch scripting in my <a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a>!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1220,51 +1310,6 @@ route <code>/api/doc</code>, and finally start the server.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/">A Fantastic Video Tutorial on Sublime Text 2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-21T12:29:00-04:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time>
-        
-         | <a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Jeffrey Way at Nettuts+ created a wonderul video tutorial on using Sublime Text 2
-to its fullest capabilities.</p>
-
-<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/TZ-bgcJ6fQo "></iframe></div>
-
-
-<p>Even better, Jeffrey authored a free online course to <a href="https://tutsplus.com/course/improve-workflow-in-sublime-text-2/">improve your workflow in Sublime Text 2</a>.
-You can read more about it at <a href="http://net.tutsplus.com/articles/news/perfect-workflow-in-sublime-text-free-course/">Perfect Workflow in Sublime Text: Free Course!</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1305,6 +1350,10 @@ You can read more about it at <a href="http://net.tutsplus.com/articles/news/per
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How To verify administrative rights in a Windows batch script</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
       </li>
     
@@ -1318,10 +1367,6 @@ You can read more about it at <a href="http://net.tutsplus.com/articles/news/per
     
       <li class="post">
         <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A better FTP client for Windows you already have: Git bash&#8217;s curl command</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB memory barrier of 32-bit Windows</a>
       </li>
     
   </ul>

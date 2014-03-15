@@ -4,7 +4,7 @@
   <title><![CDATA[Category: windows | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/windows/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-15T09:16:41-04:00</updated>
+  <updated>2014-03-15T19:01:12-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/"/>
+    <updated>2014-03-15T18:50:08-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script</id>
+    <content type="html"><![CDATA[<p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
+to verify that one of my batch scripts was running with administrative privileges.</p>
+
+<p>Turns out this problem is easy to solve these days as long as you don&rsquo;t need to support
+XP.  Thanks to <a href="http://stackoverflow.com/a/21295806/1995977">and31415 on SO</a> for the
+great post on using <code>fsutil</code>!</p>
+
+<p>Here&rsquo;s a working example:</p>
+
+<p>``` console
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS</p>
+
+<p>:: verify we have admin privileges
+CALL :IsAdmin || (ECHO %~n0: ERROR &ndash; administrative privileges required &amp;&amp; EXIT /B 1)</p>
+
+<p>ECHO &ldquo;Hello, Admin!&rdquo;</p>
+
+<p>:EXIT
+EXIT /B</p>
+
+<p>:: function to verify admin/UAC privileges
+:: CREDIT: <a href="http://stackoverflow.com/a/21295806/1995977">http://stackoverflow.com/a/21295806/1995977</a>
+:IsAdmin
+IF NOT EXIST &ldquo;%SYSTEMROOT%\system32\fsutil.exe&rdquo; (
+  ECHO %~n0: WARNING &ndash; fsutil command not found; cannot verify adminstrative rights
+) ELSE (
+  &ldquo;%SYSTEMROOT%\system32\fsutil.exe&rdquo; dirty query &ldquo;%SystemDrive%&rdquo; >NUL 2>&amp;1
+)
+EXIT /B
+```
+Shameless plug &ndash; learn more tips and tricks for batch scripting in my <a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a>!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Configuring Vagrant to dynamically match guest and host CPU architectures]]></title>
@@ -377,77 +417,6 @@ REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer /v NoLo
 <p>My Windows setup recommends 3 GB of virtual memory.  I&rsquo;d like to try upgrading my physical RAM from 6 GB to 8GB.  This would let me add another gigabyte to the paging file.  It would also leave another 1 GB of free space on Z:.  I&rsquo;m considering using this free space as a NTFS junction point with &ldquo;%TEMP%&rdquo; and &ldquo;%SYSTEMROOT%\TEMP&rdquo; to make the temp folders both fast and non-persistent between reboots.  (Junction points are the Windows equivalent of *nix symlinks for directories.  You can use the Sysinternals utility junction.exe or the Primo Ramdisk utility to define junction points.)</p>
 
 <p>I also want to test setting my IIS document root to Z: to make tests of deployment packages lightning fast (i.e., relocating the IIS document root from C:\inetpub to Z:\inetpub).  This will make disk I/O way faster for copying scores of little image and text files.  It also forces me to run an automated build/package/deploy between reboots (since Z:\ is wiped between reboots).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Tailoring the Windows Command Prompt Shell]]></title>
-    <link href="http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/"/>
-    <updated>2013-02-27T14:18:00-05:00</updated>
-    <id>http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell</id>
-    <content type="html"><![CDATA[<p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&rsquo;t know some of the tricks up the Command Prompt&rsquo;s sleeve.  So allow me to share some of my favorite settings.</p>
-
-<!-- more -->
-
-
-<h2>Launching the Command Prompt</h2>
-
-<p>Windows gurus launch the command prompt using the keyboard shortcut <code>Windows Logo Key</code>+<code>R</code> (i.e., &ldquo;Run&rdquo;) > Type <code>cmd.exe</code> then <code>Enter</code>.  This is way faster than navigating the Windows Start Menu to find the Command Prompt.</p>
-
-<h2>Preferences</h2>
-
-<p>Right click the Command Prompt title bar and select &ldquo;Properties&rdquo; from the context menu.  I modify the preferences highlighted in below screenshots to accomplish a few things:</p>
-
-<ul>
-<li>make the shell easier on our overtaxed eyes ;)</li>
-<li>quicker navigation of the command history (up/down arrows) by removing the noise of duplicate entries</li>
-<li>simplify copying text to copy any selected text (by the mouse) when you press enter</li>
-<li>simplify pasting text to paste on right click</li>
-</ul>
-
-
-<p><img src="/images/2013-02-27-A.png" alt="Screenshot of the Command Prompt Options tab" /></p>
-
-<p><img src="/images/2013-02-27-B.png" alt="Screenshot of the Command Prompt Options tab" /></p>
-
-<p><img src="/images/2013-02-27-C.png" alt="Screenshot of the Command Prompt Options tab" /></p>
-
-<p><img src="/images/2013-02-27-D.png" alt="Screenshot of the Command Prompt Options tab" /></p>
-
-<h2>Tab and Filename Autocompletion</h2>
-
-<p>The <code>Tab</code> key should auto complete the names of files and folders in the current working directory.  Each press of <code>Tab</code> should cycle to the next name.  The autocompletion is pretty smart &ndash; it will filter the choices based on what you have already typed.   For example, typing <code>D</code> then <code>Tab</code> will autocomplete the first file or folder that starts with the letter &ldquo;D&rdquo;.  Tabbing again will display the next file or folder that start with D.  Tabbing will cycle through a ring of possible matches.</p>
-
-<p>For example, tabbing through the letter &ldquo;D&rdquo; in your user profile directory on Windows 7 might autocomplete &ldquo;Desktop&rdquo;, &ldquo;Documents&rdquo;, &ldquo;Downloads&rdquo;, and then back to &ldquo;Desktop&rdquo;.  Autocomplete will even quote paths with spaces, which is a nice trick.  I often see experienced developers stuggle to find a filepath, repeatedly doing <code>DIR</code> and <code>CD</code> commands to just run a single batch script.</p>
-
-<p>One small shortcoming is autocomlete cannot expand environmental variables like <code>%ProgramFiles%</code> or <code>%UserProfile%</code>.  Although you can use <code>Windows logo key</code> + <code>R</code> Run dialog to autocomplete environmental variables.</p>
-
-<p>Autocompletion saves you a bunch of typing with just a key or two to filter your choices, tabbing until you find the folder you want,  pressing <code>\</code> to start tabbing through the subfolder, and repeat.  And it makes you look more competent when pair programming.</p>
-
-<h2>Command History</h2>
-
-<p>The <code>DOSKEY</code> utility is similar to the <code>history</code> utility on Unix/Linux shells.  Most developers know you can press the up arrow or down arrow to cycle through the history of issued commands.</p>
-
-<p>Most developers (and even sysadmins) aren&rsquo;t aware of the advanced keyboard shortcuts wired to <code>DOSKEY</code>:</p>
-
-<ul>
-<li>UP and DOWN ARROWS recall commands</li>
-<li><code>ESC</code> clears command line</li>
-<li><code>F7</code> displays command history</li>
-<li><code>ALT</code>+<code>F7</code> clears command history</li>
-<li><code>F8</code> searches command history</li>
-<li><code>F9</code> selects a command by number</li>
-</ul>
-
-
-<p>Example of pressing <code>ALT</code>+<code>F7</code> to view the command history:
-<img src="/images/2013-02-27-E.png" alt="Screenshot of the visual command history" /></p>
-
-<p>Example of pressing <code>F9</code> to recall a command by history number:
-<img src="/images/2013-02-27-F.png" alt="Screenshot of the visual command history" /></p>
-
-<p>Example of pressing <code>F8</code> to cycle through history entries matching the text &ldquo;D&rdquo; already typed into the comamnd line buffer:
-<img src="/images/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
 ]]></content>
   </entry>
   

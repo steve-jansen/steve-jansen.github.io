@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-15T09:16:41-04:00</updated>
+  <updated>2014-03-15T19:01:12-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,67 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/"/>
+    <updated>2014-03-15T18:50:08-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script</id>
+    <content type="html"><![CDATA[<p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
+to verify that one of my batch scripts was running with administrative privileges.</p>
+
+<p>Turns out this problem is easy to solve these days as long as you don&rsquo;t need to support
+XP.  Thanks to <a href="http://stackoverflow.com/a/21295806/1995977">and31415 on SO</a> for the
+great post on using <code>fsutil</code>!</p>
+
+<p>Here&rsquo;s a working example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">@ECHO OFF</span>
+</span><span class='line'><span class="go">SETLOCAL ENABLEEXTENSIONS</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">:: verify we have admin privileges</span>
+</span><span class='line'><span class="go">CALL :IsAdmin || (ECHO %~n0: ERROR - administrative privileges required &amp;&amp; EXIT /B 1)</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">ECHO &quot;Hello, Admin!&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">:EXIT</span>
+</span><span class='line'><span class="go">EXIT /B</span>
+</span><span class='line'>
+</span><span class='line'><span class="go">:: function to verify admin/UAC privileges</span>
+</span><span class='line'><span class="go">:: CREDIT: http://stackoverflow.com/a/21295806/1995977</span>
+</span><span class='line'><span class="go">:IsAdmin</span>
+</span><span class='line'><span class="go">IF NOT EXIST &quot;%SYSTEMROOT%\system32\fsutil.exe&quot; (</span>
+</span><span class='line'><span class="go">  ECHO %~n0: WARNING - fsutil command not found; cannot verify adminstrative rights</span>
+</span><span class='line'><span class="go">) ELSE (</span>
+</span><span class='line'><span class="go">  &quot;%SYSTEMROOT%\system32\fsutil.exe&quot; dirty query &quot;%SystemDrive%&quot; &gt;NUL 2&gt;&amp;1</span>
+</span><span class='line'><span class="go">)</span>
+</span><span class='line'><span class="go">EXIT /B</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Shameless plug &ndash; learn more tips and tricks for batch scripting in my <a href="http://steve-jansen.github.io/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a>!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Configuring Vagrant to dynamically match guest and host CPU architectures]]></title>
