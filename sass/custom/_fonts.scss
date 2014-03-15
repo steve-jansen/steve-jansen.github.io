@@ -8,3 +8,10 @@
 //$heading-font-family: "Verdana", sans-serif;
 //$header-title-font-family: "Futura", sans-serif;
 //$header-subtitle-font-family: "Futura", sans-serif;
+//
+$sans: "Source Sans Pro", "PT Sans", "Helvetica Neue", Arial, sans-serif !default;
+$serif: "Source Sans Pro", "PT Serif", Georgia, Times, "Times New Roman", serif !default;
+$mono: "Source Code Pro", Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace !default;
+$heading-font-family: "Source Sans Pro", "PT Serif", "Georgia", "Helvetica Neue", Arial, sans-serif !default;
+$header-title-font-family: "Source Code Pro", "Andale Mono", monospace !default;
+$header-subtitle-font-family: $header-title-font-family;

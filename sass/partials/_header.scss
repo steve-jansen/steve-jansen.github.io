@@ -1,11 +1,14 @@
 body > header {
   background: $header-bg;
+  font-family: $header-title-font-family;
+
   h1 {
     display: inline-block;
     margin: 0;
     a, a:visited, a:hover {
       color: $title_color;
       text-decoration: none;
+      font-family: $header-title-font-family;
     }
   }
   h2 {
@@ -14,5 +17,6 @@ body > header {
     font-size: x-large;
     color: $subtitle-color;
     font-weight: normal;
+    font-family: $header-title-font-family;
   }
 }

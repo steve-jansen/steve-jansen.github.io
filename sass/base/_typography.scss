@@ -1,9 +1,9 @@
 $blockquote: $type-border !default;
-$sans: "PT Sans", "Helvetica Neue", Arial, sans-serif !default;
-$serif: "PT Serif", Georgia, Times, "Times New Roman", serif !default;
-$mono: Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace !default;
-$heading-font-family: "PT Serif", "Georgia", "Helvetica Neue", Arial, sans-serif !default;
-$header-title-font-family: "Andale Mono", monospace;
+$sans: "Source Sans Pro", "PT Sans", "Helvetica Neue", Arial, sans-serif !default;
+$serif: "Source Sans Pro", "PT Serif", Georgia, Times, "Times New Roman", serif !default;
+$mono: "Source Code Pro", Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace !default;
+$heading-font-family: "Source Sans Pro", "PT Serif", "Georgia", "Helvetica Neue", Arial, sans-serif !default;
+$header-title-font-family: "Source Code Pro", "Andale Mono", monospace !default;
 $header-subtitle-font-family: $header-title-font-family;
 
 // Fonts
@@ -62,7 +62,10 @@ h5, section h4, section section h3 {
 h6, section h5, section section h4, section section section h3 {
   font-size: .8em;
 }
-p, blockquote, ul, ol { margin-bottom: 1.5em; }
+p, blockquote, ul, ol {
+  margin-bottom: 1.5em;
+  font-size: medium;
+}
 
 ul { list-style-type: disc;
   ul { list-style-type: circle; margin-bottom: 0px;
