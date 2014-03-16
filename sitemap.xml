@@ -95,8 +95,14 @@
         <lastmod>2014-03-15T18:59:57-04:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window/
+        </loc>
+        <lastmod>2014-03-16T18:43:21-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2014-03-15T18:59:57-04:00</lastmod>
+        <lastmod>2014-03-16T18:43:21-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
@@ -162,7 +168,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2014-03-15T18:59:57-04:00</lastmod>
+        <lastmod>2014-03-16T18:43:21-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>

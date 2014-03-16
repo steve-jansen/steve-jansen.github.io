@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-15T19:01:12-04:00</updated>
+  <updated>2014-03-16T18:46:18-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A better IIS Express console window]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window/"/>
+    <updated>2014-03-16T18:18:34-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window</id>
+    <content type="html"><![CDATA[<p>IIS Express is the <em>de facto</em>  server to use for local development of ASP.NET MVC and Web Api apps.  It&rsquo;s just like it&rsquo;s big brother IIS
+minus a few features rarely used for local development.
+Unlike it&rsquo;s big brother, IIS Express runs on demand as a regular console app under the security context of
+your current login.  This makes it much easier to start and stop debugging sessions.</p>
+
+<p>Being a console app is great &ndash; you can see <code>System.Diagnostics.Debug.Print</code> and <code>System.Diagnostics.Trace.Write</code>
+output right in the console alongside IIS&#8217; usual log statements for HTTP requests.</p>
+
+<p>A really useful trick is to create a Windows Explorer shortcut to iisexpress.exe, and open that shortcut iisexpress.exe.lnk file instead of directly
+opening iisexpress.exe. There are two benefits to this:</p>
+
+<ol>
+<li><p>iisexpress.exe gets a dedicated icon on the Windows taskbar.  In the screenshot below, I can <code>WinKey + 5</code> to quickly switch to my IIS Express
+console output.  (<code>WinKey + N</code> focuses/opens the Nth item on the taskbar; repeat as needed if you have multiple windows grouped for that taskbar icon).</p></li>
+<li><p>I can customize the command prompt preferences for just iisexpress.exe.  In the screenshot below, I&rsquo;m using a smaller font in purple color, with the
+window stretched the entire 1600 pixel width of my display. This helps greatly with the readability of long lines of text in the console output.</p></li>
+</ol>
+
+
+<p><img src="http://steve-jansen.github.io/images/2014-03-16-A.png" alt="Screenshot of the iisexpress.exe open in a custom window" /></p>
+
+<p>Here&rsquo;s a closer look at the console ouptut:
+<img src="http://steve-jansen.github.io/images/2014-03-16-H.png" alt="Screenshot of the iisexpress.exe open in a custom window" /></p>
+
+<p>Here are screenshots of the Explorer settings I used for <code>C:\Program Files\IIS Express\iisexpress.exe.lnk</code>:</p>
+
+<p><img src="http://steve-jansen.github.io/images/2014-03-16-B.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="http://steve-jansen.github.io/images/2014-03-16-C.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="http://steve-jansen.github.io/images/2014-03-16-D.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="http://steve-jansen.github.io/images/2014-03-16-E.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="http://steve-jansen.github.io/images/2014-03-16-F.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="http://steve-jansen.github.io/images/2014-03-16-G.png" alt="Screenshot of the iisexpress.exe.lnk settings" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
