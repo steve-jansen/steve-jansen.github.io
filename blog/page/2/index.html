@@ -1,0 +1,1160 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>/* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Tom Preston-Werner, co-founder of GitHub.com, highlights the competitive advantages behind a number
+of company virtues I admire. A few of these &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/page/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub Sings the Praises of a Distributed Workforce</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-10T21:41:00+01:00" pubdate data-updated="true">Sep 10<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Tom Preston-Werner, co-founder of <a href="GitHub.com">GitHub.com</a>, highlights the competitive advantages behind a number
+of company virtues I admire.   A few of these virtues are organic growth, outstanding user experience, and a distributed workforce.</p>
+
+<p>Below is an video excerpt from a fireside chat interview with Mr. Preston-Werner from July 2013, speaking to the benefits
+of a remote workers, particularly developers:</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/n1YXkd4r2gw "></iframe></div>
+
+
+<p>One of the most memorable quotations from the interview is:</p>
+
+<blockquote><p>&ldquo;Companies that aren&rsquo;t distributed can&rsquo;t possibly say that they hire the best people.&rdquo;</p></blockquote>
+
+<p>I have the privilege of working at a great employer that also &ldquo;gets it&rdquo;.  Most of my colleagues are remote workers across
+nearly every time zone.  Constraining your team to a single city is a self-imposed barrier,
+particularly for creative work like coding that fits brilliantly with remote collaboration.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a Shell Script</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-27T15:44:00+01:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
+yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,
+<a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
+be commanded to run in non-interactive mode.</p>
+
+<p>Enter an old-school POSIX friend in core-utils&hellip; <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
+
+<p>The <code>yes</code> utility continuously outputs &lsquo;Y&rsquo; followed by a newline as long as another process is reading the stdout stream.
+Very convenient for piping to another program.</p>
+
+<p>Here&rsquo;s how I automated Yeoman to generate a new AngularJS app:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># yeoman has a number of interactive prompts, and sadly doesn&#39;t support a batch mode</span>
+</span><span class='line'><span class="c"># so we use the coreutils `yes` utility to accept all the default answers in yeoman;</span>
+</span><span class='line'><span class="c"># yes is not part of msysgit, so skip this when running on windows without cygwin</span>
+</span><span class='line'>which yes &gt; /dev/null
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span>
+</span><span class='line'><span class="k">then</span>
+</span><span class='line'><span class="k">  </span>yes | yo angular
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/22/wiring-together-passport-swagger-express/">Wiring Together Express, Passport OAuth, and Swagger in NodeJS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-22T22:07:00+01:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/22/wiring-together-passport-swagger-express/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
+the <a href="http://passportjs.org/guide/">Passport authentication strategy for GitHub OAuth</a> with
+<a href="https://github.com/wordnik/swagger-node-express">Swagger for Express</a>.  Normally, this
+would be fairly straightforward.  A wrinkle with other examples is I needed to disallow
+all anonymous access for an intranet app.</p>
+
+<p>I&rsquo;m a big fan of Swagger UI &ndash; it&rsquo;s a great, DRY way to auto-document your REST APIs. I expected Swagger
+to be a natural fit with NodeJS.  Suprisingly, I found the Swagger.Net implmentation for .Net&rsquo;s WebAPI
+to be considerably easier to use compared to the NodeJS implementation.
+Swagger.Net easily drops into an existing WebAPI project.  Not so with NodeJS.</p>
+
+<p>In Node, you really have to write your REST APIs from the ground up using the Swagger packge.  The other
+wacky part for me was you need two Express apps side-by-side to handle requests for both REST APIs and
+static content.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">app</span>     <span class="o">=</span> <span class="nx">express</span><span class="p">(),</span>
+</span><span class='line'>    <span class="nx">subapp</span>  <span class="o">=</span> <span class="nx">express</span><span class="p">(),;</span>
+</span><span class='line'>    <span class="nx">swagger</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./lib/swagger/swagger&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As we&rsquo;ll see below, the <code>subapp</code> sandboxes the Swagger package to the <code>/api/*</code> route.</p>
+
+<p><em>(I use a local copy of the swagger-node-express package downloaded to my source tree because I found that
+the npm package was considerably outdated compared to the master branch of the swagger-node-express repo.)</em></p>
+
+<p>Next, we configure PassportJS to use GitHub OAuth.  GitHub will POST back to the route
+<code>/auth/github/callback</code> upon successful authentication.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">passport</span>       <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;passport&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">GitHubStrategy</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;passport-github&#39;</span><span class="p">).</span><span class="nx">Strategy</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">passport</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="k">new</span> <span class="nx">GitHubStrategy</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">clientID</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;OAUTH_ID&#39;</span><span class="p">],</span>
+</span><span class='line'>    <span class="nx">clientSecret</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;OAUTH_TOKEN&#39;</span><span class="p">],</span>
+</span><span class='line'>    <span class="nx">callbackURL</span><span class="o">:</span> <span class="s1">&#39;/auth/github/callback&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="kd">function</span><span class="p">(</span><span class="nx">accessToken</span><span class="p">,</span> <span class="nx">refreshToken</span><span class="p">,</span> <span class="nx">profile</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">user</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">id</span><span class="o">:</span> <span class="nx">profile</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">email</span><span class="o">:</span> <span class="p">(</span><span class="nx">profile</span><span class="p">.</span><span class="nx">emails</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">?</span> <span class="nx">profile</span><span class="p">.</span><span class="nx">emails</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">gravatar</span><span class="o">:</span> <span class="nx">profile</span><span class="p">.</span><span class="nx">_json</span><span class="p">.</span><span class="nx">gravatar_id</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For my needs, I got away with serializing the 3 user properties I need to a session cookie:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">passport</span><span class="p">.</span><span class="nx">serializeUser</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">user</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">passport</span><span class="p">.</span><span class="nx">deserializeUser</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">user</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A critical piece of wiring is a reusable function to verify authentication:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// middleware to ensure user is authenticated</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">authenticate</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">isAuthenticated</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">next</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">&#39;x-requested-with&#39;</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;XMLHttpRequest&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s2">&quot;Authentication required&quot;</span><span class="p">,</span> <span class="mi">401</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The next key wiring is to configure both Express apps to use Passport as well as our <code>authenticate</code> function.
+This approach prevents infinite OAuth HTTP 302 redirects:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// configure express to use swagger for the `/api` route</span>
+</span><span class='line'><span class="nx">subpath</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">cookieParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">bodyParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">methodOverride</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">session</span><span class="p">({</span> <span class="nx">secret</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;SESSION_TOKEN&#39;</span><span class="p">]</span> <span class="p">}));</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">initialize</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">session</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">authenticate</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">swagger</span><span class="p">.</span><span class="nx">setAppHandler</span><span class="p">(</span><span class="nx">subpath</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// configure express for the static content on the `/` route</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">cookieParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">bodyParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">methodOverride</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">session</span><span class="p">({</span> <span class="nx">secret</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;SESSION_TOKEN&#39;</span><span class="p">]</span> <span class="p">}));</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">initialize</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">session</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">router</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">authenticate</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/api&#39;</span><span class="p">,</span> <span class="nx">subpath</span><span class="p">);</span> <span class="cm">/* mount `/api` using the subapp */</span>
+</span><span class='line'>  <span class="c1">// default document middleware for swagger/index.html</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/swagger&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="s1">&#39;/swagger&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/swagger/&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">next</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/swagger&#39;</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public/swagger&#39;</span><span class="p">)));</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public/client&#39;</span><span class="p">)));</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, we define routes to handle OAuth logins and callbacks, then configure Swagger using the
+route <code>/api/doc</code>, and finally start the server.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// GitHub OAuth routes</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="nx">passport</span><span class="p">.</span><span class="nx">authenticate</span><span class="p">(</span><span class="s1">&#39;github&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/auth/github/callback&#39;</span><span class="p">,</span>  <span class="nx">passport</span><span class="p">.</span><span class="nx">authenticate</span><span class="p">(</span><span class="s1">&#39;github&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">successReturnToOrRedirect</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="nx">failureRedirect</span><span class="o">:</span> <span class="s1">&#39;/login&#39;</span> <span class="p">}));</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Swagger configuration</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">addModels</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./models&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">addGet</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./controllers/user&#39;</span><span class="p">).</span><span class="nx">get</span><span class="p">);</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">configureSwaggerPaths</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;/doc&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../package.json&#39;</span><span class="p">).</span><span class="nx">version</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">8080</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/">A Fantastic Video Tutorial on Sublime Text 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-21T12:29:00+01:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Jeffrey Way at Nettuts+ created a wonderul video tutorial on using Sublime Text 2
+to its fullest capabilities.</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/TZ-bgcJ6fQo "></iframe></div>
+
+
+<p>Even better, Jeffrey authored a free online course to <a href="https://tutsplus.com/course/improve-workflow-in-sublime-text-2/">improve your workflow in Sublime Text 2</a>.
+You can read more about it at <a href="http://net.tutsplus.com/articles/news/perfect-workflow-in-sublime-text-free-course/">Perfect Workflow in Sublime Text: Free Course!</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/">For All UI Devs Out there&#8230;json-proxy v0.10.0</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-20T21:44:00+01:00" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
+
+<p>If you haven&rsquo;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
+
+<p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
+Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
+
+<p>Well, the proxy lets you transparently reroute <code>http://localhost/api/foo/1</code> from your local laptop to an integration server
+like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No nonsense.</p>
+
+<h3>Grunt</h3>
+
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&rsquo;s an example config from the scaffold project:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">connect</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">port</span><span class="o">:</span> <span class="mi">9000</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Change this to &#39;0.0.0.0&#39; to access the server from outside.</span>
+</span><span class='line'>    <span class="nx">hostname</span><span class="o">:</span> <span class="s1">&#39;localhost&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">livereload</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">middleware</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">connect</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span>
+</span><span class='line'>          <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;json-proxy&#39;</span><span class="p">).</span><span class="nx">initialize</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">forward</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;/api/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;/swagger/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">},</span>
+</span><span class='line'>              <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User&#39;</span><span class="o">:</span> <span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User-Email&#39;</span><span class="o">:</span> <span class="s1">&#39;john.doe@example.com&#39;</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>          <span class="p">}),</span>
+</span><span class='line'>          <span class="nx">lrSnippet</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="s1">&#39;.tmp&#39;</span><span class="p">),</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="nx">yeomanConfig</span><span class="p">.</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Auth Headers</h3>
+
+<p>Even better, you can inject headers into proxied request.  So if you remote server requires an Authorization header with an OAuth-style token, or sits behind an Enterprise SSO appliance, you can add the headers to deal with bypassing the remote server authentication.</p>
+
+<h3>CLI</h3>
+
+<p>The CLI utility is also improved.  The CLI properly supports global installation.
+If you install using <code>sudo npm install -g json-proxy</code>, you can invoke the proxy simply as <code>json-proxy</code> with whatever args you want.</p>
+
+<h3>CLI usage info:</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>json-proxy <span class="o">[</span>-c configFile<span class="o">]</span> <span class="o">[</span>-p port<span class="o">]</span> <span class="o">[</span>-f proxy forwarding rule<span class="o">]</span>
+</span><span class='line'>             <span class="o">[</span>-h header rule<span class="o">]</span> <span class="o">[</span>-html5mode <span class="o">[</span>defaultFile<span class="o">]]</span> <span class="o">[</span>directory<span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>Examples:
+</span><span class='line'>   json-proxy -p 8080 -f <span class="s2">&quot;/api=http://server&quot;</span> -f <span class="s2">&quot;/=http://localhost:9000&quot;</span> .
+</span><span class='line'>   json-proxy -h <span class="s2">&quot;X-Forwarded-User=johndoe&quot;</span> /tmp/folder
+</span><span class='line'>   json-proxy -c <span class="s2">&quot;/tmp/config.json&quot;</span>
+</span><span class='line'>
+</span><span class='line'>By default, looks <span class="k">for </span>a config file at ./json-proxy.json
+</span><span class='line'>
+</span><span class='line'>Environmental variables:
+</span><span class='line'>  JSON_PROXY_PORT         see --port
+</span><span class='line'>  JSON_PROXY_WEBROOT      directory
+</span><span class='line'>  JSON_PROXY_GATEWAY      --gateway
+</span><span class='line'>  JSON_PROXY_GATEWAY_AUTH <span class="s2">&quot;username:password&quot;</span> credentials <span class="k">for</span> --gateway<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>Options:
+</span><span class='line'>  -p, --port     The TCP port <span class="k">for </span>the proxy server
+</span><span class='line'>  -f, --forward  a forwarding rule <span class="o">(</span>ex. /foo<span class="o">=</span>server/foo<span class="o">)</span>
+</span><span class='line'>  -h, --header   a custom request header <span class="o">(</span>ex. iv-user<span class="o">=</span>johndoel<span class="o">)</span>
+</span><span class='line'>  -c, --config   a config file
+</span><span class='line'>  -g, --gateway  URL <span class="k">for </span>a LAN HTTP proxy to use <span class="k">for </span>forwarding requests
+</span><span class='line'>  --html5mode    support AngularJS HTML5 mode by catching 404s
+</span><span class='line'>  -?, --help     about this utility
+</span><span class='line'>  --version      version info
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
+<a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
+
+<p>Enjoy!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/11/passport-reverseproxy/">Passport-reverseproxy</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-11T19:38:00+01:00" pubdate data-updated="true">Aug 11<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/11/passport-reverseproxy/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
+
+<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
+Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&rsquo;s WebSeal application for SSO does exactly this.</p>
+
+<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
+inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
+
+<p>Installing the provider is as simple as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install express
+</span><span class='line'>npm install passport
+</span><span class='line'>npm install passport-reverseproxy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&rsquo;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
+
+<p>Overall, I think Passport is a great library &ndash; both easy to use and easy to implement custom strategies.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/">Update to the Cordova Email Plugin for iOS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-06T23:45:00+01:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
+v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
+
+<p>You can give it a test drive with:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo npm install -g cordova
+</span><span class='line'>cordova create ~/MyApp MyApp
+</span><span class='line'><span class="nb">cd</span> ~/MyApp
+</span><span class='line'>cordova platform add ios
+</span><span class='line'>cordova plugin add emailcomposer <span class="c"># using the http://plugins.cordova.io registry</span>
+</span><span class='line'>cordova build
+</span><span class='line'><span class="c"># manually update the www/index.html file to link to www/examples/EmailComposer.html</span>
+</span><span class='line'><span class="c"># run the app in the iOS 5.x+ simulator via Xcode</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Major changes to the plugin include:</p>
+
+<ul>
+<li>Support for file attachments using files paths, or file contents as encoded strings</li>
+<li>Simpler JavaScript API</li>
+<li>Support for cordova.require to load the plugin in JavaScript which means less global namespace pollution</li>
+<li>Cordova 2.0+ plugin spec implemented (i.e., <code>- (void) show:(CDVInvokedUrlCommand*)command</code>)</li>
+<li>ARC support</li>
+<li>Ran git subtree to extract the history into a standalone repo,
+per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/">the new Cordova plugin respository guidelines</a></li>
+<li>Backwards compatibility with the JS API for the 1.x plugin</li>
+<li>Backwards compatibility with the iOS/EmailComposerWithAttachments plugin</li>
+<li>Jasmine unit tests for the JS part of the plugin</li>
+<li>Xcode unit tests for the obj-c part of the plugin</li>
+</ul>
+
+
+<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
+<a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
+As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
+
+<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to Modify the TCP/IP Port Binding for the Microsoft Web Deployment Agent Service</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-28T16:44:00+00:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work.  I&rsquo;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) &ndash; it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&rsquo;s Web Deployment Agent service.</p>
+
+<p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&hellip;</p>
+
+<div><script src='https://gist.github.com/5060329.js'></script>
+<noscript><pre><code>:: Name:     MsDepSvc.Port.cmd
+:: Purpose:  Modifies the TCP/IP port that the Web Deployment Agent Service
+::           (MsDepSvc) listens on.  Tested on Win7 Enterprise 32-bit.
+:: Author:   stevejansen_github@icloud.com
+:: Revision: January 2013
+
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS
+SETLOCAL ENABLEDELAYEDEXPANSION
+
+:: variables
+SET me=%~n0
+SET url=
+SET port=
+IF NOT &quot;%~1&quot;==&quot;&quot; (
+  SET /A port=%~1
+)
+
+ECHO %me%: Web Deployment Agent Service (MsDepSvc) port change script
+
+:: default argument values
+IF &quot;%port%&quot;==&quot;&quot; (
+  SET /A port=8172
+  ECHO %me%: INFO - using default port value of 8172
+)
+
+SC.EXE query msdepsvc &gt;NUL 2&gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - MsDepSvc not installed
+  ECHO %me%: exiting
+  EXIT /B 1
+)
+
+ECHO %me%: stopping MsDepSvc
+NET STOP msdepsvc &gt;NUL 2&gt;NUL
+
+:: check if the default port is set
+REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl &gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - MsDepSvc ListenUrl registry key not found
+  REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters
+  ECHO %me%: exiting
+  EXIT /B 2
+)
+
+FOR /F &quot;tokens=3&quot; %%I IN (&#39;REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl&#39;) DO (
+  SET url=%%I
+)
+ECHO %me%: INFO - MsDepSvc current reservation is &quot;%url%&quot;
+
+NETSH.EXE http show urlacl &quot;%url%&quot; &gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - reservation for &quot;%url%&quot; not found
+  EXIT /B 4
+)
+
+:: save the existing urlacl properties for User, Listen, Delegate, and SDDL
+FOR /F &quot;tokens=1,* delims=: &quot; %%A IN (&#39;NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;&#39;) DO (
+  SET URLACL.%%A=%%B
+)
+
+IF NOT DEFINED URLACL.User     ECHO %me%: Failed to read the exising URLACL setting for User     &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.Listen   ECHO %me%: Failed to read the exising URLACL setting for Listen   &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.Delegate ECHO %me%: Failed to read the exising URLACL setting for Delegate &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.SDDL     ECHO %me%: Failed to read the exising URLACL setting for SDDL     &amp;&amp;GOTO :ERROR
+
+ECHO %me%: updating MsDepSvc to listen on port %port%
+REG.EXE ADD HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl /t REG_SZ /f /d &quot;http://+:%port%/MSDEPLOYAGENTSERVICE/&quot;
+
+ECHO %me%: deleting the existing reservation for MsDepSvc
+NETSH.EXE http delete urlacl &quot;%url%&quot; || GOTO :ERROR
+
+ECHO %me%: adding the port %port% reservation for MsDepSvc
+NETSH.EXE http add urlacl url=http://+:%port%/MsDeployAgentService/ user=&quot;%URLACL.User%&quot; listen=&quot;%URLACL.Listen%&quot; delegate=&quot;%URLACL.Delegate%&quot; SDDL=&quot;%URLACL.SDDL%&quot;  || GOTO :ERROR
+
+ECHO %me%: starting MsDepSvc
+NET START msdepsvc &gt;NUL 2&gt;NUL
+
+ECHO %me%: process info for MsDepSvc
+QUERY.EXE PROCESS MSDEPSVC.EXE
+ECHO.
+ECHO %me%: port bindings for MsDepSvc
+NETSTAT.EXE -a -n -o | FINDSTR /R &quot;TCP.*:%port%.*LISTENING Proto&quot;
+ECHO.
+ECHO %me%: finished
+
+:END
+ENDLOCAL
+ECHO ON
+@EXIT /B 0
+
+:ERROR
+ECHO %me%: ERROR - exiting with errorlevel %ERRORLEVEL%
+ECHO ON
+@EXIT/B %ERRORLEVEL%
+</code></pre></noscript></div>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">Tailoring the Windows Command Prompt Shell</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-27T14:18:00+00:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&rsquo;t know some of the tricks up the Command Prompt&rsquo;s sleeve.  So allow me to share some of my favorite settings.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/25/a-ghost-no-more/">A Ghost No More</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-25T12:49:00+00:00" pubdate data-updated="true">Feb 25<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/25/a-ghost-no-more/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Blogging has long been on my todo list &mdash; quite frankly too long.  A colleague shared <a href="http://www.troyhunt.com/2013/02/the-ghost-who-codes-how-anonymity-is.html">a great piece by Troy Hunt named &ldquo;The ghost who codes: how anonymity is killing your career&rdquo;</a>.  Troy inspired me that I need to make the time to just get it done.  So this is where I start giving back whatever small knowledge bits I may have.</p>
+
+<p>I am fortunate enough to be with a company now that encourages professional writing, which hasn&rsquo;t always been the case.  Troy&rsquo;s article really resonated with me that developers have an insatiatable appetite for consuming knowledge.  We take information all the time, and there&rsquo;s a duty on all our parts to give back and not just take.  Thanks to both Troy any my colleague Alex for pushing me to do more!</p>
+
+<p>Many years ago I learned an metaphor from a very accomplished veteran of the US military that is quite applicable to coding: &ldquo;you have to either be tough or smart to succeed&rdquo;.  Say you want to navigate from point A to point B, and there just happens to be a tall mountain between the two points.  The tough guy takes a straight line route, ardously ascending and descending the mountain.  The smart guy circumnavigates the mountain, saving time and energy.</p>
+
+<p>I know developers like to be the smartest person in the room, but, I am self-aware enough to admit I often fall into the &ldquo;tough&rdquo; camp &ndash; hacking into the late hours until the job is done.  I suppose this blog will be a true measure of how many (or how few) smart/clever ideas I have up my sleeve!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" style="display: block; margin-left:auto; margin-right: auto" />
+	</span>
+</section>
+<section>
+  <p style="clear:both">
+    Hi, I&#8217;m Steve.  I&#8217;m a software developer loving life in Charlotte, NC,
+    an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>
+    and an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I&#8217;m not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+
+<section>
+  <h1>Guides</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How To verify administrative rights in a Windows batch script</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+    <li /><a href="/atom.xml" title="Subscribe via RSS">Subscribe via RSS</a>
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>&#8211;>
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

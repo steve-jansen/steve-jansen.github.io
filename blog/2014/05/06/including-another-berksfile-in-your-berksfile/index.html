@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Including another berksfile in your berksfile - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="As part of my cooking with Chef&rsquo;s new workflow,
+I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Including Another Berksfile in Your Berksfile</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-06T18:11:57+01:00" pubdate data-updated="true">May 6<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>As part of my cooking with <a href="http://www.getchef.com/downloads/chef-dk/">Chef&rsquo;s new workflow</a>,
+I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s dependencies.</p>
+
+<p>Thanks <a href="https://coderwall.com/p/j72egw">Vasily Mikhayliche&rsquo;s Coderwall post</a> and <a href="https://sethvargo.com/berksfile-magic/">Seth Vargo&rsquo;s post on Berks magic</a>, I was able to hack something
+that worked for me with <a href="http://berkshelf.com/v2.0/">Berkshelf v2.0</a>. (We don&rsquo;t have time to migrate to Berks 3.0 for another couple of weeks, and this feature doesn&rsquo;t seem to be part of Berks 3.0).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># vi:ft=ruby:</span>
+</span><span class='line'><span class="n">site</span> <span class="ss">:opscode</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Extension method to import secondary dependencies in a referenced site-cookbook</span>
+</span><span class='line'><span class="c1"># using the constraints in the site-cookbook&#39;s Berkshelf file, rather than just</span>
+</span><span class='line'><span class="c1"># the name of the dependencies in the site-cookbook&#39;s metadata.rb file</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># credit: https://sethvargo.com/berksfile-magic/</span>
+</span><span class='line'><span class="c1">#         https://coderwall.com/p/j72egw</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">site_cookbook</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">berksfile</span> <span class="o">=</span> <span class="s2">&quot;../</span><span class="si">#{</span><span class="n">path</span><span class="si">}</span><span class="s2">/Berksfile&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="n">berksfile</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">berksfile</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># comment out lines like `site :opscode`, which cannot be imported multiple times</span>
+</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(^\s*site\s)/</span><span class="p">,</span> <span class="s1">&#39;#\1&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># comment out lines like `metadata`, which cannot be imported multiple times</span>
+</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(^\s*metadata\s)/</span><span class="p">,</span> <span class="s1">&#39;#\1&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">instance_eval</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;nginx&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 2.4.4&#39;</span>
+</span><span class='line'><span class="n">site_cookbook</span> <span class="s1">&#39;my-site-cookbook&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Happy cooking!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-06T18:11:57+01:00" pubdate data-updated="true">May 6<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/berkshelf/'>Berkshelf</a>, <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/devops/'>devops</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/" title="Previous Post: Adding Chef encrypted data bags to source control">&laquo; Adding Chef encrypted data bags to source control</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" style="display: block; margin-left:auto; margin-right: auto" />
+	</span>
+</section>
+<section>
+  <p style="clear:both">
+    Hi, I'm Steve.  I'm a software developer loving life in Charlotte, NC,
+    an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>
+    and an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+
+<section>
+  <h1>Guides</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How To verify administrative rights in a Windows batch script</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+    <li /><a href="/atom.xml" title="Subscribe via RSS">Subscribe via RSS</a>
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

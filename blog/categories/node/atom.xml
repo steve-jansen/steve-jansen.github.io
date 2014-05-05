@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: node | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/node/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-05-05T22:22:39+01:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>
+    <link href="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
+    <updated>2013-08-20T21:44:00+01:00</updated>
+    <id>http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
+    <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
+
+<p>If you haven&rsquo;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
+
+<p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
+Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
+
+<p>Well, the proxy lets you transparently reroute <code>http://localhost/api/foo/1</code> from your local laptop to an integration server
+like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No nonsense.</p>
+
+<h3>Grunt</h3>
+
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&rsquo;s an example config from the scaffold project:</p>
+
+<p>```js
+connect: {
+  options: {</p>
+
+<pre><code>port: 9000,
+// Change this to '0.0.0.0' to access the server from outside.
+hostname: 'localhost'
+</code></pre>
+
+<p>  },
+  livereload: {</p>
+
+<pre><code>options: {
+  middleware: function (connect) {
+    return [
+      require('json-proxy').initialize({
+        proxy: {
+          forward: {
+            '/api/': 'http://integration-server:4040',
+            '/swagger/': 'http://integration-server:4040',
+          },
+          headers: {
+            'X-Forwarded-User': 'John Doe',
+            'X-Forwarded-User-Email': 'john.doe@example.com'
+          }
+        }
+      }),
+      lrSnippet,
+      mountFolder(connect, '.tmp'),
+      mountFolder(connect, yeomanConfig.app)
+    ];
+  }
+}
+</code></pre>
+
+<p>  },
+```</p>
+
+<h3>Auth Headers</h3>
+
+<p>Even better, you can inject headers into proxied request.  So if you remote server requires an Authorization header with an OAuth-style token, or sits behind an Enterprise SSO appliance, you can add the headers to deal with bypassing the remote server authentication.</p>
+
+<h3>CLI</h3>
+
+<p>The CLI utility is also improved.  The CLI properly supports global installation.
+If you install using <code>sudo npm install -g json-proxy</code>, you can invoke the proxy simply as <code>json-proxy</code> with whatever args you want.</p>
+
+<h3>CLI usage info:</h3>
+
+<p>```bash
+json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]</p>
+
+<pre><code>         [-h header rule] [-html5mode [defaultFile]] [directory]
+</code></pre>
+
+<p>Examples:
+   json-proxy -p 8080 -f &ldquo;/api=<a href="http://server">http://server</a>&rdquo; -f &ldquo;/=<a href="http://localhost:9000">http://localhost:9000</a>&rdquo; .
+   json-proxy -h &ldquo;X-Forwarded-User=johndoe&rdquo; /tmp/folder
+   json-proxy -c &ldquo;/tmp/config.json&rdquo;</p>
+
+<p>By default, looks for a config file at ./json-proxy.json</p>
+
+<p>Environmental variables:
+  JSON_PROXY_PORT         see &mdash;port
+  JSON_PROXY_WEBROOT      directory
+  JSON_PROXY_GATEWAY      &mdash;gateway
+  JSON_PROXY_GATEWAY_AUTH &ldquo;username:password&rdquo; credentials for &mdash;gateway)</p>
+
+<p>Options:
+  -p, &mdash;port     The TCP port for the proxy server                    <br/>
+  -f, &mdash;forward  a forwarding rule (ex. /foo=server/foo)              <br/>
+  -h, &mdash;header   a custom request header (ex. iv-user=johndoel)       <br/>
+  -c, &mdash;config   a config file                                        <br/>
+  -g, &mdash;gateway  URL for a LAN HTTP proxy to use for forwarding requests
+  &mdash;html5mode    support AngularJS HTML5 mode by catching 404s        <br/>
+  &ndash;?, &mdash;help     about this utility                                   <br/>
+  &mdash;version      version info          <br/>
+```</p>
+
+<p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
+<a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
+
+<p>Enjoy!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[passport-reverseproxy]]></title>
+    <link href="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/"/>
+    <updated>2013-08-11T19:38:00+01:00</updated>
+    <id>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy</id>
+    <content type="html"><![CDATA[<p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
+
+<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
+Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&rsquo;s WebSeal application for SSO does exactly this.</p>
+
+<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
+inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
+
+<p>Installing the provider is as simple as:</p>
+
+<p><code>bash
+npm install express
+npm install passport
+npm install passport-reverseproxy
+</code></p>
+
+<p>I&rsquo;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
+
+<p>Overall, I think Passport is a great library &ndash; both easy to use and easy to implement custom strategies.</p>
+]]></content>
+  </entry>
+  
+</feed>

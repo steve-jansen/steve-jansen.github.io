@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: windows | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/windows/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-05-05T22:22:39+01:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A better IIS Express console window]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window/"/>
+    <updated>2014-03-16T22:18:34+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window</id>
+    <content type="html"><![CDATA[<p>IIS Express is the <em>de facto</em>  server to use for local development of ASP.NET MVC and Web Api apps.  It&rsquo;s just like it&rsquo;s big brother IIS
+minus a few features rarely used for local development.
+Unlike it&rsquo;s big brother, IIS Express runs on demand as a regular console app under the security context of
+your current login.  This makes it much easier to start and stop debugging sessions.</p>
+
+<p>Being a console app is great &ndash; you can see <code>System.Diagnostics.Debug.Print</code> and <code>System.Diagnostics.Trace.Write</code>
+output right in the console alongside IIS' usual log statements for HTTP requests.</p>
+
+<p>A really useful trick is to create a Windows Explorer shortcut to iisexpress.exe, and open that shortcut iisexpress.exe.lnk file instead of directly
+opening iisexpress.exe. There are two benefits to this:</p>
+
+<ol>
+<li><p>iisexpress.exe gets a dedicated icon on the Windows taskbar.  In the screenshot below, I can <code>WinKey + 5</code> to quickly switch to my IIS Express
+console output.  (<code>WinKey + N</code> focuses/opens the Nth item on the taskbar; repeat as needed if you have multiple windows grouped for that taskbar icon).</p></li>
+<li><p>I can customize the command prompt preferences for just iisexpress.exe.  In the screenshot below, I&rsquo;m using a smaller font in purple color, with the
+window stretched the entire 1600 pixel width of my display. This helps greatly with the readability of long lines of text in the console output.</p></li>
+</ol>
+
+
+<p><img src="/images/2014-03-16-A.png" alt="Screenshot of the iisexpress.exe open in a custom window" /></p>
+
+<p>Here&rsquo;s a closer look at the console ouptut:
+<img src="/images/2014-03-16-H.png" alt="Screenshot of the iisexpress.exe open in a custom window" /></p>
+
+<p>Here are screenshots of the Explorer settings I used for <code>C:\Program Files\IIS Express\iisexpress.exe.lnk</code>:</p>
+
+<p><img src="/images/2014-03-16-B.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="/images/2014-03-16-C.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="/images/2014-03-16-D.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="/images/2014-03-16-E.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="/images/2014-03-16-F.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
+<img src="/images/2014-03-16-G.png" alt="Screenshot of the iisexpress.exe.lnk settings" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/"/>
+    <updated>2014-03-15T22:50:08+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script</id>
+    <content type="html"><![CDATA[<p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
+to verify that one of my batch scripts was running with administrative privileges.</p>
+
+<p>Turns out this problem is easy to solve these days as long as you don&rsquo;t need to support
+XP.  Thanks to <a href="http://stackoverflow.com/a/21295806/1995977">and31415 on SO</a> for the
+great post on using <code>fsutil</code>!</p>
+
+<p>Here&rsquo;s a working example:</p>
+
+<p>``` console
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS</p>
+
+<p>:: verify we have admin privileges
+CALL :IsAdmin || (ECHO %~n0: ERROR &ndash; administrative privileges required &amp;&amp; EXIT /B 1)</p>
+
+<p>ECHO &ldquo;Hello, Admin!&rdquo;</p>
+
+<p>:EXIT
+EXIT /B</p>
+
+<p>:: function to verify admin/UAC privileges
+:: CREDIT: <a href="http://stackoverflow.com/a/21295806/1995977">http://stackoverflow.com/a/21295806/1995977</a>
+:IsAdmin
+IF NOT EXIST &ldquo;%SYSTEMROOT%\system32\fsutil.exe&rdquo; (
+  ECHO %~n0: WARNING &ndash; fsutil command not found; cannot verify adminstrative rights
+) ELSE (
+  &ldquo;%SYSTEMROOT%\system32\fsutil.exe&rdquo; dirty query &ldquo;%SystemDrive%&rdquo; >NUL 2>&amp;1
+)
+EXIT /B
+```
+Shameless plug &ndash; learn more tips and tricks for batch scripting in my <a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a>!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring Vagrant to dynamically match guest and host CPU architectures]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/"/>
+    <updated>2014-03-15T00:06:26+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures</id>
+    <content type="html"><![CDATA[<p>Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops.  <a href="http://www.vagrantup.com">Vagrant</a>
+is sweet for DevOps.  The Vagrant file worked great on his Macbook Pro.
+But it was no dice running on my Windows box &ndash; the VM was a 64-bit Linux VM (why wouldn&rsquo;t a server be 32-bit?) and I&rsquo;m on a
+32-bit laptop (don&rsquo;t ask why my corporate IT still issues 32-bit Windows images on 64-bit hardware!).</p>
+
+<p>To my surprise, VirtualBox can actually a 64-bit guest VM on a 32-bit host OS:</p>
+
+<blockquote><p>If you want to use 64-bit guest support on a 32-bit host operating system, you must also select a 64-bit operating system for the particular VM. Since supporting 64 bits on 32-bit hosts incurs additional overhead, VirtualBox only enables this support upon explicit request.</p>
+
+<p>Source: <a href="http://www.virtualbox.org/manual/ch03.html">http://www.virtualbox.org/manual/ch03.html</a></p></blockquote>
+
+<p>However, I learned Vagrant cloud boxes <a href="https://github.com/mitchellh/vagrant/issues/932">may forget to explicity declare they want VirtualBox to enable  64-on-32 support</a>.  While changing the box &ldquo;Operating System Type&rdquo; from &ldquo;Ubuntu&rdquo; to &ldquo;Ubuntu (64 bit)&rdquo; would be
+an easy fix, I decided to see if Vagrant could dynamically choose the right guest CPU architecture based on the host OS' CPU architecture.
+Our app would run as either 32 or 64, so it made sense to run 32 on 32 and 64 on 64, right?</p>
+
+<p>Turns out it is quite easy.  The power of ruby as the config language for Vagrant really shines here:</p>
+
+<p>Here the relevant changes to our Vagrantfile to get Vagrant to run a 64-bit Linux guest on 64-bit hosts,
+and a 32-bit Linux guest on 32-bit hosts:</p>
+
+<p>``` ruby</p>
+
+<h1>&ndash;<em>&ndash; mode: ruby &ndash;</em>&ndash;</h1>
+
+<h1>vi: set ft=ruby :</h1>
+
+<p>Vagrant.configure(&ldquo;2&rdquo;) do |config|
+  config.vm.box = &ldquo;hashicorp/precise64&rdquo;
+  config.vm.box_url = &ldquo;<a href="https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box">https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box</a>&rdquo;</p>
+
+<p>  # support 32 windows hosts :(
+  if ENV[&ldquo;PROCESSOR_ARCHITECTURE&rdquo;] == &ldquo;x86&rdquo;</p>
+
+<pre><code>puts "falling back to 32-bit guest architecture"
+config.vm.box = "hashicorp/precise32"
+config.vm.box_url = "https://vagrantcloud.com/hashicorp/precise32/current/provider/virtualbox.box"
+</code></pre>
+
+<p>  end</p>
+
+<p>  # &hellip; lots more vagrant plugin and chef goodness &hellip;</p>
+
+<p>end
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Tips for Vagrant on Windows]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows/"/>
+    <updated>2014-03-13T09:55:12+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows</id>
+    <content type="html"><![CDATA[<p>I learned some interesting things today about running Vagrant on a Windows machine.
+Vagrant is an amazing tool for running a VM on your local dev box with a target platform (e.g., Linux)
+provisioned by code (e.g., Chef/Puppet/shell scripts).</p>
+
+<h2>Spaces in Paths</h2>
+
+<p>A hard lesson about Vagrant on Windows was Vagrant uses Ruby heavily, and Ruby on Windows
+really, really doesn&rsquo;t like spaces in paths.</p>
+
+<p>The Vagrant installer can&rsquo;t comply with the Windows Installer and Logo requirement to
+default to <code>%ProgramFiles%</code> folder <a href="https://github.com/mitchellh/vagrant/issues/1652">due to Ruby&rsquo;s known issues with spaces in paths like C:\Program Files</a>.</p>
+
+<p>I was able to work around this with a symlink:</p>
+
+<p><code>console
+IF NOT EXIST "%ProgramFiles%\Vagrant" MKDIR "%ProgramFiles%\Vagrant"
+MKLINK /D "%SystemRoot%\vagrant" "%ProgramFiles%\Vagrant"
+</code></p>
+
+<p>I then ran the <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox-4.3.8-92456-Win.exe</a> installer using all defaults
+except for the USB support and Python scripting.</p>
+
+<p><strong>TIP:</strong> do not install VirtualBox&rsquo;s USB drivers if you have an enterprise USB device blocker/filter</p>
+
+<p>I then followed with installing <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">Vagrant_1.4.3.msi</a> to <code>C:\vagrant</code>.</p>
+
+<p><strong>TIP:</strong> <a href="https://github.com/mitchellh/vagrant/issues/3131">the Vagrant v1.5.0 installer is broken for Windows</a>; use <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">v1.4.3</a> until <a href="http://www.vagrantup.com/downloads.html">v1.5.1</a> is released.</p>
+
+<h2>VirtualBox in XP SP3 compatability mode</h2>
+
+<p>I needed to configure a few VirtualBox binaries to run in XP SP3 compatability mode for my Windows 7 SP1 Enterprise laptop.  YMMV.</p>
+
+<p>``` console
+REM run VirtualBox in XP SP3 mode
+REG ADD &ldquo;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&rdquo; ^</p>
+
+<pre><code>    /v "%ProgramFiles%\Oracle\VirtualBox\VirtualBox.exe" ^
+    /t REG_SZ  ^
+    /d WINXPSP3
+</code></pre>
+
+<p>REG ADD &ldquo;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&rdquo; ^</p>
+
+<pre><code>    /v "%ProgramFiles%\Oracle\VirtualBox\VBoxSVC.exe" ^
+    /t REG_SZ  ^
+    /d WINXPSP3
+</code></pre>
+
+<p>REG ADD &ldquo;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&rdquo; ^</p>
+
+<pre><code>    /v "%ProgramFiles%\Oracle\VirtualBox\VBoxManage.exe" ^
+    /t REG_SZ  ^
+    /d WINXPSP3
+</code></pre>
+
+<p>```</p>
+
+<h2>Spaces in your home folder path</h2>
+
+<p>If your Windows username (or <code>%USERPROFILE%</code> path) include spaces, you will need to set an environmental variable <code>%VAGRANT_HOME%</code> to a path that
+does not use spaces.  This caused many non-obvious errors with <code>vagrant plugin install berkshelf</code> and <code>vagrant plugin install omnibus</code>.</p>
+
+<p>A simple fix was setting <code>%VAGRANT_HOME%</code> to &ldquo;C:\VagrantHome&rdquo;</p>
+
+<h2>Example running a simple 32-bit Ubuntu LTS box on 32-bit Windows 7 SP1</h2>
+
+<p>I don&rsquo;t really need the omnibus plugin here, but, this proves it can install a plugin that would
+otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
+
+<p><code>console
+SETLOCAL
+IF NOT EXIST C:\VagrantHome MKDIR C:\VagrantHome
+PUSHD C:\VagrantHome
+SET VAGRANT_HOME=C:\VagrantHome
+PUSHD %TEMP%
+MKDIR VagrantTest
+CD VagrantTest
+vagrant init hashicorp/precise32
+vagrant box add hashicorp/precise32 https://vagrantcloud.com/hashicorp/precise32/version/1/provider/virtualbox.box
+vagrant plugin install omnibus
+vagrant up --provision
+PAUSE
+vagrant halt
+vagrant destroy --force
+CD ..
+RMDIR /S /Q "%TEMP%\VagrantTest"
+POPD
+ENDLOCAL
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A better FTP client for Windows you already have: Git bash's curl command]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/"/>
+    <updated>2014-02-15T17:24:00+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command</id>
+    <content type="html"><![CDATA[<p>My shop has a couple of internal FTP servers to mirror commonly used installers for .Net devs.
+Installers for apps like Visual Studio can be huge, so GitHub isn&rsquo;t the best place for this, and
+it would also smoke most of our Dropbox quotas.  So an FTP server seems like the 3rd best option.</p>
+
+<p>We are a geographically distributed team, with a VPN to access internal servers.  Even with a reliable
+VPN session over ISP fiber connection, I&rsquo;ve experience lots of realiability problems downloading large files
+with the native Windows Explorer / Internet Explorer FTP.</p>
+
+<p>The Windows ftp command line client can be a pain to work with.  Fortunately, the Git bash emulator for Windows
+(msysgit) includes a MinGW port of the awesome <code>curl</code> utility.  The <code>curl</code> utility has all kinds of awesome features
+for downloading large files.</p>
+
+<p>Here&rsquo;s a few options I found really useful:</p>
+
+<p><code>bash
+curl -C - -v -O "ftp://ftp.example.com/path/to/file.zip"
+</code></p>
+
+<ul>
+<li><code>-C -</code> option tells bash to automatically continue an interrupted download, if the server supports this feature.</li>
+<li><code>-v</code> prints verbose stats, including an dynamic progress info</li>
+<li><code>-O</code> automatically saves the file using the remote file name to the current working directory</li>
+</ul>
+
+
+<p>I crafted this gist to enable downloading a large number of binaries related to .Net development from our FTP server.</p>
+
+<p><div><script src='https://gist.github.com/9378219.js'></script>
+<noscript><pre><code>SETLOCAL
+PUSHD &quot;%USERPROFILE%\Downloads&quot;
+
+IF NOT EXIST &quot;installers&quot; MKDIR &quot;installers&quot;
+CD &quot;installers&quot;
+
+ECHO @ECHO OFF &gt; curl.cmd
+ECHO TITLE &quot;%~1&quot; &gt;&gt; curl.cmd
+ECHO IF NOT &quot;.%~p1&quot;==&quot;.\&quot; IF NOT EXIST &quot;.%~p1&quot; MKDIR &quot;.%~p1&quot; &gt;&gt; curl.cmd
+ECHO PUSHD &quot;.%~p1&quot; &gt;&gt; curl.cmd
+ECHO &quot;%ProgramFiles%\Git\bin\curl.exe&quot; -C - -v -O &quot;ftp://ftp.example.com/path/to/installers%~1&quot; ^&amp;^&amp; PAUSE &gt;&gt; curl.cmd
+
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/dotNetFx40_Full_x86_x64.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Internet Information Services 7.5 Express/iisexpress_1_11_x86_en-US.msi^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Internet Information Services 7.5 Express/rewrite_2.0_rtw_x86.msi^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2008 Express R2 SP1/SQLEXPRWT_x86_ENU.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Visual Studio 2010/VS2010PREM_ENU.zip^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Visual Studio 2010 SP1/VS10sp1-KB983509.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server Data Tools/SSDT_10.3.31009.2_EN.iso.zip^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2012 Tools/SQLManagementStudio_x86_ENU.exe^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2012 Tools/x86/SqlLocaLDB.MSI^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Web Deploy V3/WebDeploy_x86_en-US.msi^&quot;&quot;
+START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/MSBuild Extension Pack 4.0/MSBuild Extension Pack 4.0.msi^&quot;&quot;
+
+DEL /Q curl.cmd
+POPD
+ENDLOCAL</code></pre></noscript></div>
+</p>
+
+<p>Be warned, this hack spawns a new command prompt window for each download, so it can get a bit crazy.  This seemed like
+the best worst way to download in parallel while also making sense of each download&rsquo;s status.</p>
+]]></content>
+  </entry>
+  
+</feed>

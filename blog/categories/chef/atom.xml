@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: chef | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/chef/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-05-05T22:22:39+01:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Including another berksfile in your berksfile]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/"/>
+    <updated>2014-05-06T18:11:57+01:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile</id>
+    <content type="html"><![CDATA[<p>As part of my cooking with <a href="http://www.getchef.com/downloads/chef-dk/">Chef&rsquo;s new workflow</a>,
+I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s dependencies.</p>
+
+<p>Thanks <a href="https://coderwall.com/p/j72egw">Vasily Mikhayliche&rsquo;s Coderwall post</a> and <a href="https://sethvargo.com/berksfile-magic/">Seth Vargo&rsquo;s post on Berks magic</a>, I was able to hack something
+that worked for me with <a href="http://berkshelf.com/v2.0/">Berkshelf v2.0</a>. (We don&rsquo;t have time to migrate to Berks 3.0 for another couple of weeks, and this feature doesn&rsquo;t seem to be part of Berks 3.0).</p>
+
+<p>``` ruby</p>
+
+<h1>vi:ft=ruby:</h1>
+
+<p>site :opscode</p>
+
+<h1>Extension method to import secondary dependencies in a referenced site-cookbook</h1>
+
+<h1>using the constraints in the site-cookbook&rsquo;s Berkshelf file, rather than just</h1>
+
+<h1>the name of the dependencies in the site-cookbook&rsquo;s metadata.rb file</h1>
+
+<p>#</p>
+
+<h1>credit: <a href="https://sethvargo.com/berksfile-magic/">https://sethvargo.com/berksfile-magic/</a></h1>
+
+<h1><a href="https://coderwall.com/p/j72egw">https://coderwall.com/p/j72egw</a></h1>
+
+<p>def site_cookbook(path)
+  berksfile = &ldquo;../#{path}/Berksfile&rdquo;</p>
+
+<p>  if File.exists?(berksfile)</p>
+
+<pre><code>contents = File.read(berksfile)
+
+# comment out lines like `site :opscode`, which cannot be imported multiple times
+contents = contents.gsub(/(^\s*site\s)/, '#\1')
+
+# comment out lines like `metadata`, which cannot be imported multiple times
+contents = contents.gsub(/(^\s*metadata\s)/, '#\1')
+
+instance_eval(contents) 
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>cookbook &lsquo;nginx&rsquo;, &lsquo;~> 2.4.4&rsquo;
+site_cookbook &lsquo;my-site-cookbook&rsquo;</p>
+
+<p>```</p>
+
+<p>Happy cooking!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Adding Chef encrypted data bags to source control]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/"/>
+    <updated>2014-05-05T20:54:25+01:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control</id>
+    <content type="html"><![CDATA[<p>I&rsquo;ve been using Chef for a bit now and generally a huge fan of the new
+<a href="http://www.getchef.com/downloads/chef-dk/">Chef workflow</a>.</p>
+
+<p>We are working hard to attain true continuous delivery and test driven development with Chef.
+The devil is in the details now.</p>
+
+<p>One small wrinkle in our effort has been marrying <a href="http://docs.opscode.com/chef/essentials_data_bags.html#encrypt-a-data-bag-item">encrypted data_bags</a> with our chef-repo in GitHub.</p>
+
+<p>I don&rsquo;t want to type the optional argument <code>--secret-file ~/.chef/encrypted_data_bag_secret</code> everytime I interact with a data bag. So, I added this option to my <code>~/.chef/knife.rb</code> file.</p>
+
+<p><code>ruby
+knife[:secret_file]  = "#{current_dir}/encrypted_data_bag_secret"
+</code></p>
+
+<p>However, this precludes me from easily exporting the edited file to disk.  The export will always be my secret plaintext,
+not the encrypted ciphertext.   Not exactly what you want to commit to GitHub.</p>
+
+<p>``` ruby
+knife data_bag create users jenkins</p>
+
+<h1>DON&rsquo;T COMMIT THIS&hellip; the exported file will be unencrypted</h1>
+
+<p>knife data_bag users jenkins &mdash;format=json > data_bags/users/jenkins.json
+```</p>
+
+<p>So, I decided to create a bash alias to temporarily disable the knife.rb setting and export the data bag to a file:</p>
+
+<p>My <code>~/.bash_profile</code> file contains this alias:</p>
+
+<p><code>
+function knife-ciphertext () {
+   sed -e "s/knife\[\:secret_file\]/\#knife\[\:secret_file\]/"  -i .bak  ~/.chef/knife.rb
+   knife $@ --format=json
+   mv  ~/.chef/knife.rb.bak  ~/.chef/knife.rb
+}
+alias knife-ciphertext=knife-ciphertext
+</code></p>
+
+<p>This bash function comments out the secret file option in knife.rb using sed&rsquo;s in-place editing.</p>
+
+<p>Now I can commit the data bag in its encrypted format:</p>
+
+<p><code>
+knife-ciphertext data_bag show users jenkins &gt; data_bags/users/jenkins.json
+git add data_bags/users/jenkins.json
+git commit -m 'adding the latest jenkins data bag'
+</code></p>
+
+<p>Happing cooking!</p>
+]]></content>
+  </entry>
+  
+</feed>

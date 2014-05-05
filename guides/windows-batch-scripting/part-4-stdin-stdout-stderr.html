@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Windows Batch Scripting: stdin, stdout, stderr - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Overview
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Stdin, Stdout, Stderr</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00+00:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
+<li>Part 4 &ndash; stdin, stdout, stderr</li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-10-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
+</ul>
+
+
+<p>DOS, like Unix/Linux, uses the three universal &ldquo;files&rdquo; for keyboard input, printing text on the screen, and the
+printing errors on the screen.  The &ldquo;Standard In&rdquo; file, known as stdin, contains the input to the program/script.
+The &ldquo;Standard Out&rdquo; file, known as stdout, is used to write output for display on the screen.  Finally, the
+&ldquo;Standard Err&rdquo; file, known as stderr, contains any error messages for display on the screen.</p>
+
+<h2>File Numbers</h2>
+
+<p>Each of these three standard files, otherwise known as the standard streams, are referernced using the numbers 0, 1, and 2.
+Stdin is file 0, stdout is file 1, and stderr is file 2.</p>
+
+<h2>Redirection</h2>
+
+<p>A very common task in batch files is sending the output of a program to a log file.   The <code>&gt;</code> operator sends, or redirects,
+stdout or stderr to another file.  For example, you can write a listing of the current directory to a text file:</p>
+
+<pre><code>DIR &gt; temp.txt
+</code></pre>
+
+<p>The <code>&gt;</code> operator will overwrite the contents of temp.txt with stdout from the DIR command.  The <code>&gt;&gt;</code> operator is a slight
+variant that appends the output to a target file, rather than overwriting the target file.</p>
+
+<p>A common technique is to use <code>&gt;</code> to create/overwrite a log file, then use <code>&gt;&gt;</code> subsequently to append to the log file.</p>
+
+<pre><code>SomeCommand.exe   &gt; temp.txt
+OtherCommand.exe &gt;&gt; temp.txt
+</code></pre>
+
+<p>By default, the <code>&gt;</code> and <code>&gt;&gt;</code> operators redirect stdout.  You can redirect stderr by using the file number <code>2</code> in front of the
+operator:</p>
+
+<pre><code>DIR SomeFile.txt  2&gt;&gt; error.txt
+</code></pre>
+
+<p>You can even combine the stdout and stderr streams using the file number and the <code>&amp;</code> prefix:</p>
+
+<pre><code>DIR SomeFile.txt 2&gt;&amp;1
+</code></pre>
+
+<p>This is useful if you want to write both stdout and stderr to a single log file.</p>
+
+<pre><code>DIR SomeFile.txt &gt; output.txt 2&gt;&amp;1
+</code></pre>
+
+<p>To use the contents of a file as the input to a program, instead of typing the input from the keyboard, use the <code>&lt;</code> operator.</p>
+
+<pre><code>TYPE &lt; SomeFile.txt
+</code></pre>
+
+<h2>Suppressing Program Output</h2>
+
+<p>The pseudofile <code>NUL</code> is used to discard any output from a program. Here is an example of emulating the Unix command <code>sleep</code> by calling ping
+against the loopback address.  We redirect stdout to the <code>NUL</code> device to avoid printing the output on the command prompt screen.</p>
+
+<pre><code>PING 127.0.0.1 &gt; NUL
+</code></pre>
+
+<h2>Redirecting Program Output As Input to Another Program</h2>
+
+<p>Let&rsquo;s say you want to chain together the output of one program as input to another.  This is known as &ldquo;piping&rdquo; output to another program,
+and not suprisingly we use the pipe character <code>|</code> to get the job done.  We&rsquo;ll sort the output of the DIR commmand.</p>
+
+<pre><code>DIR /B | SORT
+</code></pre>
+
+<h2>A Cool Party Trick</h2>
+
+<p>You can quickly create a new text file, say maybe a batch script, from just the command line by redirecting the command prompt&rsquo;s own stdin,
+called <code>CON</code>, to a text file.  When you are done typing, hit <code>CTRL+Z</code>, which sends the end-of-file (EOF) character.</p>
+
+<pre><code>TYPE CON &gt; output.txt
+</code></pre>
+
+<p><img src="/images/2013-03-05-A.png" alt="Screenshot of sending keyboard input to a file" /></p>
+
+<p>There are a number of other special files on DOS that you can redirect, however, most are a bit dated like like LPT1 for parallel portt printers
+or COM1 for serial devices like modems.</p>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-3-return-codes.html">&lt;&lt; Part 3 &ndash; Return Codes</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals >></a>
+</span></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00+00:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html" data-via="" data-counturl="http://steve-jansen.github.io/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" style="display: block; margin-left:auto; margin-right: auto" />
+	</span>
+</section>
+<section>
+  <p style="clear:both">
+    Hi, I'm Steve.  I'm a software developer loving life in Charlotte, NC,
+    an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>
+    and an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+
+<section>
+  <h1>Guides</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How To verify administrative rights in a Windows batch script</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+    <li /><a href="/atom.xml" title="Subscribe via RSS">Subscribe via RSS</a>
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html';
+        var disqus_url = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

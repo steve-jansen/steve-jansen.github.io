@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Windows Batch Scripting: Logging - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Overview
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/guides/windows-batch-scripting/part-9-logging.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Logging</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00+00:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
+<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li>Part 9 &ndash; Logging</li>
+<li><a href="/guides/windows-batch-scripting/part-10-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
+</ul>
+
+
+<p>I use basic logging facilities in my scripts to support troubleshooting both during execution and after execution.  I use basic logging as a way to instrument what my scripts are doing at runtime and why.  I remember watching a network operations center trying to troubleshoot a legacy batch process
+where the sysadmins literrally had to try to read the lines of a console window as they trickled by.  This technique worked fine for years when the
+batch machines used dial-up modems for connectivity to remote resources.  However, the advent of brooadband meant the batch script executed faster than
+anyone could read the output.  A simple log file would have made troubleshooting work much easier for these sysadmins.</p>
+
+<h1>Log function</h1>
+
+<p>I really like the basic <code>tee</code> implementation I wrote in <a href="/blog/2012/03/08/fundamentals-of-windows-shell-scripting-part-7-functions/">Part 7 &ndash; Functions</a>.</p>
+
+<pre><code>@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS
+
+:: script global variables
+SET me=%~n0
+SET log=%TEMP%\%me%.txt
+
+:: The "main" logic of the script
+IF EXIST "%log%" DELETE /Q %log% &gt;NUL
+
+:: do something cool, then log it
+CALL :tee "%me%: Hello, world!"
+
+:: force execution to quit at the end of the "main" logic
+EXIT /B %ERRORLEVEL%
+
+:: a function to write to a log file and write to stdout
+:tee
+ECHO %* &gt;&gt; "%log%"
+ECHO %*
+EXIT /B 0
+</code></pre>
+
+<p>This <code>tee</code> quasi function enable me to write output to the console as well as a log file.  Here I am reusing the same log file path, which is saved in the users <code>%TEMP%</code> folder as the name of the batch file with a .txt file extension.</p>
+
+<p>If you need to retain logs for each execution, you could simply parse the %DATE% and %TIME% variables (with the help of command line extensions)
+to generate a unique filename (or at least unique within 1-second resolution).</p>
+
+<pre><code>REM create a log file named [script].YYYYMMDDHHMMSS.txt
+SET log=%TEMP%\%me%.%DATE:~10,4%_%DATE:~4,2%_%DATE:~7,2%%TIME:~0,2%_%TIME:~3,2%_%TIME:~6,2%.txt
+</code></pre>
+
+<p>Taking a queue from the *nix world, I also like to include a prefix custom output from my own script as <code>script: some message</code>.
+This technique drastically helps to sort who is complaining in the case of an error.</p>
+
+<h1>Displaying startup parameters</h1>
+
+<p>I also like to display the various runtime conditions for non-interactive scripts, like something that will be run on a build server and redirected to a
+the build log.</p>
+
+<p>Sadly, I don&rsquo;t know of any DOS tricks (yet) to discrimintate non-interactive sessions from interactive sessions.  C# and .Net has the <code>System.Environment.UserInteractive</code> property to detect if this situation; *nix has some tricks with tty file descriptors.  You could probably hack up a solution
+by inspecting a custom environmental variable like <code>%MYSCRIPT_DEBUG%</code> that defaults to being false.</p>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-8-parsing-input.html">&lt;&lt; Part 8 &ndash; Parsing Input</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-10-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a>
+</span></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00+00:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/guides/windows-batch-scripting/part-9-logging.html" data-via="" data-counturl="http://steve-jansen.github.io/guides/windows-batch-scripting/part-9-logging.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" style="display: block; margin-left:auto; margin-right: auto" />
+	</span>
+</section>
+<section>
+  <p style="clear:both">
+    Hi, I'm Steve.  I'm a software developer loving life in Charlotte, NC,
+    an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>
+    and an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+
+<section>
+  <h1>Guides</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How To verify administrative rights in a Windows batch script</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+    <li /><a href="/atom.xml" title="Subscribe via RSS">Subscribe via RSS</a>
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-9-logging.html';
+        var disqus_url = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-9-logging.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

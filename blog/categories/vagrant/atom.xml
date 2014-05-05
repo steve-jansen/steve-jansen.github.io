@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: vagrant | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/vagrant/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-05-05T22:22:39+01:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring Vagrant to dynamically match guest and host CPU architectures]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/"/>
+    <updated>2014-03-15T00:06:26+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures</id>
+    <content type="html"><![CDATA[<p>Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops.  <a href="http://www.vagrantup.com">Vagrant</a>
+is sweet for DevOps.  The Vagrant file worked great on his Macbook Pro.
+But it was no dice running on my Windows box &ndash; the VM was a 64-bit Linux VM (why wouldn&rsquo;t a server be 32-bit?) and I&rsquo;m on a
+32-bit laptop (don&rsquo;t ask why my corporate IT still issues 32-bit Windows images on 64-bit hardware!).</p>
+
+<p>To my surprise, VirtualBox can actually a 64-bit guest VM on a 32-bit host OS:</p>
+
+<blockquote><p>If you want to use 64-bit guest support on a 32-bit host operating system, you must also select a 64-bit operating system for the particular VM. Since supporting 64 bits on 32-bit hosts incurs additional overhead, VirtualBox only enables this support upon explicit request.</p>
+
+<p>Source: <a href="http://www.virtualbox.org/manual/ch03.html">http://www.virtualbox.org/manual/ch03.html</a></p></blockquote>
+
+<p>However, I learned Vagrant cloud boxes <a href="https://github.com/mitchellh/vagrant/issues/932">may forget to explicity declare they want VirtualBox to enable  64-on-32 support</a>.  While changing the box &ldquo;Operating System Type&rdquo; from &ldquo;Ubuntu&rdquo; to &ldquo;Ubuntu (64 bit)&rdquo; would be
+an easy fix, I decided to see if Vagrant could dynamically choose the right guest CPU architecture based on the host OS' CPU architecture.
+Our app would run as either 32 or 64, so it made sense to run 32 on 32 and 64 on 64, right?</p>
+
+<p>Turns out it is quite easy.  The power of ruby as the config language for Vagrant really shines here:</p>
+
+<p>Here the relevant changes to our Vagrantfile to get Vagrant to run a 64-bit Linux guest on 64-bit hosts,
+and a 32-bit Linux guest on 32-bit hosts:</p>
+
+<p>``` ruby</p>
+
+<h1>&ndash;<em>&ndash; mode: ruby &ndash;</em>&ndash;</h1>
+
+<h1>vi: set ft=ruby :</h1>
+
+<p>Vagrant.configure(&ldquo;2&rdquo;) do |config|
+  config.vm.box = &ldquo;hashicorp/precise64&rdquo;
+  config.vm.box_url = &ldquo;<a href="https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box">https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box</a>&rdquo;</p>
+
+<p>  # support 32 windows hosts :(
+  if ENV[&ldquo;PROCESSOR_ARCHITECTURE&rdquo;] == &ldquo;x86&rdquo;</p>
+
+<pre><code>puts "falling back to 32-bit guest architecture"
+config.vm.box = "hashicorp/precise32"
+config.vm.box_url = "https://vagrantcloud.com/hashicorp/precise32/current/provider/virtualbox.box"
+</code></pre>
+
+<p>  end</p>
+
+<p>  # &hellip; lots more vagrant plugin and chef goodness &hellip;</p>
+
+<p>end
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Tips for Vagrant on Windows]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows/"/>
+    <updated>2014-03-13T09:55:12+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows</id>
+    <content type="html"><![CDATA[<p>I learned some interesting things today about running Vagrant on a Windows machine.
+Vagrant is an amazing tool for running a VM on your local dev box with a target platform (e.g., Linux)
+provisioned by code (e.g., Chef/Puppet/shell scripts).</p>
+
+<h2>Spaces in Paths</h2>
+
+<p>A hard lesson about Vagrant on Windows was Vagrant uses Ruby heavily, and Ruby on Windows
+really, really doesn&rsquo;t like spaces in paths.</p>
+
+<p>The Vagrant installer can&rsquo;t comply with the Windows Installer and Logo requirement to
+default to <code>%ProgramFiles%</code> folder <a href="https://github.com/mitchellh/vagrant/issues/1652">due to Ruby&rsquo;s known issues with spaces in paths like C:\Program Files</a>.</p>
+
+<p>I was able to work around this with a symlink:</p>
+
+<p><code>console
+IF NOT EXIST "%ProgramFiles%\Vagrant" MKDIR "%ProgramFiles%\Vagrant"
+MKLINK /D "%SystemRoot%\vagrant" "%ProgramFiles%\Vagrant"
+</code></p>
+
+<p>I then ran the <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox-4.3.8-92456-Win.exe</a> installer using all defaults
+except for the USB support and Python scripting.</p>
+
+<p><strong>TIP:</strong> do not install VirtualBox&rsquo;s USB drivers if you have an enterprise USB device blocker/filter</p>
+
+<p>I then followed with installing <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">Vagrant_1.4.3.msi</a> to <code>C:\vagrant</code>.</p>
+
+<p><strong>TIP:</strong> <a href="https://github.com/mitchellh/vagrant/issues/3131">the Vagrant v1.5.0 installer is broken for Windows</a>; use <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">v1.4.3</a> until <a href="http://www.vagrantup.com/downloads.html">v1.5.1</a> is released.</p>
+
+<h2>VirtualBox in XP SP3 compatability mode</h2>
+
+<p>I needed to configure a few VirtualBox binaries to run in XP SP3 compatability mode for my Windows 7 SP1 Enterprise laptop.  YMMV.</p>
+
+<p>``` console
+REM run VirtualBox in XP SP3 mode
+REG ADD &ldquo;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&rdquo; ^</p>
+
+<pre><code>    /v "%ProgramFiles%\Oracle\VirtualBox\VirtualBox.exe" ^
+    /t REG_SZ  ^
+    /d WINXPSP3
+</code></pre>
+
+<p>REG ADD &ldquo;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&rdquo; ^</p>
+
+<pre><code>    /v "%ProgramFiles%\Oracle\VirtualBox\VBoxSVC.exe" ^
+    /t REG_SZ  ^
+    /d WINXPSP3
+</code></pre>
+
+<p>REG ADD &ldquo;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&rdquo; ^</p>
+
+<pre><code>    /v "%ProgramFiles%\Oracle\VirtualBox\VBoxManage.exe" ^
+    /t REG_SZ  ^
+    /d WINXPSP3
+</code></pre>
+
+<p>```</p>
+
+<h2>Spaces in your home folder path</h2>
+
+<p>If your Windows username (or <code>%USERPROFILE%</code> path) include spaces, you will need to set an environmental variable <code>%VAGRANT_HOME%</code> to a path that
+does not use spaces.  This caused many non-obvious errors with <code>vagrant plugin install berkshelf</code> and <code>vagrant plugin install omnibus</code>.</p>
+
+<p>A simple fix was setting <code>%VAGRANT_HOME%</code> to &ldquo;C:\VagrantHome&rdquo;</p>
+
+<h2>Example running a simple 32-bit Ubuntu LTS box on 32-bit Windows 7 SP1</h2>
+
+<p>I don&rsquo;t really need the omnibus plugin here, but, this proves it can install a plugin that would
+otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
+
+<p><code>console
+SETLOCAL
+IF NOT EXIST C:\VagrantHome MKDIR C:\VagrantHome
+PUSHD C:\VagrantHome
+SET VAGRANT_HOME=C:\VagrantHome
+PUSHD %TEMP%
+MKDIR VagrantTest
+CD VagrantTest
+vagrant init hashicorp/precise32
+vagrant box add hashicorp/precise32 https://vagrantcloud.com/hashicorp/precise32/version/1/provider/virtualbox.box
+vagrant plugin install omnibus
+vagrant up --provision
+PAUSE
+vagrant halt
+vagrant destroy --force
+CD ..
+RMDIR /S /Q "%TEMP%\VagrantTest"
+POPD
+ENDLOCAL
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

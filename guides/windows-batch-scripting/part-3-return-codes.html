@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Windows Batch Scripting: Return Codes - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Overview
+Part 1 &ndash; Getting Started
+Part 2 &ndash; Variables
+Part 3 &ndash; Return Codes
+Part 4 &ndash; stdin, stdout, stderr
+Part 5 &ndash; If/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/guides/windows-batch-scripting/part-3-return-codes.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Windows Batch Scripting: Return Codes</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00+00:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
+<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
+<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
+<li>Part 3 &ndash; Return Codes</li>
+<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
+<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
+<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
+<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
+<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
+<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
+<li><a href="/guides/windows-batch-scripting/part-10-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
+</ul>
+
+
+<p>Today we&rsquo;ll cover return codes as the right way to communicate the outcome of your script&rsquo;s execution to the world.  Sadly, even
+skilled Windows programmers overlook the importance of return codes.</p>
+
+<h2>Return Code Conventions</h2>
+
+<p>By convention, command line execution should return zero when execution succeeds and non-zero when execution fails.  Warning messages
+typically don&rsquo;t effect the return code.  What matters is did the script work or not?</p>
+
+<h2>Checking Return Codes In Your Script Commands</h2>
+
+<p>The environmental variable <code>%ERRORLEVEL%</code> contains the return code of the last executed program or script.  A very helpful feature is
+the built-in DOS commands like <code>ECHO</code>, <code>IF</code>, and <code>SET</code> will preserve the existing value of <code>%ERRORLEVEL%</code>.</p>
+
+<p>The conventional technique to check for a non-zero return code using the <code>NEQ</code> (Not-Equal-To) operator of the <code>IF</code> command:</p>
+
+<pre><code>IF %ERRORLEVEL% NEQ 0 (
+  REM do something here to address the error
+)
+</code></pre>
+
+<p>Another common technique is:</p>
+
+<p>  IF ERRORLEVEL 1 (</p>
+
+<pre><code>  REM do something here to address the error
+</code></pre>
+
+<p>  )</p>
+
+<p>The <code>ERRORLEVEL 1</code> statement is true when the return code is any number equal to or greater than 1.  However, I don&rsquo;t use this technique because
+programs can return negative numbers as well as positive numbers.  Most programs rarely document every possible return code, so I&rsquo;d rather explicity
+check for non-zero with the <code>NEQ 0</code> style than assuming return codes will be 1 or greater on error.</p>
+
+<p>You may also want to check for specific error codes.  For example, you can test that an executable program or script is in your PATH by simply
+calling the program and checking for return code 9009.</p>
+
+<pre><code>SomeFile.exe
+IF %ERRORLEVEL% EQU 9009 (
+  ECHO error - SomeFile.exe not found in your PATH
+)
+</code></pre>
+
+<p>It&rsquo;s hard to know this stuff upfront &ndash; I generally just use trial and error to figure out the best way to check the return code of the program or
+script I&rsquo;m calling.  Remember, this is duct tape programming.  It isn&rsquo;t always pretty, but, it gets the job done.</p>
+
+<h2>Conditional Execution Using the Return Code</h2>
+
+<p>There&rsquo;s a super cool shorthand you can use to execute a second command based on the success or failure of a command.  The first program/script must
+conform to the convention of returning 0 on success and non-0 on failure for this to work.</p>
+
+<p>To execute a follow-on command after sucess, we use the <code>&amp;&amp;</code> operator:</p>
+
+<pre><code>SomeCommand.exe &amp;&amp; ECHO SomeCommand.exe succeeded!
+</code></pre>
+
+<p>To execute a follow-on command after failure, we use the <code>||</code> operator:</p>
+
+<pre><code>SomeCommand.exe || ECHO SomeCommand.exe failed with return code %ERRORLEVEL%
+</code></pre>
+
+<p>I use this technique heavily to halt a script when any error is encountered.   By default, the command processor will continue executing
+when an error is raised.  You have to code for halting on error.</p>
+
+<p>A very simple way to halt on error is to use the <code>EXIT</code> command with the <code>/B</code> switch (to exit the current batch script context, and not the command
+prompt process).  We also pass a specific non-zero return code from the failed command to inform the caller of our script about the failure.</p>
+
+<pre><code>SomeCommand.exe || EXIT /B 1
+</code></pre>
+
+<p>A simliar technique uses the implicit GOTO label called <code>:EOF</code> (End-Of-File).  Jumping to EOF in this way will exit your current script with
+the return code of 1.</p>
+
+<pre><code>SomeCommand.exe || GOTO :EOF
+</code></pre>
+
+<h2>Tips and Tricks for Return Codes</h2>
+
+<p>I recommend sticking to zero for success and return codes that are positive values for DOS batch files. The positive values are a good idea
+because other callers may use the <code>IF ERRORLEVEL 1</code> syntax to check your script.</p>
+
+<p>I also recommend documenting your possible return codes with easy to read <code>SET</code> statements at the top of your script file, like this:</p>
+
+<pre><code>SET /A ERROR_HELP_SCREEN=1
+SET /A ERROR_FILE_NOT_FOUND=2
+</code></pre>
+
+<p>Note that I break my own convention here and use uppercase variable names &ndash; I do this to denote that the variable is constant and should not
+be modified elsewhere.  Too bad DOS doesn&rsquo;t support constant values like Unix/Linux shells.</p>
+
+<h2>Some Final Polish</h2>
+
+<p>One small piece of polish I like is using return codes that are a power of 2.</p>
+
+<pre><code>SET /A ERROR_HELP_SCREEN=1
+SET /A ERROR_FILE_NOT_FOUND=2
+SET /A ERROR_FILE_READ_ONLY=4
+SET /A ERROR_UNKNOWN=8
+</code></pre>
+
+<p>This gives me the flexibility to bitwise OR multiple error numbers together if I want to record numerous problems in one error code.
+This is rare for scripts intended for interactive use, but, it can be super helpful when writing scripts you support but you don&rsquo;t
+have access to the target systems.</p>
+
+<pre><code>@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS
+
+SET /A errno=0
+SET /A ERROR_HELP_SCREEN=1
+SET /A ERROR_SOMECOMMAND_NOT_FOUND=2
+SET /A ERROR_OTHERCOMMAND_FAILED=4
+
+SomeCommand.exe
+IF %ERRORLEVEL% NEQ 0 SET /A errno^|=%ERROR_SOMECOMMAND_NOT_FOUND%
+
+OtherCommand.exe
+IF %ERRORLEVEL% NEQ 0 (
+    SET /A errno^|=%ERROR_OTHERCOMMAND_FAILED%
+)
+
+EXIT /B %errno%
+</code></pre>
+
+<p>If both SomeCommand.exe and OtherCommand.exe fail, the return code will be the bitwise combination of 0x1 and 0x2, or decimal 3.  This return code tells
+me that both errors were raised.  Even better, I can repeatedly call the bitwise OR with the same error code and still interpret which errors were
+raised.</p>
+
+<p><span class="basic-alignment left">
+<a href="/guides/windows-batch-scripting/part-2-variables.html">&lt;&lt; Part 2 &ndash; Variables</a>
+</span>
+<span class="basic-alignment right">
+<a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr >></a>
+</span></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T10:57:00+00:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/guides/windows-batch-scripting/part-3-return-codes.html" data-via="" data-counturl="http://steve-jansen.github.io/guides/windows-batch-scripting/part-3-return-codes.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" style="display: block; margin-left:auto; margin-right: auto" />
+	</span>
+</section>
+<section>
+  <p style="clear:both">
+    Hi, I'm Steve.  I'm a software developer loving life in Charlotte, NC,
+    an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>
+    and an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+
+<section>
+  <h1>Guides</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How To verify administrative rights in a Windows batch script</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+    <li /><a href="/atom.xml" title="Subscribe via RSS">Subscribe via RSS</a>
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-3-return-codes.html';
+        var disqus_url = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-3-return-codes.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

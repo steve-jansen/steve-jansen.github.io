@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | /* steve jansen */]]></title>
+  <link href="http://steve-jansen.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://steve-jansen.github.io/"/>
+  <updated>2014-05-05T22:22:39+01:00</updated>
+  <id>http://steve-jansen.github.io/</id>
+  <author>
+    <name><![CDATA[Steve Jansen]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring Vagrant to dynamically match guest and host CPU architectures]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/"/>
+    <updated>2014-03-15T00:06:26+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures</id>
+    <content type="html"><![CDATA[<p>Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops.  <a href="http://www.vagrantup.com">Vagrant</a>
+is sweet for DevOps.  The Vagrant file worked great on his Macbook Pro.
+But it was no dice running on my Windows box &ndash; the VM was a 64-bit Linux VM (why wouldn&rsquo;t a server be 32-bit?) and I&rsquo;m on a
+32-bit laptop (don&rsquo;t ask why my corporate IT still issues 32-bit Windows images on 64-bit hardware!).</p>
+
+<p>To my surprise, VirtualBox can actually a 64-bit guest VM on a 32-bit host OS:</p>
+
+<blockquote><p>If you want to use 64-bit guest support on a 32-bit host operating system, you must also select a 64-bit operating system for the particular VM. Since supporting 64 bits on 32-bit hosts incurs additional overhead, VirtualBox only enables this support upon explicit request.</p>
+
+<p>Source: <a href="http://www.virtualbox.org/manual/ch03.html">http://www.virtualbox.org/manual/ch03.html</a></p></blockquote>
+
+<p>However, I learned Vagrant cloud boxes <a href="https://github.com/mitchellh/vagrant/issues/932">may forget to explicity declare they want VirtualBox to enable  64-on-32 support</a>.  While changing the box &ldquo;Operating System Type&rdquo; from &ldquo;Ubuntu&rdquo; to &ldquo;Ubuntu (64 bit)&rdquo; would be
+an easy fix, I decided to see if Vagrant could dynamically choose the right guest CPU architecture based on the host OS' CPU architecture.
+Our app would run as either 32 or 64, so it made sense to run 32 on 32 and 64 on 64, right?</p>
+
+<p>Turns out it is quite easy.  The power of ruby as the config language for Vagrant really shines here:</p>
+
+<p>Here the relevant changes to our Vagrantfile to get Vagrant to run a 64-bit Linux guest on 64-bit hosts,
+and a 32-bit Linux guest on 32-bit hosts:</p>
+
+<p>``` ruby</p>
+
+<h1>&ndash;<em>&ndash; mode: ruby &ndash;</em>&ndash;</h1>
+
+<h1>vi: set ft=ruby :</h1>
+
+<p>Vagrant.configure(&ldquo;2&rdquo;) do |config|
+  config.vm.box = &ldquo;hashicorp/precise64&rdquo;
+  config.vm.box_url = &ldquo;<a href="https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box">https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box</a>&rdquo;</p>
+
+<p>  # support 32 windows hosts :(
+  if ENV[&ldquo;PROCESSOR_ARCHITECTURE&rdquo;] == &ldquo;x86&rdquo;</p>
+
+<pre><code>puts "falling back to 32-bit guest architecture"
+config.vm.box = "hashicorp/precise32"
+config.vm.box_url = "https://vagrantcloud.com/hashicorp/precise32/current/provider/virtualbox.box"
+</code></pre>
+
+<p>  end</p>
+
+<p>  # &hellip; lots more vagrant plugin and chef goodness &hellip;</p>
+
+<p>end
+```</p>
+]]></content>
+  </entry>
+  
+</feed>
