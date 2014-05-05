@@ -4,7 +4,7 @@
   <title><![CDATA[Category: oauth | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/oauth/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-16T18:46:18-04:00</updated>
+  <updated>2014-05-05T22:26:04+01:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Wiring together Express, Passport OAuth, and Swagger in NodeJS]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express/"/>
-    <updated>2013-08-22T22:07:00-04:00</updated>
+    <updated>2013-08-22T22:07:00+01:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express</id>
     <content type="html"><![CDATA[<p>I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
 the <a href="http://passportjs.org/guide/">Passport authentication strategy for GitHub OAuth</a> with

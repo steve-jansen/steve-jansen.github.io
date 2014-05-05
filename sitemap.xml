@@ -2,176 +2,188 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more/</loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/</loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script/</loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.io/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/
+            http://steve-jansen.github.io/blog/2013/10/04/breaking-the-3gb-memory-barrier-of-32-bit-windows/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows/</loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
-            http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/
+            http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/
         </loc>
-        <lastmod>2014-03-15T18:59:57-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window/
         </loc>
-        <lastmod>2014-03-16T18:43:21-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/
+        </loc>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/
+        </loc>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2014-03-16T18:43:21-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-10-advanced-tricks.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-3-return-codes.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-5-if-then-conditionals.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/part-6-loops.html</loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-7-functions.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-8-parsing-input.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://steve-jansen.github.io/guides/windows-batch-scripting/part-9-logging.html
         </loc>
-        <lastmod>2014-03-15T08:27:56-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2014-03-16T18:43:21-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>
-        <lastmod>2014-03-15T08:03:59-04:00</lastmod>
+        <lastmod>2014-05-05T22:23:50+01:00</lastmod>
     </url>
 </urlset>

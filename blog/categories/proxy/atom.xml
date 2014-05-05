@@ -4,7 +4,7 @@
   <title><![CDATA[Category: proxy | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/proxy/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-16T18:46:18-04:00</updated>
+  <updated>2014-05-05T22:26:04+01:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
-    <updated>2013-08-20T21:44:00-04:00</updated>
+    <updated>2013-08-20T21:44:00+01:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
     <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: windows | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/windows/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-16T18:46:18-04:00</updated>
+  <updated>2014-05-05T22:26:04+01:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A better IIS Express console window]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window/"/>
-    <updated>2014-03-16T18:18:34-04:00</updated>
+    <updated>2014-03-16T22:18:34+00:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window</id>
     <content type="html"><![CDATA[<p>IIS Express is the <em>de facto</em>  server to use for local development of ASP.NET MVC and Web Api apps.  It&rsquo;s just like it&rsquo;s big brother IIS
 minus a few features rarely used for local development.
@@ -56,7 +56,7 @@ window stretched the entire 1600 pixel width of my display. This helps greatly w
   <entry>
     <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/"/>
-    <updated>2014-03-15T18:50:08-04:00</updated>
+    <updated>2014-03-15T22:50:08+00:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script</id>
     <content type="html"><![CDATA[<p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
 to verify that one of my batch scripts was running with administrative privileges.</p>
@@ -95,9 +95,9 @@ Shameless plug &ndash; learn more tips and tricks for batch scripting in my <a h
   
   <entry>
     <title type="html"><![CDATA[Configuring Vagrant to dynamically match guest and host CPU architectures]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/"/>
-    <updated>2014-03-14T20:06:26-04:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures</id>
+    <link href="http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/"/>
+    <updated>2014-03-15T00:06:26+00:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures</id>
     <content type="html"><![CDATA[<p>Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops.  <a href="http://www.vagrantup.com">Vagrant</a>
 is sweet for DevOps.  The Vagrant file worked great on his Macbook Pro.
 But it was no dice running on my Windows box &ndash; the VM was a 64-bit Linux VM (why wouldn&rsquo;t a server be 32-bit?) and I&rsquo;m on a
@@ -148,7 +148,7 @@ config.vm.box_url = "https://vagrantcloud.com/hashicorp/precise32/current/provid
   <entry>
     <title type="html"><![CDATA[Tips for Vagrant on Windows]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows/"/>
-    <updated>2014-03-13T05:55:12-04:00</updated>
+    <updated>2014-03-13T09:55:12+00:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows</id>
     <content type="html"><![CDATA[<p>I learned some interesting things today about running Vagrant on a Windows machine.
 Vagrant is an amazing tool for running a VM on your local dev box with a target platform (e.g., Linux)
@@ -245,7 +245,7 @@ ENDLOCAL
   <entry>
     <title type="html"><![CDATA[A better FTP client for Windows you already have: Git bash's curl command]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/"/>
-    <updated>2014-02-15T17:24:00-05:00</updated>
+    <updated>2014-02-15T17:24:00+00:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command</id>
     <content type="html"><![CDATA[<p>My shop has a couple of internal FTP servers to mirror commonly used installers for .Net devs.
 Installers for apps like Visual Studio can be huge, so GitHub isn&rsquo;t the best place for this, and

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: node | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/node/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-03-16T18:46:18-04:00</updated>
+  <updated>2014-05-05T22:26:04+01:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
-    <updated>2013-08-20T21:44:00-04:00</updated>
+    <updated>2013-08-20T21:44:00+01:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
     <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 
@@ -121,7 +121,7 @@ json-proxy [-c configFile] [-p port] [-f proxy forwarding rule]</p>
   <entry>
     <title type="html"><![CDATA[passport-reverseproxy]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/"/>
-    <updated>2013-08-11T19:38:00-04:00</updated>
+    <updated>2013-08-11T19:38:00+01:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy</id>
     <content type="html"><![CDATA[<p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
 
