@@ -78,7 +78,7 @@
   
 
 
-<time datetime="2013-02-28T16:44:00+00:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+<time datetime="2013-02-28T16:44:00-05:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -137,7 +137,7 @@ IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
   EXIT /B 2
 )
 
-FOR /F &quot;tokens=3&quot; %%I IN (&#39;REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl&#39;) DO (
+FOR /F &quot;tokens=3&quot; %%I IN ('REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl') DO (
   SET url=%%I
 )
 ECHO %me%: INFO - MsDepSvc current reservation is &quot;%url%&quot;
@@ -149,7 +149,7 @@ IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
 )
 
 :: save the existing urlacl properties for User, Listen, Delegate, and SDDL
-FOR /F &quot;tokens=1,* delims=: &quot; %%A IN (&#39;NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;&#39;) DO (
+FOR /F &quot;tokens=1,* delims=: &quot; %%A IN ('NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;') DO (
   SET URLACL.%%A=%%B
 )
 
@@ -213,7 +213,7 @@ ECHO ON
   
 
 
-<time datetime="2013-02-28T16:44:00+00:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+<time datetime="2013-02-28T16:44:00-05:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
       
 
 <span class="categories">
@@ -285,14 +285,6 @@ ECHO ON
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
       </li>
     
@@ -301,7 +293,15 @@ ECHO ON
       </li>
     
       <li class="post">
-        <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+        <a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/13/tips-for-vagrant-on-windows/">Tips for Vagrant on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
       </li>
     
   </ul>

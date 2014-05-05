@@ -4,7 +4,7 @@
   <title><![CDATA[Category: msdeploy | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/msdeploy/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-05-05T22:22:39+01:00</updated>
+  <updated>2014-03-16T18:46:18-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/"/>
-    <updated>2013-02-28T16:44:00+00:00</updated>
+    <updated>2013-02-28T16:44:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service</id>
     <content type="html"><![CDATA[<p>I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work.  I&rsquo;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) &ndash; it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&rsquo;s Web Deployment Agent service.</p>
 
@@ -68,7 +68,7 @@ IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
   EXIT /B 2
 )
 
-FOR /F &quot;tokens=3&quot; %%I IN (&#39;REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl&#39;) DO (
+FOR /F &quot;tokens=3&quot; %%I IN ('REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl') DO (
   SET url=%%I
 )
 ECHO %me%: INFO - MsDepSvc current reservation is &quot;%url%&quot;
@@ -80,7 +80,7 @@ IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
 )
 
 :: save the existing urlacl properties for User, Listen, Delegate, and SDDL
-FOR /F &quot;tokens=1,* delims=: &quot; %%A IN (&#39;NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;&#39;) DO (
+FOR /F &quot;tokens=1,* delims=: &quot; %%A IN ('NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;') DO (
   SET URLACL.%%A=%%B
 )
 

@@ -9,8 +9,7 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="As part of my cooking with Chef&rsquo;s new workflow,
-I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s &hellip;">
+  <meta name="description" content="IIS Express is the de facto server to use for local development of ASP.NET MVC and Web Api apps. It&rsquo;s just like it&rsquo;s big brother IIS &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,204 +65,6 @@ I wanted Berkshelf to dynamically import the secondary dependencies of my site-c
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including Another Berksfile in Your Berksfile</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-06T18:11:57+01:00" pubdate data-updated="true">May 6<span>th</span>, 2014</time>
-        
-         | <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>As part of my cooking with <a href="http://www.getchef.com/downloads/chef-dk/">Chef&rsquo;s new workflow</a>,
-I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s dependencies.</p>
-
-<p>Thanks <a href="https://coderwall.com/p/j72egw">Vasily Mikhayliche&rsquo;s Coderwall post</a> and <a href="https://sethvargo.com/berksfile-magic/">Seth Vargo&rsquo;s post on Berks magic</a>, I was able to hack something
-that worked for me with <a href="http://berkshelf.com/v2.0/">Berkshelf v2.0</a>. (We don&rsquo;t have time to migrate to Berks 3.0 for another couple of weeks, and this feature doesn&rsquo;t seem to be part of Berks 3.0).</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># vi:ft=ruby:</span>
-</span><span class='line'><span class="n">site</span> <span class="ss">:opscode</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1"># Extension method to import secondary dependencies in a referenced site-cookbook</span>
-</span><span class='line'><span class="c1"># using the constraints in the site-cookbook&#39;s Berkshelf file, rather than just</span>
-</span><span class='line'><span class="c1"># the name of the dependencies in the site-cookbook&#39;s metadata.rb file</span>
-</span><span class='line'><span class="c1">#</span>
-</span><span class='line'><span class="c1"># credit: https://sethvargo.com/berksfile-magic/</span>
-</span><span class='line'><span class="c1">#         https://coderwall.com/p/j72egw</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">site_cookbook</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">berksfile</span> <span class="o">=</span> <span class="s2">&quot;../</span><span class="si">#{</span><span class="n">path</span><span class="si">}</span><span class="s2">/Berksfile&quot;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="n">berksfile</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">berksfile</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1"># comment out lines like `site :opscode`, which cannot be imported multiple times</span>
-</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(^\s*site\s)/</span><span class="p">,</span> <span class="s1">&#39;#\1&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1"># comment out lines like `metadata`, which cannot be imported multiple times</span>
-</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(^\s*metadata\s)/</span><span class="p">,</span> <span class="s1">&#39;#\1&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">instance_eval</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;nginx&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 2.4.4&#39;</span>
-</span><span class='line'><span class="n">site_cookbook</span> <span class="s1">&#39;my-site-cookbook&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Happy cooking!</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef Encrypted Data Bags to Source Control</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-05T20:54:25+01:00" pubdate data-updated="true">May 5<span>th</span>, 2014</time>
-        
-         | <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&rsquo;ve been using Chef for a bit now and generally a huge fan of the new
-<a href="http://www.getchef.com/downloads/chef-dk/">Chef workflow</a>.</p>
-
-<p>We are working hard to attain true continuous delivery and test driven development with Chef.
-The devil is in the details now.</p>
-
-<p>One small wrinkle in our effort has been marrying <a href="http://docs.opscode.com/chef/essentials_data_bags.html#encrypt-a-data-bag-item">encrypted data_bags</a> with our chef-repo in GitHub.</p>
-
-<p>I don&rsquo;t want to type the optional argument <code>--secret-file ~/.chef/encrypted_data_bag_secret</code> everytime I interact with a data bag. So, I added this option to my <code>~/.chef/knife.rb</code> file.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:secret_file</span><span class="o">]</span>  <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">/encrypted_data_bag_secret&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>However, this precludes me from easily exporting the edited file to disk.  The export will always be my secret plaintext,
-not the encrypted ciphertext.   Not exactly what you want to commit to GitHub.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">data_bag</span> <span class="n">create</span> <span class="n">users</span> <span class="n">jenkins</span>
-</span><span class='line'><span class="c1"># DON&#39;T COMMIT THIS... the exported file will be unencrypted</span>
-</span><span class='line'><span class="n">knife</span> <span class="n">data_bag</span> <span class="n">users</span> <span class="n">jenkins</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">json</span> <span class="o">&gt;</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So, I decided to create a bash alias to temporarily disable the knife.rb setting and export the data bag to a file:</p>
-
-<p>My <code>~/.bash_profile</code> file contains this alias:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">function</span> <span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>   <span class="n">sed</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;s/knife\[\:secret_file\]/</span><span class="se">\#</span><span class="s2">knife\[\:secret_file\]/&quot;</span>  <span class="o">-</span><span class="n">i</span> <span class="o">.</span><span class="n">bak</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
-</span><span class='line'>   <span class="n">knife</span> <span class="vg">$@</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">json</span>
-</span><span class='line'>   <span class="n">mv</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span><span class="o">.</span><span class="n">bak</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">alias</span> <span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span><span class="o">=</span><span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This bash function comments out the secret file option in knife.rb using sed&rsquo;s in-place editing.</p>
-
-<p>Now I can commit the data bag in its encrypted format:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span> <span class="n">data_bag</span> <span class="n">show</span> <span class="n">users</span> <span class="n">jenkins</span> <span class="o">&gt;</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
-</span><span class='line'><span class="n">git</span> <span class="n">add</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
-</span><span class='line'><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;adding the latest jenkins data bag&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Happing cooking!</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
       <h1 class="entry-title"><a href="/blog/2014/03/16/a-better-iis-express-console-window/">A Better IIS Express Console Window</a></h1>
     
     
@@ -280,7 +81,7 @@ not the encrypted ciphertext.   Not exactly what you want to commit to GitHub.</
   
 
 
-<time datetime="2014-03-16T22:18:34+00:00" pubdate data-updated="true">Mar 16<span>th</span>, 2014</time>
+<time datetime="2014-03-16T18:18:34-04:00" pubdate data-updated="true">Mar 16<span>th</span>, 2014</time>
         
          | <a href="/blog/2014/03/16/a-better-iis-express-console-window/#disqus_thread">Comments</a>
         
@@ -349,7 +150,7 @@ window stretched the entire 1600 pixel width of my display. This helps greatly w
   
 
 
-<time datetime="2014-03-15T22:50:08+00:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+<time datetime="2014-03-15T18:50:08-04:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
         
          | <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/#disqus_thread">Comments</a>
         
@@ -423,7 +224,7 @@ great post on using <code>fsutil</code>!</p>
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to Dynamically Match Guest and Host CPU Architectures</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to Dynamically Match Guest and Host CPU Architectures</a></h1>
     
     
       <p class="meta">
@@ -439,9 +240,9 @@ great post on using <code>fsutil</code>!</p>
   
 
 
-<time datetime="2014-03-15T00:06:26+00:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+<time datetime="2014-03-14T20:06:26-04:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
         
-         | <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/#disqus_thread">Comments</a>
+         | <a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/#disqus_thread">Comments</a>
         
       </p>
     
@@ -534,7 +335,7 @@ and a 32-bit Linux guest on 32-bit hosts:</p>
   
 
 
-<time datetime="2014-03-13T09:55:12+00:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
+<time datetime="2014-03-13T05:55:12-04:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
         
          | <a href="/blog/2014/03/13/tips-for-vagrant-on-windows/#disqus_thread">Comments</a>
         
@@ -684,7 +485,7 @@ otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
   
 
 
-<time datetime="2014-03-05T18:09:00+00:00" pubdate data-updated="true">Mar 5<span>th</span>, 2014</time>
+<time datetime="2014-03-05T18:09:00-05:00" pubdate data-updated="true">Mar 5<span>th</span>, 2014</time>
         
          | <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/#disqus_thread">Comments</a>
         
@@ -893,7 +694,7 @@ rc_exit
   
 
 
-<time datetime="2014-02-15T17:24:00+00:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+<time datetime="2014-02-15T17:24:00-05:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
         
          | <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/#disqus_thread">Comments</a>
         
@@ -974,7 +775,7 @@ the best worst way to download in parallel while also making sense of each downl
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/04/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB Memory Barrier of 32-bit Windows</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/">Breaking the 3GB Memory Barrier of 32-bit Windows</a></h1>
     
     
       <p class="meta">
@@ -990,9 +791,9 @@ the best worst way to download in parallel while also making sense of each downl
   
 
 
-<time datetime="2013-10-04T03:22:02+01:00" pubdate data-updated="true">Oct 4<span>th</span>, 2013</time>
+<time datetime="2013-10-03T22:22:02-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2013</time>
         
-         | <a href="/blog/2013/10/04/breaking-the-3gb-memory-barrier-of-32-bit-windows/#disqus_thread">Comments</a>
+         | <a href="/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1174,7 +975,7 @@ images laptops with the 32-bit flavor of  Windows 7.</p>
   
 
 
-<time datetime="2013-09-12T22:57:00+01:00" pubdate data-updated="true">Sep 12<span>th</span>, 2013</time>
+<time datetime="2013-09-12T22:57:00-04:00" pubdate data-updated="true">Sep 12<span>th</span>, 2013</time>
         
          | <a href="/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/#disqus_thread">Comments</a>
         
@@ -1197,6 +998,126 @@ outstanding user experience.</p>
 <p><a href="http://www.flickr.com/people/vaxzine/">CC visualization by VaXzine</a></p>
 
 <p>What do you think?  Are great devs truly ambidextrous of the mind?</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/">GitHub Sings the Praises of a Distributed Workforce</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-10T21:41:00-04:00" pubdate data-updated="true">Sep 10<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Tom Preston-Werner, co-founder of <a href="GitHub.com">GitHub.com</a>, highlights the competitive advantages behind a number
+of company virtues I admire.   A few of these virtues are organic growth, outstanding user experience, and a distributed workforce.</p>
+
+<p>Below is an video excerpt from a fireside chat interview with Mr. Preston-Werner from July 2013, speaking to the benefits
+of a remote workers, particularly developers:</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/n1YXkd4r2gw "></iframe></div>
+
+
+<p>One of the most memorable quotations from the interview is:</p>
+
+<blockquote><p>&ldquo;Companies that aren&rsquo;t distributed can&rsquo;t possibly say that they hire the best people.&rdquo;</p></blockquote>
+
+<p>I have the privilege of working at a great employer that also &ldquo;gets it&rdquo;.  Most of my colleagues are remote workers across
+nearly every time zone.  Constraining your team to a single city is a self-imposed barrier,
+particularly for creative work like coding that fits brilliantly with remote collaboration.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a Shell Script</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-27T15:44:00-04:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
+yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,
+<a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
+be commanded to run in non-interactive mode.</p>
+
+<p>Enter an old-school POSIX friend in core-utils&hellip; <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
+
+<p>The <code>yes</code> utility continuously outputs &lsquo;Y&rsquo; followed by a newline as long as another process is reading the stdout stream.
+Very convenient for piping to another program.</p>
+
+<p>Here&rsquo;s how I automated Yeoman to generate a new AngularJS app:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># yeoman has a number of interactive prompts, and sadly doesn&#39;t support a batch mode</span>
+</span><span class='line'><span class="c"># so we use the coreutils `yes` utility to accept all the default answers in yeoman;</span>
+</span><span class='line'><span class="c"># yes is not part of msysgit, so skip this when running on windows without cygwin</span>
+</span><span class='line'>which yes &gt; /dev/null
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span>
+</span><span class='line'><span class="k">then</span>
+</span><span class='line'><span class="k">  </span>yes | yo angular
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
 </div>
   
   
@@ -1244,14 +1165,6 @@ outstanding user experience.</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
       </li>
     
@@ -1260,7 +1173,15 @@ outstanding user experience.</p>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+        <a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to dynamically match guest and host CPU architectures</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/13/tips-for-vagrant-on-windows/">Tips for Vagrant on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/">Binding Jenkins to port 80 on SUSE Linux</a>
       </li>
     
   </ul>

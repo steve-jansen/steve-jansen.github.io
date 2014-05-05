@@ -4,7 +4,7 @@
   <title><![CDATA[Category: AngularJS | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-05-05T22:22:39+01:00</updated>
+  <updated>2014-03-16T18:46:18-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Running Yeoman in a shell script]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script/"/>
-    <updated>2013-08-27T15:44:00+01:00</updated>
+    <updated>2013-08-27T15:44:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
     <content type="html"><![CDATA[<p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
 yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,

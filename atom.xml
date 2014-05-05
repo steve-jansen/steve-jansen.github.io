@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-05-05T22:22:39+01:00</updated>
+  <updated>2014-03-16T18:46:18-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -14,149 +14,9 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Including another berksfile in your berksfile]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/"/>
-    <updated>2014-05-06T18:11:57+01:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile</id>
-    <content type="html"><![CDATA[<p>As part of my cooking with <a href="http://www.getchef.com/downloads/chef-dk/">Chef&rsquo;s new workflow</a>,
-I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s dependencies.</p>
-
-<p>Thanks <a href="https://coderwall.com/p/j72egw">Vasily Mikhayliche&rsquo;s Coderwall post</a> and <a href="https://sethvargo.com/berksfile-magic/">Seth Vargo&rsquo;s post on Berks magic</a>, I was able to hack something
-that worked for me with <a href="http://berkshelf.com/v2.0/">Berkshelf v2.0</a>. (We don&rsquo;t have time to migrate to Berks 3.0 for another couple of weeks, and this feature doesn&rsquo;t seem to be part of Berks 3.0).</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># vi:ft=ruby:</span>
-</span><span class='line'><span class="n">site</span> <span class="ss">:opscode</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1"># Extension method to import secondary dependencies in a referenced site-cookbook</span>
-</span><span class='line'><span class="c1"># using the constraints in the site-cookbook&#39;s Berkshelf file, rather than just</span>
-</span><span class='line'><span class="c1"># the name of the dependencies in the site-cookbook&#39;s metadata.rb file</span>
-</span><span class='line'><span class="c1">#</span>
-</span><span class='line'><span class="c1"># credit: https://sethvargo.com/berksfile-magic/</span>
-</span><span class='line'><span class="c1">#         https://coderwall.com/p/j72egw</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">site_cookbook</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">berksfile</span> <span class="o">=</span> <span class="s2">&quot;../</span><span class="si">#{</span><span class="n">path</span><span class="si">}</span><span class="s2">/Berksfile&quot;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="n">berksfile</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">berksfile</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1"># comment out lines like `site :opscode`, which cannot be imported multiple times</span>
-</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(^\s*site\s)/</span><span class="p">,</span> <span class="s1">&#39;#\1&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1"># comment out lines like `metadata`, which cannot be imported multiple times</span>
-</span><span class='line'>    <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(^\s*metadata\s)/</span><span class="p">,</span> <span class="s1">&#39;#\1&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">instance_eval</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;nginx&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 2.4.4&#39;</span>
-</span><span class='line'><span class="n">site_cookbook</span> <span class="s1">&#39;my-site-cookbook&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Happy cooking!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Adding Chef encrypted data bags to source control]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/"/>
-    <updated>2014-05-05T20:54:25+01:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control</id>
-    <content type="html"><![CDATA[<p>I&rsquo;ve been using Chef for a bit now and generally a huge fan of the new
-<a href="http://www.getchef.com/downloads/chef-dk/">Chef workflow</a>.</p>
-
-<p>We are working hard to attain true continuous delivery and test driven development with Chef.
-The devil is in the details now.</p>
-
-<p>One small wrinkle in our effort has been marrying <a href="http://docs.opscode.com/chef/essentials_data_bags.html#encrypt-a-data-bag-item">encrypted data_bags</a> with our chef-repo in GitHub.</p>
-
-<p>I don&rsquo;t want to type the optional argument <code>--secret-file ~/.chef/encrypted_data_bag_secret</code> everytime I interact with a data bag. So, I added this option to my <code>~/.chef/knife.rb</code> file.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:secret_file</span><span class="o">]</span>  <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">/encrypted_data_bag_secret&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>However, this precludes me from easily exporting the edited file to disk.  The export will always be my secret plaintext,
-not the encrypted ciphertext.   Not exactly what you want to commit to GitHub.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">data_bag</span> <span class="n">create</span> <span class="n">users</span> <span class="n">jenkins</span>
-</span><span class='line'><span class="c1"># DON&#39;T COMMIT THIS... the exported file will be unencrypted</span>
-</span><span class='line'><span class="n">knife</span> <span class="n">data_bag</span> <span class="n">users</span> <span class="n">jenkins</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">json</span> <span class="o">&gt;</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So, I decided to create a bash alias to temporarily disable the knife.rb setting and export the data bag to a file:</p>
-
-<p>My <code>~/.bash_profile</code> file contains this alias:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">function</span> <span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>   <span class="n">sed</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;s/knife\[\:secret_file\]/</span><span class="se">\#</span><span class="s2">knife\[\:secret_file\]/&quot;</span>  <span class="o">-</span><span class="n">i</span> <span class="o">.</span><span class="n">bak</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
-</span><span class='line'>   <span class="n">knife</span> <span class="vg">$@</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">json</span>
-</span><span class='line'>   <span class="n">mv</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span><span class="o">.</span><span class="n">bak</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">alias</span> <span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span><span class="o">=</span><span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This bash function comments out the secret file option in knife.rb using sed&rsquo;s in-place editing.</p>
-
-<p>Now I can commit the data bag in its encrypted format:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span> <span class="n">data_bag</span> <span class="n">show</span> <span class="n">users</span> <span class="n">jenkins</span> <span class="o">&gt;</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
-</span><span class='line'><span class="n">git</span> <span class="n">add</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
-</span><span class='line'><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;adding the latest jenkins data bag&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Happing cooking!</p>
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[A better IIS Express console window]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window/"/>
-    <updated>2014-03-16T22:18:34+00:00</updated>
+    <updated>2014-03-16T18:18:34-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window</id>
     <content type="html"><![CDATA[<p>IIS Express is the <em>de facto</em>  server to use for local development of ASP.NET MVC and Web Api apps.  It&rsquo;s just like it&rsquo;s big brother IIS
 minus a few features rarely used for local development.
@@ -196,7 +56,7 @@ window stretched the entire 1600 pixel width of my display. This helps greatly w
   <entry>
     <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/"/>
-    <updated>2014-03-15T22:50:08+00:00</updated>
+    <updated>2014-03-15T18:50:08-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script</id>
     <content type="html"><![CDATA[<p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
 to verify that one of my batch scripts was running with administrative privileges.</p>
@@ -256,9 +116,9 @@ great post on using <code>fsutil</code>!</p>
   
   <entry>
     <title type="html"><![CDATA[Configuring Vagrant to dynamically match guest and host CPU architectures]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/"/>
-    <updated>2014-03-15T00:06:26+00:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/03/15/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures</id>
+    <link href="http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/"/>
+    <updated>2014-03-14T20:06:26-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures</id>
     <content type="html"><![CDATA[<p>Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops.  <a href="http://www.vagrantup.com">Vagrant</a>
 is sweet for DevOps.  The Vagrant file worked great on his Macbook Pro.
 But it was no dice running on my Windows box &ndash; the VM was a 64-bit Linux VM (why wouldn&rsquo;t a server be 32-bit?) and I&rsquo;m on a
@@ -323,7 +183,7 @@ and a 32-bit Linux guest on 32-bit hosts:</p>
   <entry>
     <title type="html"><![CDATA[Tips for Vagrant on Windows]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows/"/>
-    <updated>2014-03-13T09:55:12+00:00</updated>
+    <updated>2014-03-13T05:55:12-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/13/tips-for-vagrant-on-windows</id>
     <content type="html"><![CDATA[<p>I learned some interesting things today about running Vagrant on a Windows machine.
 Vagrant is an amazing tool for running a VM on your local dev box with a target platform (e.g., Linux)
@@ -444,7 +304,7 @@ otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
   <entry>
     <title type="html"><![CDATA[Binding Jenkins to port 80 on SUSE Linux]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/05/binding-jenkins-to-port-80-on-suse/"/>
-    <updated>2014-03-05T18:09:00+00:00</updated>
+    <updated>2014-03-05T18:09:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/05/binding-jenkins-to-port-80-on-suse</id>
     <content type="html"><![CDATA[<p>I&rsquo;ve been helping an awesome colleague on DevOps for our Jenkins farm, which we use
 for continuous integration and continuous deployment to our preproduction environments.</p>
@@ -624,7 +484,7 @@ rc_exit
   <entry>
     <title type="html"><![CDATA[A better FTP client for Windows you already have: Git bash's curl command]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/"/>
-    <updated>2014-02-15T17:24:00+00:00</updated>
+    <updated>2014-02-15T17:24:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command</id>
     <content type="html"><![CDATA[<p>My shop has a couple of internal FTP servers to mirror commonly used installers for .Net devs.
 Installers for apps like Visual Studio can be huge, so GitHub isn&rsquo;t the best place for this, and
@@ -691,9 +551,9 @@ the best worst way to download in parallel while also making sense of each downl
   
   <entry>
     <title type="html"><![CDATA[Breaking the 3GB memory barrier of 32-bit Windows]]></title>
-    <link href="http://steve-jansen.github.io/blog/2013/10/04/breaking-the-3gb-memory-barrier-of-32-bit-windows/"/>
-    <updated>2013-10-04T03:22:02+01:00</updated>
-    <id>http://steve-jansen.github.io/blog/2013/10/04/breaking-the-3gb-memory-barrier-of-32-bit-windows</id>
+    <link href="http://steve-jansen.github.io/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows/"/>
+    <updated>2013-10-03T22:22:02-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2013/10/03/breaking-the-3gb-memory-barrier-of-32-bit-windows</id>
     <content type="html"><![CDATA[<p>My corporate laptop has 6 GB of RAM installed, but, only sees 3 GB of logical RAM. Why?  My corporate IT department
 images laptops with the 32-bit flavor of  Windows 7.</p>
 
@@ -847,7 +707,7 @@ images laptops with the 32-bit flavor of  Windows 7.</p>
   <entry>
     <title type="html"><![CDATA[Are great developers both left and right brain expressive?]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive/"/>
-    <updated>2013-09-12T22:57:00+01:00</updated>
+    <updated>2013-09-12T22:57:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/09/12/are-great-developers-both-left-and-right-brain-expressive</id>
     <content type="html"><![CDATA[<p>My wondeful wife pointed to me this outstanding visualization of left vs. right brain expression.</p>
 
@@ -869,7 +729,7 @@ outstanding user experience.</p>
   <entry>
     <title type="html"><![CDATA[GitHub sings the praises of a distributed workforce]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce/"/>
-    <updated>2013-09-10T21:41:00+01:00</updated>
+    <updated>2013-09-10T21:41:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/09/10/github-sings-the-praises-of-a-distributed-workforce</id>
     <content type="html"><![CDATA[<p>Tom Preston-Werner, co-founder of <a href="GitHub.com">GitHub.com</a>, highlights the competitive advantages behind a number
 of company virtues I admire.   A few of these virtues are organic growth, outstanding user experience, and a distributed workforce.</p>
@@ -893,7 +753,7 @@ particularly for creative work like coding that fits brilliantly with remote col
   <entry>
     <title type="html"><![CDATA[Running Yeoman in a shell script]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script/"/>
-    <updated>2013-08-27T15:44:00+01:00</updated>
+    <updated>2013-08-27T15:44:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/27/running-yeoman-in-a-shell-script</id>
     <content type="html"><![CDATA[<p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
 yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,
@@ -931,7 +791,7 @@ Very convenient for piping to another program.</p>
   <entry>
     <title type="html"><![CDATA[Wiring together Express, Passport OAuth, and Swagger in NodeJS]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express/"/>
-    <updated>2013-08-22T22:07:00+01:00</updated>
+    <updated>2013-08-22T22:07:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/22/wiring-together-passport-swagger-express</id>
     <content type="html"><![CDATA[<p>I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
 the <a href="http://passportjs.org/guide/">Passport authentication strategy for GitHub OAuth</a> with
@@ -1155,7 +1015,7 @@ route <code>/api/doc</code>, and finally start the server.</p>
   <entry>
     <title type="html"><![CDATA[A Fantastic Video Tutorial on Sublime Text 2]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial/"/>
-    <updated>2013-08-21T12:29:00+01:00</updated>
+    <updated>2013-08-21T12:29:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/21/a-fantastic-sublime-text-2-video-tutorial</id>
     <content type="html"><![CDATA[<p>Jeffrey Way at Nettuts+ created a wonderul video tutorial on using Sublime Text 2
 to its fullest capabilities.</p>
@@ -1171,7 +1031,7 @@ You can read more about it at <a href="http://net.tutsplus.com/articles/news/per
   <entry>
     <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/"/>
-    <updated>2013-08-20T21:44:00+01:00</updated>
+    <updated>2013-08-20T21:44:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0</id>
     <content type="html"><![CDATA[<p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
 
@@ -1322,7 +1182,7 @@ If you install using <code>sudo npm install -g json-proxy</code>, you can invoke
   <entry>
     <title type="html"><![CDATA[passport-reverseproxy]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/"/>
-    <updated>2013-08-11T19:38:00+01:00</updated>
+    <updated>2013-08-11T19:38:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy</id>
     <content type="html"><![CDATA[<p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
 
@@ -1352,7 +1212,7 @@ inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic 
   <entry>
     <title type="html"><![CDATA[Update to the Cordova Email Plugin for iOS]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
-    <updated>2013-08-06T23:45:00+01:00</updated>
+    <updated>2013-08-06T23:45:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
     <content type="html"><![CDATA[<p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
 v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
@@ -1406,7 +1266,7 @@ As a courtesy, I&rsquo;ve asked the original contributors to these two plugins t
   <entry>
     <title type="html"><![CDATA[How to modify the TCP/IP port binding for the Microsoft Web Deployment Agent Service]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/"/>
-    <updated>2013-02-28T16:44:00+00:00</updated>
+    <updated>2013-02-28T16:44:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service</id>
     <content type="html"><![CDATA[<p>I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work.  I&rsquo;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) &ndash; it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&rsquo;s Web Deployment Agent service.</p>
 
@@ -1458,7 +1318,7 @@ IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
   EXIT /B 2
 )
 
-FOR /F &quot;tokens=3&quot; %%I IN (&#39;REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl&#39;) DO (
+FOR /F &quot;tokens=3&quot; %%I IN ('REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl') DO (
   SET url=%%I
 )
 ECHO %me%: INFO - MsDepSvc current reservation is &quot;%url%&quot;
@@ -1470,7 +1330,7 @@ IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
 )
 
 :: save the existing urlacl properties for User, Listen, Delegate, and SDDL
-FOR /F &quot;tokens=1,* delims=: &quot; %%A IN (&#39;NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;&#39;) DO (
+FOR /F &quot;tokens=1,* delims=: &quot; %%A IN ('NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;') DO (
   SET URLACL.%%A=%%B
 )
 
@@ -1518,7 +1378,7 @@ ECHO ON
   <entry>
     <title type="html"><![CDATA[Tailoring the Windows Command Prompt Shell]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/"/>
-    <updated>2013-02-27T14:18:00+00:00</updated>
+    <updated>2013-02-27T14:18:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell</id>
     <content type="html"><![CDATA[<p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&rsquo;t know some of the tricks up the Command Prompt&rsquo;s sleeve.  So allow me to share some of my favorite settings.</p>
 
@@ -1589,7 +1449,7 @@ ECHO ON
   <entry>
     <title type="html"><![CDATA[A ghost no more]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more/"/>
-    <updated>2013-02-25T12:49:00+00:00</updated>
+    <updated>2013-02-25T12:49:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more</id>
     <content type="html"><![CDATA[<p>Blogging has long been on my todo list &mdash; quite frankly too long.  A colleague shared <a href="http://www.troyhunt.com/2013/02/the-ghost-who-codes-how-anonymity-is.html">a great piece by Troy Hunt named &ldquo;The ghost who codes: how anonymity is killing your career&rdquo;</a>.  Troy inspired me that I need to make the time to just get it done.  So this is where I start giving back whatever small knowledge bits I may have.</p>
 

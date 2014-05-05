@@ -4,7 +4,7 @@
   <title><![CDATA[Category: phonegap | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/phonegap/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-05-05T22:22:39+01:00</updated>
+  <updated>2014-03-16T18:46:18-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Update to the Cordova Email Plugin for iOS]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
-    <updated>2013-08-06T23:45:00+01:00</updated>
+    <updated>2013-08-06T23:45:00-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
     <content type="html"><![CDATA[<p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
 v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
