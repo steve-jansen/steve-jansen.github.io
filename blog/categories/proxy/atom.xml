@@ -4,7 +4,7 @@
   <title><![CDATA[Category: proxy | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/proxy/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-05-05T22:26:04+01:00</updated>
+  <updated>2014-07-19T15:52:43+01:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,110 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[json-proxy release 0.2.0]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/07/19/json-proxy-release-0-dot-2-0/"/>
+    <updated>2014-07-19T15:20:56+01:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/07/19/json-proxy-release-0-dot-2-0</id>
+    <content type="html"><![CDATA[<p>Happy to announce a new release of <a href="https://www.npmjs.org/package/json-proxy">json-proxy</a>, a
+utility for HTML5 devs to run apps locally and proxy calls like <a href="http://localhost:9000/api">http://localhost:9000/api</a> to
+a remote server, all without CORS or JSONP.</p>
+
+<h2>Grunt Plugin</h2>
+
+<p>This release includes better support for running as a grunt plugin.
+A <a href="https://github.com/gruntjs/grunt-contrib-connect/pull/85">change in grunt-contrib-connect@0.8.0</a>
+simplifies life for proxy plugins inside the livereload task of <code>grunt serve</code>:</p>
+
+<p>```js
+livereload: {
+  options: {</p>
+
+<pre><code>middleware: function(connect, options, middlewares) {
+  // inject json-proxy to the front of the default middlewares array
+  // requires grunt-contrib-connect v0.8.0+
+  middlewares.unshift(
+    require('json-proxy').initialize({
+      proxy: {
+        forward: {
+          '/api/': 'http://api.example.com:8080'
+        },
+        headers: {
+          'X-Forwarded-User': 'John Doe'
+        }
+      }
+    })
+  );
+
+  return middlewares;
+}
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<h2>SSL Endpoints</h2>
+
+<p>This release adds support for proxying to HTTPS endpoints.   Here&rsquo;s a sample
+config to forward <a href="http://localhost:9000/channel">http://localhost:9000/channel</a> to <a href="https://www.youtube.com/channel">https://www.youtube.com/channel</a> .</p>
+
+<p>```
+{
+  &ldquo;proxy&rdquo;: {</p>
+
+<pre><code>  "forward": {
+    "/channel": "https://www.youtube.com:443"
+}
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<h2>HTTP Proxy Gateways and Basic Authentication</h2>
+
+<p>You can now pass your authentication credentials to a HTTP proxy gateway on
+your LAN via the <code>proxy.gateway.auth</code> config setting.  The setting value
+uses the <code>username:password</code> format for HTTP basic authentication
+(without base64 encoding).  Here&rsquo;s an example config to proxying remote request
+via <a href="http://proxy.example.com:8080">http://proxy.example.com:8080</a> as <code>proxyuser</code> with password <code>C0mp13x_!d0rd$$@P!</code></p>
+
+<p>```
+var config = {
+  &ldquo;proxy&rdquo;: {</p>
+
+<pre><code>"gateway": {
+  "protocol: "http:",
+  "host": "proxy.example.com",
+  "port": 8080,
+  "auth": "proxyuser:C0mp13x_!d0rd$$@P!" /** 'user:password' **/
+},  
+"forward": {
+  "/api": "http://api.example.com",
+  "/foo/\\d+/bar": "http://www.example.com",
+  "/secure/": "https://secure.example.com"
+}
+</code></pre>
+
+<p>  }
+};
+```</p>
+
+<h2>Upgrade to NodeJitsu http-proxy v1.1</h2>
+
+<p>This release required heavy refactoring to use the
+<a href="https://github.com/nodejitsu/node-http-proxy/blob/master/UPGRADING.md">latest bits of Nodejitsu&rsquo;s http-proxy v1.1</a></p>
+
+<p>This was necessary since version prior to 1.0 are no longer actively supported.</p>
+
+<h2>Housekeeping</h2>
+
+<p>There&rsquo;s better unit test coverage, and the code validates against a
+reasonable set of jshint linting rules.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[For all UI devs out there...json-proxy v0.10.0]]></title>

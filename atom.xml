@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-05-05T22:26:04+01:00</updated>
+  <updated>2014-07-19T15:52:43+01:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,145 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[json-proxy release 0.2.0]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/07/19/json-proxy-release-0-dot-2-0/"/>
+    <updated>2014-07-19T15:20:56+01:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/07/19/json-proxy-release-0-dot-2-0</id>
+    <content type="html"><![CDATA[<p>Happy to announce a new release of <a href="https://www.npmjs.org/package/json-proxy">json-proxy</a>, a
+utility for HTML5 devs to run apps locally and proxy calls like <a href="http://localhost:9000/api">http://localhost:9000/api</a> to
+a remote server, all without CORS or JSONP.</p>
+
+<h2>Grunt Plugin</h2>
+
+<p>This release includes better support for running as a grunt plugin.
+A <a href="https://github.com/gruntjs/grunt-contrib-connect/pull/85">change in grunt-contrib-connect@0.8.0</a>
+simplifies life for proxy plugins inside the livereload task of <code>grunt serve</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">livereload</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">middleware</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">middlewares</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// inject json-proxy to the front of the default middlewares array</span>
+</span><span class='line'>      <span class="c1">// requires grunt-contrib-connect v0.8.0+</span>
+</span><span class='line'>      <span class="nx">middlewares</span><span class="p">.</span><span class="nx">unshift</span><span class="p">(</span>
+</span><span class='line'>        <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;json-proxy&#39;</span><span class="p">).</span><span class="nx">initialize</span><span class="p">({</span>
+</span><span class='line'>          <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">forward</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="s1">&#39;/api/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://api.example.com:8080&#39;</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="s1">&#39;X-Forwarded-User&#39;</span><span class="o">:</span> <span class="s1">&#39;John Doe&#39;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>        <span class="p">})</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">middlewares</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>SSL Endpoints</h2>
+
+<p>This release adds support for proxying to HTTPS endpoints.   Here&rsquo;s a sample
+config to forward <a href="http://localhost:9000/channel">http://localhost:9000/channel</a> to <a href="https://www.youtube.com/channel">https://www.youtube.com/channel</a> .</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="s2">&quot;proxy&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;forward&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;/channel&quot;</span><span class="o">:</span> <span class="s2">&quot;https://www.youtube.com:443&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>HTTP Proxy Gateways and Basic Authentication</h2>
+
+<p>You can now pass your authentication credentials to a HTTP proxy gateway on
+your LAN via the <code>proxy.gateway.auth</code> config setting.  The setting value
+uses the <code>username:password</code> format for HTTP basic authentication
+(without base64 encoding).  Here&rsquo;s an example config to proxying remote request
+via <a href="http://proxy.example.com:8080">http://proxy.example.com:8080</a> as <code>proxyuser</code> with password <code>C0mp13x_!d0rd$$@P!</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="s2">&quot;proxy&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;gateway&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;protocol: &quot;</span><span class="nx">http</span><span class="o">:</span><span class="s2">&quot;,</span>
+</span><span class='line'><span class="s2">      &quot;</span><span class="nx">host</span><span class="s2">&quot;: &quot;</span><span class="nx">proxy</span><span class="p">.</span><span class="nx">example</span><span class="p">.</span><span class="nx">com</span><span class="s2">&quot;,</span>
+</span><span class='line'><span class="s2">      &quot;</span><span class="nx">port</span><span class="s2">&quot;: 8080,</span>
+</span><span class='line'><span class="s2">      &quot;</span><span class="nx">auth</span><span class="s2">&quot;: &quot;</span><span class="nx">proxyuser</span><span class="o">:</span><span class="nx">C0mp13x_</span><span class="o">!</span><span class="nx">d0rd$$</span><span class="err">@</span><span class="nx">P</span><span class="o">!</span><span class="s2">&quot; /** &#39;user:password&#39; **/</span>
+</span><span class='line'><span class="s2">    },  </span>
+</span><span class='line'><span class="s2">    &quot;</span><span class="nx">forward</span><span class="s2">&quot;: {</span>
+</span><span class='line'><span class="s2">      &quot;</span><span class="o">/</span><span class="nx">api</span><span class="s2">&quot;: &quot;</span><span class="nx">http</span><span class="o">:</span><span class="c1">//api.example.com&quot;,</span>
+</span><span class='line'>      <span class="s2">&quot;/foo/\\d+/bar&quot;</span><span class="o">:</span> <span class="s2">&quot;http://www.example.com&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;/secure/&quot;</span><span class="o">:</span> <span class="s2">&quot;https://secure.example.com&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Upgrade to NodeJitsu http-proxy v1.1</h2>
+
+<p>This release required heavy refactoring to use the
+<a href="https://github.com/nodejitsu/node-http-proxy/blob/master/UPGRADING.md">latest bits of Nodejitsu&rsquo;s http-proxy v1.1</a></p>
+
+<p>This was necessary since version prior to 1.0 are no longer actively supported.</p>
+
+<h2>Housekeeping</h2>
+
+<p>There&rsquo;s better unit test coverage, and the code validates against a
+reasonable set of jshint linting rules.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Including another berksfile in your berksfile]]></title>
@@ -1583,21 +1722,6 @@ ECHO ON
 
 <p>Example of pressing <code>F8</code> to cycle through history entries matching the text &ldquo;D&rdquo; already typed into the comamnd line buffer:
 <img src="http://steve-jansen.github.io/images/2013-02-27-G.png" alt="Screenshot of the visual command history" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[A ghost no more]]></title>
-    <link href="http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more/"/>
-    <updated>2013-02-25T12:49:00+00:00</updated>
-    <id>http://steve-jansen.github.io/blog/2013/02/25/a-ghost-no-more</id>
-    <content type="html"><![CDATA[<p>Blogging has long been on my todo list &mdash; quite frankly too long.  A colleague shared <a href="http://www.troyhunt.com/2013/02/the-ghost-who-codes-how-anonymity-is.html">a great piece by Troy Hunt named &ldquo;The ghost who codes: how anonymity is killing your career&rdquo;</a>.  Troy inspired me that I need to make the time to just get it done.  So this is where I start giving back whatever small knowledge bits I may have.</p>
-
-<p>I am fortunate enough to be with a company now that encourages professional writing, which hasn&rsquo;t always been the case.  Troy&rsquo;s article really resonated with me that developers have an insatiatable appetite for consuming knowledge.  We take information all the time, and there&rsquo;s a duty on all our parts to give back and not just take.  Thanks to both Troy any my colleague Alex for pushing me to do more!</p>
-
-<p>Many years ago I learned an metaphor from a very accomplished veteran of the US military that is quite applicable to coding: &ldquo;you have to either be tough or smart to succeed&rdquo;.  Say you want to navigate from point A to point B, and there just happens to be a tall mountain between the two points.  The tough guy takes a straight line route, ardously ascending and descending the mountain.  The smart guy circumnavigates the mountain, saving time and energy.</p>
-
-<p>I know developers like to be the smartest person in the room, but, I am self-aware enough to admit I often fall into the &ldquo;tough&rdquo; camp &ndash; hacking into the late hours until the job is done.  I suppose this blog will be a true measure of how many (or how few) smart/clever ideas I have up my sleeve!</p>
 ]]></content>
   </entry>
   
