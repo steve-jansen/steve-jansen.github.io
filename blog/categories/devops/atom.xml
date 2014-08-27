@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devops | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-07-19T15:52:43+01:00</updated>
+  <updated>2014-08-27T19:52:33-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -14,9 +14,70 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Chef'ing custom nginx configs with the nginx cookbook]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/"/>
+    <updated>2014-08-27T19:41:10-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook</id>
+    <content type="html"><![CDATA[<p>The <a href="http://supermarket.getchef.com/cookbooks/nginx">nginx</a> cookbook has been
+super helpful Chef'ing some web apps recently.  One thing I struggled to
+understand was how to use my own custom conf, like <code>/etc/nginx/nginx.conf</code>, that
+is optimized for how I use nginx.</p>
+
+<p>One solution I tried, which is probably a Chef anti-pattern, is to only include
+the nginx cookbook on the initial converge:</p>
+
+<h2>The Wrong Way</h2>
+
+<p>``` ruby</p>
+
+<h1>the nginx community cookbook will relentlessly revert conf files,</h1>
+
+<h1>so avoid running it unless nginx isn&rsquo;t installed,</h1>
+
+<h1>or we explicitly reset/delete the node attribute</h1>
+
+<p>include_recipe &lsquo;nginx&rsquo; unless node[&lsquo;nginx&rsquo;][&lsquo;installed&rsquo;]
+node.set[&lsquo;nginx&rsquo;][&lsquo;installed&rsquo;] = true</p>
+
+<h1>our custom nginx.conf</h1>
+
+<p>template &lsquo;/etc/nginx/nginx.conf&rsquo; do
+   source &lsquo;nginx.conf.erb&rsquo;
+   owner &lsquo;root&rsquo;
+   group &lsquo;root&rsquo;
+   mode  &lsquo;0644&rsquo;
+   notifies :reload, &ldquo;service[nginx]&rdquo;, :delayed
+end
+```</p>
+
+<p>I knew this was wrong when I wrote it.   Chef is all about idempotency.
+But, I couldn&rsquo;t figure out a way to keep the nginx cookbook from reverting my
+custom conf during subsequent converges, only to have my <code>template</code> restore my
+custom conf a few seconds later.</p>
+
+<h2>The Better Way</h2>
+
+<p>The OpsCode blog <a href="http://www.getchef.com/blog/2013/12/03/doing-wrapper-cookbooks-right/">Doing Wrapper Cookbooks Right</a> shows the right way, and really opened my eyes on the power of
+Chef&rsquo;s two phase model (compile, then converge).</p>
+
+<p>``` ruby
+include_recipe &lsquo;nginx&rsquo;</p>
+
+<h1>use our custom nginx.conf, rather than the one that ships in the nginx cookbook</h1>
+
+<h1>this avoids the nginx and my-app cookbooks from fighting for control of</h1>
+
+<h1>the same target file</h1>
+
+<p>resources(&lsquo;template[nginx.conf]&rsquo;).cookbook &lsquo;my-app&rsquo;
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Including another berksfile in your berksfile]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/"/>
-    <updated>2014-05-06T18:11:57+01:00</updated>
+    <updated>2014-05-06T13:11:57-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile</id>
     <content type="html"><![CDATA[<p>As part of my cooking with <a href="http://www.getchef.com/downloads/chef-dk/">Chef&rsquo;s new workflow</a>,
 I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s dependencies.</p>
@@ -73,7 +134,7 @@ site_cookbook &lsquo;my-site-cookbook&rsquo;</p>
   <entry>
     <title type="html"><![CDATA[Adding Chef encrypted data bags to source control]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/"/>
-    <updated>2014-05-05T20:54:25+01:00</updated>
+    <updated>2014-05-05T15:54:25-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control</id>
     <content type="html"><![CDATA[<p>I&rsquo;ve been using Chef for a bit now and generally a huge fan of the new
 <a href="http://www.getchef.com/downloads/chef-dk/">Chef workflow</a>.</p>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: scripting | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/scripting/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-07-19T15:52:43+01:00</updated>
+  <updated>2014-08-27T19:52:33-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[How To verify administrative rights in a Windows batch script]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/"/>
-    <updated>2014-03-15T22:50:08+00:00</updated>
+    <updated>2014-03-15T18:50:08-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script</id>
     <content type="html"><![CDATA[<p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
 to verify that one of my batch scripts was running with administrative privileges.</p>

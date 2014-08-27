@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Berkshelf | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/berkshelf/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-07-19T15:52:43+01:00</updated>
+  <updated>2014-08-27T19:52:33-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Including another berksfile in your berksfile]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/"/>
-    <updated>2014-05-06T18:11:57+01:00</updated>
+    <updated>2014-05-06T13:11:57-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile</id>
     <content type="html"><![CDATA[<p>As part of my cooking with <a href="http://www.getchef.com/downloads/chef-dk/">Chef&rsquo;s new workflow</a>,
 I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s dependencies.</p>

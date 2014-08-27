@@ -4,7 +4,7 @@
   <title><![CDATA[Category: .net | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/dot-net/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-07-19T15:52:43+01:00</updated>
+  <updated>2014-08-27T19:52:33-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A better IIS Express console window]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window/"/>
-    <updated>2014-03-16T22:18:34+00:00</updated>
+    <updated>2014-03-16T18:18:34-04:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/03/16/a-better-iis-express-console-window</id>
     <content type="html"><![CDATA[<p>IIS Express is the <em>de facto</em>  server to use for local development of ASP.NET MVC and Web Api apps.  It&rsquo;s just like it&rsquo;s big brother IIS
 minus a few features rarely used for local development.

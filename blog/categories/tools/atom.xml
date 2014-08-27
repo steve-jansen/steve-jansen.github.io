@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tools | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/tools/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-07-19T15:52:43+01:00</updated>
+  <updated>2014-08-27T19:52:33-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Tailoring the Windows Command Prompt Shell]]></title>
     <link href="http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/"/>
-    <updated>2013-02-27T14:18:00+00:00</updated>
+    <updated>2013-02-27T14:18:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell</id>
     <content type="html"><![CDATA[<p>I spend a lot of time in the Windows Command Prompt.  Most developers I work with don&rsquo;t know some of the tricks up the Command Prompt&rsquo;s sleeve.  So allow me to share some of my favorite settings.</p>
 

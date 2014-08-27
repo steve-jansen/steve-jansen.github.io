@@ -5,16 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Windows Batch Scripting: Functions - /* steve jansen */</title>
+  <title>Chef'ing custom nginx configs with the nginx cookbook - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Overview
-Part 1 &ndash; Getting Started
-Part 2 &ndash; Variables
-Part 3 &ndash; Return Codes
-Part 4 &ndash; stdin, stdout, stderr
-Part 5 &ndash; If/ &hellip;">
+  <meta name="description" content="The nginx cookbook has been
+super helpful Chef&#8217;ing some web apps recently. One thing I struggled to
+understand was how to use my own custom &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -23,7 +20,7 @@ Part 5 &ndash; If/ &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.io/guides/windows-batch-scripting/part-7-functions.html">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -67,7 +64,7 @@ Part 5 &ndash; If/ &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Windows Batch Scripting: Functions</h1>
+      <h1 class="entry-title">Chef'ing Custom Nginx Configs With the Nginx Cookbook</h1>
     
     
       <p class="meta">
@@ -83,7 +80,7 @@ Part 5 &ndash; If/ &hellip;">
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2014-08-27T19:41:10-04:00" pubdate data-updated="true">Aug 27<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -92,81 +89,71 @@ Part 5 &ndash; If/ &hellip;">
   </header>
 
 
-<div class="entry-content"><ul>
-<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
-<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
-<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
-<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
-<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
-<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
-<li><a href="/guides/windows-batch-scripting/part-6-loops.html">Part 6 &ndash; Loops</a></li>
-<li>Part 7 &ndash; Functions</li>
-<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
-<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
-<li><a href="/guides/windows-batch-scripting/part-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
-</ul>
+<div class="entry-content"><p>The <a href="http://supermarket.getchef.com/cookbooks/nginx">nginx</a> cookbook has been
+super helpful Chef&#8217;ing some web apps recently.  One thing I struggled to
+understand was how to use my own custom conf, like <code>/etc/nginx/nginx.conf</code>, that
+is optimized for how I use nginx.</p>
+
+<p>One solution I tried, which is probably a Chef anti-pattern, is to only include
+the nginx cookbook on the initial converge:</p>
+
+<h2>The Wrong Way</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># the nginx community cookbook will relentlessly revert conf files,</span>
+</span><span class='line'><span class="c1"># so avoid running it unless nginx isn&#39;t installed,</span>
+</span><span class='line'><span class="c1"># or we explicitly reset/delete the node attribute</span>
+</span><span class='line'><span class="n">include_recipe</span> <span class="s1">&#39;nginx&#39;</span> <span class="k">unless</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;nginx&#39;</span><span class="o">][</span><span class="s1">&#39;installed&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="o">[</span><span class="s1">&#39;nginx&#39;</span><span class="o">][</span><span class="s1">&#39;installed&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># our custom nginx.conf</span>
+</span><span class='line'><span class="n">template</span> <span class="s1">&#39;/etc/nginx/nginx.conf&#39;</span> <span class="k">do</span>
+</span><span class='line'>   <span class="n">source</span> <span class="s1">&#39;nginx.conf.erb&#39;</span>
+</span><span class='line'>   <span class="n">owner</span> <span class="s1">&#39;root&#39;</span>
+</span><span class='line'>   <span class="n">group</span> <span class="s1">&#39;root&#39;</span>
+</span><span class='line'>   <span class="n">mode</span>  <span class="s1">&#39;0644&#39;</span>
+</span><span class='line'>   <span class="n">notifies</span> <span class="ss">:reload</span><span class="p">,</span> <span class="s2">&quot;service[nginx]&quot;</span><span class="p">,</span> <span class="ss">:delayed</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Functions are de facto way to reuse code in just about any procedural coding language.  While DOS lacks a bona fide function keyword, you can
-fake it till you make it thanks to labels and the <code>CALL</code> keyword.</p>
+<p>I knew this was wrong when I wrote it.   Chef is all about idempotency.
+But, I couldn&rsquo;t figure out a way to keep the nginx cookbook from reverting my
+custom conf during subsequent converges, only to have my <code>template</code> restore my
+custom conf a few seconds later.</p>
 
-<p>There are a few gotchas to pay attention to:</p>
+<h2>The Better Way</h2>
 
-<ol>
-<li>Your quasi functions need to be defined as labels at the bottom of your script.</li>
-<li>The main logic of your script must have a <code>EXIT /B [errorcode]</code> statement.  This keeps your main logic from falling through into your functions.</li>
-</ol>
+<p>The OpsCode blog <a href="http://www.getchef.com/blog/2013/12/03/doing-wrapper-cookbooks-right/">Doing Wrapper Cookbooks Right</a> shows the right way, and really opened my eyes on the power of
+Chef&rsquo;s two phase model (compile, then converge).</p>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">include_recipe</span> <span class="s1">&#39;nginx&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># use our custom nginx.conf, rather than the one that ships in the nginx cookbook</span>
+</span><span class='line'><span class="c1"># this avoids the nginx and my-app cookbooks from fighting for control of</span>
+</span><span class='line'><span class="c1"># the same target file</span>
+</span><span class='line'><span class="n">resources</span><span class="p">(</span><span class="s1">&#39;template[nginx.conf]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cookbook</span> <span class="s1">&#39;my-app&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<h1>Defining a function</h1>
-
-<p>In this example, we&rsquo;ll implement a poor man&rsquo;s version of the *nix tee utility to write a message to both a file and the stdout stream.  We&rsquo;ll use a variable global to the entire script, <code>%log%</code> in the function.</p>
-
-<pre><code>@ECHO OFF
-SETLOCAL
-
-:: script global variables
-SET me=%~n0
-SET log=%TEMP%\%me%.txt
-
-:: The "main" logic of the script
-IF EXIST "%log%" DELETE /Q %log% &gt;NUL
-
-:: do something cool, then log it
-CALL :tee "%me%: Hello, world!"
-
-:: force execution to quit at the end of the "main" logic
-EXIT /B %ERRORLEVEL%
-
-:: a function to write to a log file and write to stdout
-:tee
-ECHO %* &gt;&gt; "%log%"
-ECHO %*
-EXIT /B 0
-</code></pre>
-
-<h1>Calling a function</h1>
-
-<p>We use the <code>CALL</code> keyword to invoke the quasi function labelled <code>:tee</code>.  We can pass command line arguments just like we&rsquo;re calling another batch file.</p>
-
-<p>We have to remember to <code>EXIT /B</code> keyword at the end our function.  Sadly, there is no way to return anything other than an exit code.</p>
-
-<h1>Return values</h1>
-
-<p>The return value of <code>CALL</code> will always be the exit code of the function.  Like any other invokation of an executable, the caller reads <code>%ERRORLEVEL%</code>
-to get the exit code.</p>
-
-<p>You have to get creative to pass anything other than integer return codes.  The function can <code>ECHO</code> to stdout, letting the caller decide to handle the
-output by pipeling the output as the input to another executable, redirecting to a file, or parsing via the <code>FOR</code> command.</p>
-
-<p>The caller could also pass data by modifying a global variable, however, I try to avoid this approach.</p>
-
-<p><span class="basic-alignment left">
-<a href="/guides/windows-batch-scripting/part-6-loops.html">&lt;&lt; Part 6 &ndash; Loops</a>
-</span>
-<span class="basic-alignment right">
-<a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input >></a>
-</span></p>
 </div>
 
 
@@ -189,12 +176,12 @@ output by pipeling the output as the input to another executable, redirecting to
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2014-08-27T19:41:10-04:00" pubdate data-updated="true">Aug 27<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+    <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/devops/'>devops</a>
   
 </span>
 
@@ -203,7 +190,7 @@ output by pipeling the output as the input to another executable, redirecting to
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/guides/windows-batch-scripting/part-7-functions.html" data-via="" data-counturl="http://steve-jansen.github.io/guides/windows-batch-scripting/part-7-functions.html" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/" >Tweet</a>
   
   
   
@@ -211,6 +198,8 @@ output by pipeling the output as the input to another executable, redirecting to
 
     
     <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/19/json-proxy-release-0-dot-2-0/" title="Previous Post: json-proxy release 0.2.0">&laquo; json-proxy release 0.2.0</a>
       
       
     </p>
@@ -317,8 +306,8 @@ output by pipeling the output as the input to another executable, redirecting to
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-7-functions.html';
-        var disqus_url = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-7-functions.html';
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/';
         var disqus_script = 'embed.js';
       
     (function () {

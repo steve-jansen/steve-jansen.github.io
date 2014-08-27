@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-07-19T15:52:43+01:00</updated>
+  <updated>2014-08-27T19:52:33-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A better FTP client for Windows you already have: Git bash's curl command]]></title>
     <link href="http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/"/>
-    <updated>2014-02-15T17:24:00+00:00</updated>
+    <updated>2014-02-15T17:24:00-05:00</updated>
     <id>http://steve-jansen.github.io/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command</id>
     <content type="html"><![CDATA[<p>My shop has a couple of internal FTP servers to mirror commonly used installers for .Net devs.
 Installers for apps like Visual Studio can be huge, so GitHub isn&rsquo;t the best place for this, and
