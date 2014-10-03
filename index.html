@@ -9,9 +9,9 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="The nginx cookbook has been
-super helpful Chef&#8217;ing some web apps recently. One thing I struggled to
-understand was how to use my own custom &hellip;">
+  <meta name="description" content="The Serverspec team just released v2 of their outstanding testing library
+today, after a very long beta period. The v2 release had a
+few breaking &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -61,6 +61,79 @@ understand was how to use my own custom &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">Regexes for the Serverspec 2 Update</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-03T18:24:25-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2014</time>
+        
+         | <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The Serverspec team just released v2 of their outstanding testing library
+today, after a very long beta period.  The v2 release had a
+<a href="http://serverspec.org/changes-of-v2.html">few breaking breaking changes</a>
+due to dropped rspec matchers that had been deprecated.</p>
+
+<p>If your <a href="http://kitchen.ci/">test-kitchen</a> tests recently broke today,
+here&rsquo;s a few regexes I used with Sublime Text&rsquo;s regex find/replace
+to rewrite the dropped matchers for the new matchers.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\/.*\/)\)?\s*\}
+</span><span class='line'>its(:\2) { \1 match \3 }
+</span><span class='line'>
+</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\".*\")\)?\s*\}
+</span><span class='line'>its(:\2) { \1 contain \3 }
+</span><span class='line'>
+</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?('.*')\)?\s*\}
+</span><span class='line'>its(:\2) { \1 contain \3 }
+</span><span class='line'>
+</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_exit_status\s*(\d+)\s*\}
+</span><span class='line'>its(:exit_status) { \1 eq \2 }</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hopefully the kitchen busser project will one day add support for
+Gemfile-style constraints on the test node, since busser always
+<a href="https://github.com/test-kitchen/test-kitchen/issues/242#issuecomment-28991870">installs the latest version of a busser plugin gem today.</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1143,103 +1216,6 @@ rc_exit
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/">A Better FTP Client for Windows You Already Have: Git Bash&#8217;s Curl Command</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-15T17:24:00-05:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
-        
-         | <a href="/blog/2014/02/15/a-better-ftp-client-for-windows-you-already-have-gits-curl-command/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>My shop has a couple of internal FTP servers to mirror commonly used installers for .Net devs.
-Installers for apps like Visual Studio can be huge, so GitHub isn&rsquo;t the best place for this, and
-it would also smoke most of our Dropbox quotas.  So an FTP server seems like the 3rd best option.</p>
-
-<p>We are a geographically distributed team, with a VPN to access internal servers.  Even with a reliable
-VPN session over ISP fiber connection, I&rsquo;ve experience lots of realiability problems downloading large files
-with the native Windows Explorer / Internet Explorer FTP.</p>
-
-<p>The Windows ftp command line client can be a pain to work with.  Fortunately, the Git bash emulator for Windows
-(msysgit) includes a MinGW port of the awesome <code>curl</code> utility.  The <code>curl</code> utility has all kinds of awesome features
-for downloading large files.</p>
-
-<p>Here&rsquo;s a few options I found really useful:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -C - -v -O <span class="s2">&quot;ftp://ftp.example.com/path/to/file.zip&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><code>-C -</code> option tells bash to automatically continue an interrupted download, if the server supports this feature.</li>
-<li><code>-v</code> prints verbose stats, including an dynamic progress info</li>
-<li><code>-O</code> automatically saves the file using the remote file name to the current working directory</li>
-</ul>
-
-
-<p>I crafted this gist to enable downloading a large number of binaries related to .Net development from our FTP server.</p>
-
-<div><script src='https://gist.github.com/9378219.js'></script>
-<noscript><pre><code>SETLOCAL
-PUSHD &quot;%USERPROFILE%\Downloads&quot;
-
-IF NOT EXIST &quot;installers&quot; MKDIR &quot;installers&quot;
-CD &quot;installers&quot;
-
-ECHO @ECHO OFF &gt; curl.cmd
-ECHO TITLE &quot;%~1&quot; &gt;&gt; curl.cmd
-ECHO IF NOT &quot;.%~p1&quot;==&quot;.\&quot; IF NOT EXIST &quot;.%~p1&quot; MKDIR &quot;.%~p1&quot; &gt;&gt; curl.cmd
-ECHO PUSHD &quot;.%~p1&quot; &gt;&gt; curl.cmd
-ECHO &quot;%ProgramFiles%\Git\bin\curl.exe&quot; -C - -v -O &quot;ftp://ftp.example.com/path/to/installers%~1&quot; ^&amp;^&amp; PAUSE &gt;&gt; curl.cmd
-
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/dotNetFx40_Full_x86_x64.exe^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Internet Information Services 7.5 Express/iisexpress_1_11_x86_en-US.msi^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Internet Information Services 7.5 Express/rewrite_2.0_rtw_x86.msi^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2008 Express R2 SP1/SQLEXPRWT_x86_ENU.exe^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Visual Studio 2010/VS2010PREM_ENU.zip^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Visual Studio 2010 SP1/VS10sp1-KB983509.exe^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server Data Tools/SSDT_10.3.31009.2_EN.iso.zip^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2012 Tools/SQLManagementStudio_x86_ENU.exe^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft SQL Server 2012 Tools/x86/SqlLocaLDB.MSI^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/Microsoft Web Deploy V3/WebDeploy_x86_en-US.msi^&quot;&quot;
-START &quot;&quot; &quot;%COMSPEC%&quot; /D /C &quot;curl.cmd ^&quot;/MSBuild Extension Pack 4.0/MSBuild Extension Pack 4.0.msi^&quot;&quot;
-
-DEL /Q curl.cmd
-POPD
-ENDLOCAL</code></pre></noscript></div>
-
-
-<p>Be warned, this hack spawns a new command prompt window for each download, so it can get a bit crazy.  This seemed like
-the best worst way to download in parallel while also making sense of each download&rsquo;s status.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1280,6 +1256,10 @@ the best worst way to download in parallel while also making sense of each downl
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">regexes for the serverspec 2 update</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/">Chef&#8217;ing custom nginx configs with the nginx cookbook</a>
       </li>
     
@@ -1293,10 +1273,6 @@ the best worst way to download in parallel while also making sense of each downl
     
       <li class="post">
         <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
       </li>
     
   </ul>

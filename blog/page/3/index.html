@@ -9,7 +9,7 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I spend a lot of time in the Windows Command Prompt. Most developers I work with don&rsquo;t know some of the tricks up the Command Prompt&rsquo;s &hellip;">
+  <meta name="description" content="I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work. I&rsquo; &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -59,6 +59,147 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/">How to Modify the TCP/IP Port Binding for the Microsoft Web Deployment Agent Service</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-28T16:44:00-05:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/28/how-to-modify-the-tcp-slash-ip-port-binding-for-the-microsoft-web-deployment-agent-service/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work.  I&rsquo;m drafting up a series of posts on tips and tricks for shell scripts (with love for both Windows and *nix) &ndash; it seems to be a fading art among recent comp sci grads.  Until I finish those posts, I wanted to share a quick script I wrote to reassign the TCP/IP port binding for Microsoft&rsquo;s Web Deployment Agent service.</p>
+
+<p>This is my attempt to refine a very good answer posted a couple years ago <a href="http://stackoverflow.com/questions/5867392/can-the-web-deploy-agent-run-on-a-port-other-than-80-on-iis6">asking if web deploy can run on a port other than 80</a>.  Why, yes it can&hellip;</p>
+
+<div><script src='https://gist.github.com/5060329.js'></script>
+<noscript><pre><code>:: Name:     MsDepSvc.Port.cmd
+:: Purpose:  Modifies the TCP/IP port that the Web Deployment Agent Service
+::           (MsDepSvc) listens on.  Tested on Win7 Enterprise 32-bit.
+:: Author:   stevejansen_github@icloud.com
+:: Revision: January 2013
+
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS
+SETLOCAL ENABLEDELAYEDEXPANSION
+
+:: variables
+SET me=%~n0
+SET url=
+SET port=
+IF NOT &quot;%~1&quot;==&quot;&quot; (
+  SET /A port=%~1
+)
+
+ECHO %me%: Web Deployment Agent Service (MsDepSvc) port change script
+
+:: default argument values
+IF &quot;%port%&quot;==&quot;&quot; (
+  SET /A port=8172
+  ECHO %me%: INFO - using default port value of 8172
+)
+
+SC.EXE query msdepsvc &gt;NUL 2&gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - MsDepSvc not installed
+  ECHO %me%: exiting
+  EXIT /B 1
+)
+
+ECHO %me%: stopping MsDepSvc
+NET STOP msdepsvc &gt;NUL 2&gt;NUL
+
+:: check if the default port is set
+REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl &gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - MsDepSvc ListenUrl registry key not found
+  REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters
+  ECHO %me%: exiting
+  EXIT /B 2
+)
+
+FOR /F &quot;tokens=3&quot; %%I IN (&#39;REG.EXE QUERY HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl ^| FINDSTR ListenUrl&#39;) DO (
+  SET url=%%I
+)
+ECHO %me%: INFO - MsDepSvc current reservation is &quot;%url%&quot;
+
+NETSH.EXE http show urlacl &quot;%url%&quot; &gt;NUL
+IF NOT &quot;%ERRORLEVEL%&quot;==&quot;0&quot; (
+  ECHO %me%: ERROR - reservation for &quot;%url%&quot; not found
+  EXIT /B 4
+)
+
+:: save the existing urlacl properties for User, Listen, Delegate, and SDDL
+FOR /F &quot;tokens=1,* delims=: &quot; %%A IN (&#39;NETSH.exe http show urlacl %url%  ^| FINDSTR &quot;User Listen Delegate SDDL&quot;&#39;) DO (
+  SET URLACL.%%A=%%B
+)
+
+IF NOT DEFINED URLACL.User     ECHO %me%: Failed to read the exising URLACL setting for User     &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.Listen   ECHO %me%: Failed to read the exising URLACL setting for Listen   &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.Delegate ECHO %me%: Failed to read the exising URLACL setting for Delegate &amp;&amp;GOTO :ERROR
+IF NOT DEFINED URLACL.SDDL     ECHO %me%: Failed to read the exising URLACL setting for SDDL     &amp;&amp;GOTO :ERROR
+
+ECHO %me%: updating MsDepSvc to listen on port %port%
+REG.EXE ADD HKLM\SYSTEM\CurrentControlSet\Services\MsDepSvc\Parameters /v ListenUrl /t REG_SZ /f /d &quot;http://+:%port%/MSDEPLOYAGENTSERVICE/&quot;
+
+ECHO %me%: deleting the existing reservation for MsDepSvc
+NETSH.EXE http delete urlacl &quot;%url%&quot; || GOTO :ERROR
+
+ECHO %me%: adding the port %port% reservation for MsDepSvc
+NETSH.EXE http add urlacl url=http://+:%port%/MsDeployAgentService/ user=&quot;%URLACL.User%&quot; listen=&quot;%URLACL.Listen%&quot; delegate=&quot;%URLACL.Delegate%&quot; SDDL=&quot;%URLACL.SDDL%&quot;  || GOTO :ERROR
+
+ECHO %me%: starting MsDepSvc
+NET START msdepsvc &gt;NUL 2&gt;NUL
+
+ECHO %me%: process info for MsDepSvc
+QUERY.EXE PROCESS MSDEPSVC.EXE
+ECHO.
+ECHO %me%: port bindings for MsDepSvc
+NETSTAT.EXE -a -n -o | FINDSTR /R &quot;TCP.*:%port%.*LISTENING Proto&quot;
+ECHO.
+ECHO %me%: finished
+
+:END
+ENDLOCAL
+ECHO ON
+@EXIT /B 0
+
+:ERROR
+ECHO %me%: ERROR - exiting with errorlevel %ERRORLEVEL%
+ECHO ON
+@EXIT/B %ERRORLEVEL%
+</code></pre></noscript></div>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -187,6 +328,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">regexes for the serverspec 2 update</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/">Chef&#8217;ing custom nginx configs with the nginx cookbook</a>
       </li>
     
@@ -200,10 +345,6 @@
     
       <li class="post">
         <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/16/a-better-iis-express-console-window/">A better IIS Express console window</a>
       </li>
     
   </ul>

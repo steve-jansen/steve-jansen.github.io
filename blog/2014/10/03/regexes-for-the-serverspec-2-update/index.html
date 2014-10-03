@@ -5,11 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>passport-reverseproxy - /* steve jansen */</title>
+  <title>regexes for the serverspec 2 update - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware Passport. The ReverseProxy API provider enables NodeJS apps &hellip;">
+  <meta name="description" content="The Serverspec team just released v2 of their outstanding testing library
+today, after a very long beta period. The v2 release had a
+few breaking &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -62,7 +64,7 @@
   
   <header>
     
-      <h1 class="entry-title">Passport-reverseproxy</h1>
+      <h1 class="entry-title">Regexes for the Serverspec 2 Update</h1>
     
     
       <p class="meta">
@@ -78,7 +80,7 @@
   
 
 
-<time datetime="2013-08-11T19:38:00-04:00" pubdate data-updated="true">Aug 11<span>th</span>, 2013</time>
+<time datetime="2014-10-03T18:24:25-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -87,28 +89,42 @@
   </header>
 
 
-<div class="entry-content"><p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
+<div class="entry-content"><p>The Serverspec team just released v2 of their outstanding testing library
+today, after a very long beta period.  The v2 release had a
+<a href="http://serverspec.org/changes-of-v2.html">few breaking breaking changes</a>
+due to dropped rspec matchers that had been deprecated.</p>
 
-<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
-Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&rsquo;s WebSeal application for SSO does exactly this.</p>
+<p>If your <a href="http://kitchen.ci/">test-kitchen</a> tests recently broke today,
+here&rsquo;s a few regexes I used with Sublime Text&rsquo;s regex find/replace
+to rewrite the dropped matchers for the new matchers.</p>
 
-<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
-inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
-
-<p>Installing the provider is as simple as:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install express
-</span><span class='line'>npm install passport
-</span><span class='line'>npm install passport-reverseproxy
-</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\/.*\/)\)?\s*\}
+</span><span class='line'>its(:\2) { \1 match \3 }
+</span><span class='line'>
+</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\".*\")\)?\s*\}
+</span><span class='line'>its(:\2) { \1 contain \3 }
+</span><span class='line'>
+</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?('.*')\)?\s*\}
+</span><span class='line'>its(:\2) { \1 contain \3 }
+</span><span class='line'>
+</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_exit_status\s*(\d+)\s*\}
+</span><span class='line'>its(:exit_status) { \1 eq \2 }</span></code></pre></td></tr></table></div></figure>
 
 
-<p>I&rsquo;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
-
-<p>Overall, I think Passport is a great library &ndash; both easy to use and easy to implement custom strategies.</p>
+<p>Hopefully the kitchen busser project will one day add support for
+Gemfile-style constraints on the test node, since busser always
+<a href="https://github.com/test-kitchen/test-kitchen/issues/242#issuecomment-28991870">installs the latest version of a busser plugin gem today.</a>.</p>
 </div>
 
 
@@ -131,12 +147,12 @@ inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic 
   
 
 
-<time datetime="2013-08-11T19:38:00-04:00" pubdate data-updated="true">Aug 11<span>th</span>, 2013</time>
+<time datetime="2014-10-03T18:24:25-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/node/'>node</a>, <a class='category' href='/blog/categories/passport/'>passport</a>
+    <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/devops/'>devops</a>
   
 </span>
 
@@ -145,7 +161,7 @@ inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic 
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/" >Tweet</a>
   
   
   
@@ -154,10 +170,8 @@ inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic 
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/" title="Previous Post: Update to the Cordova Email Plugin for iOS">&laquo; Update to the Cordova Email Plugin for iOS</a>
+        <a class="basic-alignment left" href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/" title="Previous Post: Chef'ing custom nginx configs with the nginx cookbook">&laquo; Chef'ing custom nginx configs with the nginx cookbook</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/" title="Next Post: For all UI devs out there...json-proxy v0.10.0">For all UI devs out there...json-proxy v0.10.0 &raquo;</a>
       
     </p>
   </footer>
@@ -263,8 +277,8 @@ inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic 
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/';
-        var disqus_url = 'http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/';
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/';
         var disqus_script = 'embed.js';
       
     (function () {

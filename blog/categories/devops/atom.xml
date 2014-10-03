@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devops | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-08-27T19:52:33-04:00</updated>
+  <updated>2014-10-03T18:34:47-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[regexes for the serverspec 2 update]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/"/>
+    <updated>2014-10-03T18:24:25-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update</id>
+    <content type="html"><![CDATA[<p>The Serverspec team just released v2 of their outstanding testing library
+today, after a very long beta period.  The v2 release had a
+<a href="http://serverspec.org/changes-of-v2.html">few breaking breaking changes</a>
+due to dropped rspec matchers that had been deprecated.</p>
+
+<p>If your <a href="http://kitchen.ci/">test-kitchen</a> tests recently broke today,
+here&rsquo;s a few regexes I used with Sublime Text&rsquo;s regex find/replace
+to rewrite the dropped matchers for the new matchers.</p>
+
+<p>```
+it\s<em>{\s</em>(should|should_not)\s<em>return_(stdout|stderr)\s</em>(?(\/.<em>\/))?\s</em>}
+its(:\2) { \1 match \3 }</p>
+
+<p>it\s<em>{\s</em>(should|should_not)\s<em>return_(stdout|stderr)\s</em>(?(\&ldquo;.<em>\&rdquo;))?\s</em>}
+its(:\2) { \1 contain \3 }</p>
+
+<p>it\s<em>{\s</em>(should|should_not)\s<em>return_(stdout|stderr)\s</em>(?(&lsquo;.<em>&rsquo;))?\s</em>}
+its(:\2) { \1 contain \3 }</p>
+
+<p>it\s<em>{\s</em>(should|should_not)\s<em>return_exit_status\s</em>(\d+)\s*}
+its(:exit_status) { \1 eq \2 }
+```</p>
+
+<p>Hopefully the kitchen busser project will one day add support for
+Gemfile-style constraints on the test node, since busser always
+<a href="https://github.com/test-kitchen/test-kitchen/issues/242#issuecomment-28991870">installs the latest version of a busser plugin gem today.</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Chef'ing custom nginx configs with the nginx cookbook]]></title>

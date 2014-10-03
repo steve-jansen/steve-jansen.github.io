@@ -123,8 +123,14 @@
         <lastmod>2014-08-27T19:51:10-04:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/
+        </loc>
+        <lastmod>2014-10-03T18:34:46-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2014-08-27T19:51:10-04:00</lastmod>
+        <lastmod>2014-10-03T18:34:46-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
@@ -190,7 +196,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2014-08-27T19:51:10-04:00</lastmod>
+        <lastmod>2014-10-03T18:34:46-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>
