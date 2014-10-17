@@ -9,7 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I love shell scripting, which is probably why I seem to somehow get organically involved in &ldquo;DevOps&rdquo; on most of my project work. I&rsquo; &hellip;">
+  <meta name="description" content="I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
+v2.0 of the plugin now lives @ https:// &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -59,6 +60,89 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/">Update to the Cordova Email Plugin for iOS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-06T23:45:00-04:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/06/cordova-email-plugin-for-ios-update/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
+v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
+
+<p>You can give it a test drive with:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo npm install -g cordova
+</span><span class='line'>cordova create ~/MyApp MyApp
+</span><span class='line'><span class="nb">cd</span> ~/MyApp
+</span><span class='line'>cordova platform add ios
+</span><span class='line'>cordova plugin add emailcomposer <span class="c"># using the http://plugins.cordova.io registry</span>
+</span><span class='line'>cordova build
+</span><span class='line'><span class="c"># manually update the www/index.html file to link to www/examples/EmailComposer.html</span>
+</span><span class='line'><span class="c"># run the app in the iOS 5.x+ simulator via Xcode</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Major changes to the plugin include:</p>
+
+<ul>
+<li>Support for file attachments using files paths, or file contents as encoded strings</li>
+<li>Simpler JavaScript API</li>
+<li>Support for cordova.require to load the plugin in JavaScript which means less global namespace pollution</li>
+<li>Cordova 2.0+ plugin spec implemented (i.e., <code>- (void) show:(CDVInvokedUrlCommand*)command</code>)</li>
+<li>ARC support</li>
+<li>Ran git subtree to extract the history into a standalone repo,
+per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/">the new Cordova plugin respository guidelines</a></li>
+<li>Backwards compatibility with the JS API for the 1.x plugin</li>
+<li>Backwards compatibility with the iOS/EmailComposerWithAttachments plugin</li>
+<li>Jasmine unit tests for the JS part of the plugin</li>
+<li>Xcode unit tests for the obj-c part of the plugin</li>
+</ul>
+
+
+<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
+<a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
+As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
+
+<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -328,6 +412,10 @@ ECHO ON
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">regexes for the serverspec 2 update</a>
       </li>
     
@@ -341,10 +429,6 @@ ECHO ON
     
       <li class="post">
         <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef encrypted data bags to source control</a>
       </li>
     
   </ul>

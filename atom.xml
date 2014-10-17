@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-10-03T18:34:47-04:00</updated>
+  <updated>2014-10-17T18:52:34-04:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,41 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Finding Chef nodes bootstrapped in the last X hours]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/"/>
+    <updated>2014-10-17T18:47:44-04:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours</id>
+    <content type="html"><![CDATA[<p>I needed to write a script to garbage collect old nodes in Chef related to
+auto-scaling groups.</p>
+
+<p>I decided to search for nodes bootstrapped in the last X hours.</p>
+
+<p>I experimented with ways to find nodes that have been up for less than X hours.
+In this example, I search for nodes that have been up for 8 hours or less.
+Of course, this assumes you never restart your nodes:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>knife exec -E 'search(:node, "uptime_seconds:[0 TO #{ 8 * 60 * 60 }]") { |n| puts n.name }'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I also tried finding nodes that converged in the last 8 hours (which would have
+to be combined with some other filter of course):</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>knife exec -E 'b = Time.now.to_i; a = (b - (8*60*60)).to_i; search(:node, "ohai_time:[#{a} TO #{b}]") { |n| puts n.name }'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Overall, I think the easiest option is to just set a node attribute like
+&lsquo;bootstrap_date&rsquo; at bootstrap (or set it if it&rsquo;s nil).  This would be a clearcut
+way to find out how old a node truly is.</p>
+
+<p>One of my colleagues pointed out that <a href="https://github.com/opscode/chef-metal">Chef Metal</a>
+sets a very handy <code>node['metal']['location']['allocated_at']</code> attribute that gets
+the job done if you are spinning up new nodes with metal.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[regexes for the serverspec 2 update]]></title>
@@ -1602,60 +1637,6 @@ inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic 
 <p>I&rsquo;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
 
 <p>Overall, I think Passport is a great library &ndash; both easy to use and easy to implement custom strategies.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Update to the Cordova Email Plugin for iOS]]></title>
-    <link href="http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update/"/>
-    <updated>2013-08-06T23:45:00-04:00</updated>
-    <id>http://steve-jansen.github.io/blog/2013/08/06/cordova-email-plugin-for-ios-update</id>
-    <content type="html"><![CDATA[<p>I put some serious TLC against the Cordova/PhoneGap plugin for creating email messages on iOS devices &mdash;
-v2.0 of the plugin now lives @ <a href="https://github.com/steve-jansen/cordova-ios-emailcomposer">https://github.com/steve-jansen/cordova-ios-emailcomposer</a></p>
-
-<p>You can give it a test drive with:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo npm install -g cordova
-</span><span class='line'>cordova create ~/MyApp MyApp
-</span><span class='line'><span class="nb">cd</span> ~/MyApp
-</span><span class='line'>cordova platform add ios
-</span><span class='line'>cordova plugin add emailcomposer <span class="c"># using the http://plugins.cordova.io registry</span>
-</span><span class='line'>cordova build
-</span><span class='line'><span class="c"># manually update the www/index.html file to link to www/examples/EmailComposer.html</span>
-</span><span class='line'><span class="c"># run the app in the iOS 5.x+ simulator via Xcode</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Major changes to the plugin include:</p>
-
-<ul>
-<li>Support for file attachments using files paths, or file contents as encoded strings</li>
-<li>Simpler JavaScript API</li>
-<li>Support for cordova.require to load the plugin in JavaScript which means less global namespace pollution</li>
-<li>Cordova 2.0+ plugin spec implemented (i.e., <code>- (void) show:(CDVInvokedUrlCommand*)command</code>)</li>
-<li>ARC support</li>
-<li>Ran git subtree to extract the history into a standalone repo,
-per <a href="http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/">the new Cordova plugin respository guidelines</a></li>
-<li>Backwards compatibility with the JS API for the 1.x plugin</li>
-<li>Backwards compatibility with the iOS/EmailComposerWithAttachments plugin</li>
-<li>Jasmine unit tests for the JS part of the plugin</li>
-<li>Xcode unit tests for the obj-c part of the plugin</li>
-</ul>
-
-
-<p>I have a <a href="https://github.com/phonegap/phonegap-plugins/pull/1238">pull request</a> to repoint <a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposer">phonegap-plugins/iOS/EmailCompser</a> and
-<a href="https://github.com/phonegap/phonegap-plugins/tree/master/iOS/EmailComposerWithAttachments">phonegap-plugins/iOS/EmailCompserWithAttachments</a> to this new repo.
-As a courtesy, I&rsquo;ve asked the original contributors to these two plugins to give their blessing.</p>
-
-<p>I&rsquo;ve also published this plugin to the <a href="http://plugins.cordova.io/#/emailcomposer">cordova npm-like repository</a>.  And, trust me, <a href="https://issues.apache.org/jira/browse/CB-4528?">don&rsquo;t call <code>plugman publish</code> with the <code>--plugin</code> argument</a>.</p>
 ]]></content>
   </entry>
   

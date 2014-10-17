@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>regexes for the serverspec 2 update - /* steve jansen */</title>
+  <title>Finding Chef nodes bootstrapped in the last X hours - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="The Serverspec team just released v2 of their outstanding testing library
-today, after a very long beta period. The v2 release had a
-few breaking &hellip;">
+  <meta name="description" content="I needed to write a script to garbage collect old nodes in Chef related to
+auto-scaling groups. I decided to search for nodes bootstrapped in the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@ few breaking &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,7 +63,7 @@ few breaking &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Regexes for the Serverspec 2 Update</h1>
+      <h1 class="entry-title">Finding Chef Nodes Bootstrapped in the Last X Hours</h1>
     
     
       <p class="meta">
@@ -80,7 +79,7 @@ few breaking &hellip;">
   
 
 
-<time datetime="2014-10-03T18:24:25-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2014</time>
+<time datetime="2014-10-17T18:47:44-04:00" pubdate data-updated="true">Oct 17<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -89,42 +88,33 @@ few breaking &hellip;">
   </header>
 
 
-<div class="entry-content"><p>The Serverspec team just released v2 of their outstanding testing library
-today, after a very long beta period.  The v2 release had a
-<a href="http://serverspec.org/changes-of-v2.html">few breaking breaking changes</a>
-due to dropped rspec matchers that had been deprecated.</p>
+<div class="entry-content"><p>I needed to write a script to garbage collect old nodes in Chef related to
+auto-scaling groups.</p>
 
-<p>If your <a href="http://kitchen.ci/">test-kitchen</a> tests recently broke today,
-here&rsquo;s a few regexes I used with Sublime Text&rsquo;s regex find/replace
-to rewrite the dropped matchers for the new matchers.</p>
+<p>I decided to search for nodes bootstrapped in the last X hours.</p>
+
+<p>I experimented with ways to find nodes that have been up for less than X hours.
+In this example, I search for nodes that have been up for 8 hours or less.
+Of course, this assumes you never restart your nodes:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\/.*\/)\)?\s*\}
-</span><span class='line'>its(:\2) { \1 match \3 }
-</span><span class='line'>
-</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\".*\")\)?\s*\}
-</span><span class='line'>its(:\2) { \1 contain \3 }
-</span><span class='line'>
-</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?('.*')\)?\s*\}
-</span><span class='line'>its(:\2) { \1 contain \3 }
-</span><span class='line'>
-</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_exit_status\s*(\d+)\s*\}
-</span><span class='line'>its(:exit_status) { \1 eq \2 }</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>knife exec -E 'search(:node, "uptime_seconds:[0 TO #{ 8 * 60 * 60 }]") { |n| puts n.name }'</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Hopefully the kitchen busser project will one day add support for
-Gemfile-style constraints on the test node, since busser always
-<a href="https://github.com/test-kitchen/test-kitchen/issues/242#issuecomment-28991870">installs the latest version of a busser plugin gem today.</a>.</p>
+<p>I also tried finding nodes that converged in the last 8 hours (which would have
+to be combined with some other filter of course):</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>knife exec -E 'b = Time.now.to_i; a = (b - (8*60*60)).to_i; search(:node, "ohai_time:[#{a} TO #{b}]") { |n| puts n.name }'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Overall, I think the easiest option is to just set a node attribute like
+&lsquo;bootstrap_date&rsquo; at bootstrap (or set it if it&rsquo;s nil).  This would be a clearcut
+way to find out how old a node truly is.</p>
+
+<p>One of my colleagues pointed out that <a href="https://github.com/opscode/chef-metal">Chef Metal</a>
+sets a very handy <code>node['metal']['location']['allocated_at']</code> attribute that gets
+the job done if you are spinning up new nodes with metal.</p>
 </div>
 
 
@@ -147,7 +137,7 @@ Gemfile-style constraints on the test node, since busser always
   
 
 
-<time datetime="2014-10-03T18:24:25-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2014</time>
+<time datetime="2014-10-17T18:47:44-04:00" pubdate data-updated="true">Oct 17<span>th</span>, 2014</time>
       
 
 <span class="categories">
@@ -161,7 +151,7 @@ Gemfile-style constraints on the test node, since busser always
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/" >Tweet</a>
   
   
   
@@ -170,10 +160,8 @@ Gemfile-style constraints on the test node, since busser always
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/" title="Previous Post: Chef'ing custom nginx configs with the nginx cookbook">&laquo; Chef'ing custom nginx configs with the nginx cookbook</a>
+        <a class="basic-alignment left" href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/" title="Previous Post: regexes for the serverspec 2 update">&laquo; regexes for the serverspec 2 update</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/" title="Next Post: Finding Chef nodes bootstrapped in the last X hours">Finding Chef nodes bootstrapped in the last X hours &raquo;</a>
       
     </p>
   </footer>
@@ -279,8 +267,8 @@ Gemfile-style constraints on the test node, since busser always
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/';
-        var disqus_url = 'http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/';
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/';
         var disqus_script = 'embed.js';
       
     (function () {

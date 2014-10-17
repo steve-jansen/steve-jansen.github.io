@@ -129,8 +129,14 @@
         <lastmod>2014-10-03T18:34:46-04:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/
+        </loc>
+        <lastmod>2014-10-17T18:51:43-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2014-10-03T18:34:46-04:00</lastmod>
+        <lastmod>2014-10-17T18:51:43-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
@@ -196,7 +202,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2014-10-03T18:34:46-04:00</lastmod>
+        <lastmod>2014-10-17T18:51:43-04:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>
