@@ -4,7 +4,7 @@
   <title><![CDATA[/* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-10-17T18:52:34-04:00</updated>
+  <updated>2014-11-20T21:42:38-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,139 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How to use Jenkins to monitor cron jobs]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/"/>
+    <updated>2014-11-20T17:46:46-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs</id>
+    <content type="html"><![CDATA[<p>Cron jobs have a funny way of being ignored.  Either no one knows the job is failing because the job
+doesn&rsquo;t tell anyone.   Or, the job is spamming your e-mail inbox many times a day, regardless of success
+or failure, which means you just ignore the e-mails.</p>
+
+<p>I&rsquo;ve seen the &ldquo;Monitor an external job&rdquo; option for new Jenkins jobs before, and never paid much attention.
+Turns out it&rsquo;s a great bucket for storing logs and results of cron jobs.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">external-monitor-job</a> plugin
+seems to ship with the Jenkins war file.  So, your Jenkins should have it out of the box.</p>
+
+<p>Creating a job is pretty simple.  It&rsquo;s just a name and description.  Click &ldquo;New Item&rdquo; in Jenkins and
+select the &ldquo;Monitor an external job&rdquo; option.  This creates a job of type <code>hudson.model.ExternalJob</code>.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">wiki</a> describes a
+fairly complicated method to download the Jenkins jar files onto the server running
+your cron jobs, and then use the Java runtime to run a jar with your cron script as an
+argument.  The jar presumably forks your a new shell to run your desired cron command and
+sends the output/result to Jenkins.</p>
+
+<p>There&rsquo;s a much easier way to do this.  Redirect or <code>tee</code> your job&rsquo;s stdout/stderr output to a
+temp file.  Then post the result code and log file via <code>curl</code> to Jenkins.  No need to
+download jar files.  No need to even have Java runtime on the server.</p>
+
+<p>Just POST a small XML document with the log contents (binary encoded) and the
+exit code to Jenkins @ <code>/job/:jobName/postBuildResult</code> where <code>:jobName</code> is the
+URL encoded name of your monitoring job in Jenkins.</p>
+
+<figure class='code'><figcaption><span>[example cron script]</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="c"># example cron script to post logs to Jenkins</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># exit on error</span>
+</span><span class='line'><span class="nb">set</span> -e
+</span><span class='line'>
+</span><span class='line'><span class="nv">log</span><span class="o">=</span><span class="sb">`</span>mktemp -t tmp<span class="sb">`</span>
+</span><span class='line'><span class="nv">timer</span><span class="o">=</span><span class="sb">`</span>date +<span class="s2">&quot;%s&quot;</span><span class="sb">`</span>
+</span><span class='line'><span class="nv">jenkins_job</span><span class="o">=</span>my_monitoring_job
+</span><span class='line'><span class="nv">jenkins_server</span><span class="o">=</span>http://jenkins.example.com:8080/jenkins/job/<span class="nv">$jenkins_job</span>/postBuildResult
+</span><span class='line'><span class="c"># see http://jenkins.example.com:8080/me/configure to get your username and API token</span>
+</span><span class='line'><span class="nv">jenkins_username</span><span class="o">=</span>myusername
+</span><span class='line'><span class="nv">jenkins_token</span><span class="o">=</span>abcdef0123456789fedcba9876543210
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>banner<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nb">echo</span> <span class="k">$(</span><span class="nb">printf</span> <span class="s1">&#39;#%.0s&#39;</span> <span class="o">{</span>1..80<span class="o">}</span><span class="k">)</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>report<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nv">result</span><span class="o">=</span><span class="nv">$?</span>
+</span><span class='line'>  <span class="nv">timer</span><span class="o">=</span><span class="k">$((</span><span class="sb">`</span>date +<span class="s2">&quot;%s&quot;</span><span class="sb">`</span> <span class="o">-</span> <span class="nv">$timer</span><span class="k">))</span>
+</span><span class='line'>
+</span><span class='line'>  banner
+</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;`whoami`@`hostname -f` `date`: elapsed $timer second(s)&quot;</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;exit code $result&quot;</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># binary encode the log file for Jenkins</span>
+</span><span class='line'>  <span class="nv">msg</span><span class="o">=</span><span class="sb">`</span>cat <span class="s2">&quot;$log&quot;</span> | hexdump -v -e <span class="s1">&#39;1/1 &quot;%02x&quot;&#39;</span><span class="sb">`</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># post the log to jenkins</span>
+</span><span class='line'>  <span class="nb">echo </span>curl -X POST <span class="se">\</span>
+</span><span class='line'>       -u <span class="s2">&quot;$jenkins_username:$jenkins_token&quot;</span> <span class="se">\</span>
+</span><span class='line'>       -d <span class="s2">&quot;&lt;run&gt;&lt;log encoding=\&quot;hexBinary\&quot;&gt;$msg&lt;/log&gt;&lt;result&gt;$result&lt;/result&gt;&lt;duration&gt;$timer&lt;/duration&gt;&lt;/run&gt;&quot;</span> <span class="se">\</span>
+</span><span class='line'>        <span class="nv">$jenkins_server</span>/job/<span class="nv">$jenkins_job</span>/postBuildResult
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">trap </span>report EXIT;
+</span><span class='line'>
+</span><span class='line'>banner
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;hello, world @ `date`!&quot;</span> | tee <span class="s2">&quot;$log&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>[sample `crontab -e` entry]</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">MAILTO</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'>0 * * * * /bin/sh /your/directory/myjob.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A sample of the build log on Jenkins with a green/red build status:</p>
+
+<p><img src="images/2014-11-20.png" alt="Sample Jenkins Build Log" /></p>
+
+<p>Credit to <a href="http://stackoverflow.com/a/25611940/1995977">Taytay on Stackoverflow.com</a>
+for figuring out how to use <code>hexdump</code> to properly encode the XML for Jenkins.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Finding Chef nodes bootstrapped in the last X hours]]></title>
@@ -1607,36 +1740,6 @@ If you install using <code>sudo npm install -g json-proxy</code>, you can invoke
 <a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
 
 <p>Enjoy!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[passport-reverseproxy]]></title>
-    <link href="http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy/"/>
-    <updated>2013-08-11T19:38:00-04:00</updated>
-    <id>http://steve-jansen.github.io/blog/2013/08/11/passport-reverseproxy</id>
-    <content type="html"><![CDATA[<p>Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware <a href="http://passportjs.org">Passport</a>.  The <a href="https://npmjs.org/package/passport-reverseproxy">ReverseProxy</a> API provider enables NodeJS apps to authenticate users via HTTP Request Proxies injected by a reverse HTTP proxy server.  Reverse Proxy authentication is a technique seen in enterprise Single Sign On (SSO) where an authentication server sits in front of the web server/app server.  The proxy server authenticates users against some enterprise store (e.g., LDAP Directory).</p>
-
-<p>After successful authentication, the proxy will forward the original request to the target web server/app server.
-Typically, the proxy will inject identifying information about the user (e.g., username, email address, display name) into custom HTTP request headers.  IBM&rsquo;s WebSeal application for SSO does exactly this.</p>
-
-<p>Suprisingly, no one had written a passport strategy that uses custom HTTP headers yet.  So, I coded up an implementation,
-inspired by Passport&rsquo;s <code>passport-http</code> strategy for HTTP basic authentication.</p>
-
-<p>Installing the provider is as simple as:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install express
-</span><span class='line'>npm install passport
-</span><span class='line'>npm install passport-reverseproxy
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I&rsquo;ve also included a sample Express app using the reverse proxy stategy in <a href="https://github.com/steve-jansen/passport-reverseproxy/tree/master/examples">passport-reverseproxy/examples/app.js</a></p>
-
-<p>Overall, I think Passport is a great library &ndash; both easy to use and easy to implement custom strategies.</p>
 ]]></content>
   </entry>
   

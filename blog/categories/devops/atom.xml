@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devops | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-10-17T18:52:34-04:00</updated>
+  <updated>2014-11-20T21:42:38-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How to use Jenkins to monitor cron jobs]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/"/>
+    <updated>2014-11-20T17:46:46-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs</id>
+    <content type="html"><![CDATA[<p>Cron jobs have a funny way of being ignored.  Either no one knows the job is failing because the job
+doesn&rsquo;t tell anyone.   Or, the job is spamming your e-mail inbox many times a day, regardless of success
+or failure, which means you just ignore the e-mails.</p>
+
+<p>I&rsquo;ve seen the &ldquo;Monitor an external job&rdquo; option for new Jenkins jobs before, and never paid much attention.
+Turns out it&rsquo;s a great bucket for storing logs and results of cron jobs.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">external-monitor-job</a> plugin
+seems to ship with the Jenkins war file.  So, your Jenkins should have it out of the box.</p>
+
+<p>Creating a job is pretty simple.  It&rsquo;s just a name and description.  Click &ldquo;New Item&rdquo; in Jenkins and
+select the &ldquo;Monitor an external job&rdquo; option.  This creates a job of type <code>hudson.model.ExternalJob</code>.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">wiki</a> describes a
+fairly complicated method to download the Jenkins jar files onto the server running
+your cron jobs, and then use the Java runtime to run a jar with your cron script as an
+argument.  The jar presumably forks your a new shell to run your desired cron command and
+sends the output/result to Jenkins.</p>
+
+<p>There&rsquo;s a much easier way to do this.  Redirect or <code>tee</code> your job&rsquo;s stdout/stderr output to a
+temp file.  Then post the result code and log file via <code>curl</code> to Jenkins.  No need to
+download jar files.  No need to even have Java runtime on the server.</p>
+
+<p>Just POST a small XML document with the log contents (binary encoded) and the
+exit code to Jenkins @ <code>/job/:jobName/postBuildResult</code> where <code>:jobName</code> is the
+URL encoded name of your monitoring job in Jenkins.</p>
+
+<p>``` bash [example cron script]</p>
+
+<h1>!/bin/sh</h1>
+
+<h1>example cron script to post logs to Jenkins</h1>
+
+<h1>exit on error</h1>
+
+<p>set -e</p>
+
+<p>log=<code>mktemp -t tmp</code>
+timer=<code>date +"%s"</code>
+jenkins_job=my_monitoring_job
+jenkins_server=<a href="http://jenkins.example.com:8080/jenkins/job/$jenkins_job/postBuildResult">http://jenkins.example.com:8080/jenkins/job/$jenkins_job/postBuildResult</a></p>
+
+<h1>see <a href="http://jenkins.example.com:8080/me/configure">http://jenkins.example.com:8080/me/configure</a> to get your username and API token</h1>
+
+<p>jenkins_username=myusername
+jenkins_token=abcdef0123456789fedcba9876543210</p>
+
+<p>function banner() {
+  echo $(printf &lsquo;#%.0s&rsquo; {1..80}) >> &ldquo;$log&rdquo;
+}</p>
+
+<p>function report() {
+  result=$?
+  timer=$((<code>date +"%s"</code> &ndash; $timer))</p>
+
+<p>  banner
+  echo &ldquo;<code>whoami</code>@<code>hostname -f</code> <code>date</code>: elapsed $timer second(s)&rdquo; >> &ldquo;$log&rdquo;
+  echo &ldquo;exit code $result&rdquo; >> &ldquo;$log&rdquo;</p>
+
+<p>  # binary encode the log file for Jenkins
+  msg=<code>cat "$log" | hexdump -v -e '1/1 "%02x"'</code></p>
+
+<p>  # post the log to jenkins
+  echo curl -X POST \</p>
+
+<pre><code>   -u "$jenkins_username:$jenkins_token" \
+   -d "&lt;run&gt;&lt;log encoding=\"hexBinary\"&gt;$msg&lt;/log&gt;&lt;result&gt;$result&lt;/result&gt;&lt;duration&gt;$timer&lt;/duration&gt;&lt;/run&gt;" \
+    $jenkins_server/job/$jenkins_job/postBuildResult
+</code></pre>
+
+<p>}</p>
+
+<p>trap report EXIT;</p>
+
+<p>banner
+echo &ldquo;hello, world @ <code>date</code>!&rdquo; | tee &ldquo;$log&rdquo;
+```</p>
+
+<p><code>bash [sample `crontab -e` entry]
+MAILTO=""
+0 * * * * /bin/sh /your/directory/myjob.sh
+</code></p>
+
+<p>A sample of the build log on Jenkins with a green/red build status:</p>
+
+<p><img src="images/2014-11-20.png" alt="Sample Jenkins Build Log" /></p>
+
+<p>Credit to <a href="http://stackoverflow.com/a/25611940/1995977">Taytay on Stackoverflow.com</a>
+for figuring out how to use <code>hexdump</code> to properly encode the XML for Jenkins.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Finding Chef nodes bootstrapped in the last X hours]]></title>
@@ -196,63 +293,6 @@ site_cookbook &lsquo;my-site-cookbook&rsquo;</p>
 <p>```</p>
 
 <p>Happy cooking!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Adding Chef encrypted data bags to source control]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/"/>
-    <updated>2014-05-05T15:54:25-04:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control</id>
-    <content type="html"><![CDATA[<p>I&rsquo;ve been using Chef for a bit now and generally a huge fan of the new
-<a href="http://www.getchef.com/downloads/chef-dk/">Chef workflow</a>.</p>
-
-<p>We are working hard to attain true continuous delivery and test driven development with Chef.
-The devil is in the details now.</p>
-
-<p>One small wrinkle in our effort has been marrying <a href="http://docs.opscode.com/chef/essentials_data_bags.html#encrypt-a-data-bag-item">encrypted data_bags</a> with our chef-repo in GitHub.</p>
-
-<p>I don&rsquo;t want to type the optional argument <code>--secret-file ~/.chef/encrypted_data_bag_secret</code> everytime I interact with a data bag. So, I added this option to my <code>~/.chef/knife.rb</code> file.</p>
-
-<p><code>ruby
-knife[:secret_file]  = "#{current_dir}/encrypted_data_bag_secret"
-</code></p>
-
-<p>However, this precludes me from easily exporting the edited file to disk.  The export will always be my secret plaintext,
-not the encrypted ciphertext.   Not exactly what you want to commit to GitHub.</p>
-
-<p>``` ruby
-knife data_bag create users jenkins</p>
-
-<h1>DON&rsquo;T COMMIT THIS&hellip; the exported file will be unencrypted</h1>
-
-<p>knife data_bag users jenkins &mdash;format=json > data_bags/users/jenkins.json
-```</p>
-
-<p>So, I decided to create a bash alias to temporarily disable the knife.rb setting and export the data bag to a file:</p>
-
-<p>My <code>~/.bash_profile</code> file contains this alias:</p>
-
-<p><code>
-function knife-ciphertext () {
-   sed -e "s/knife\[\:secret_file\]/\#knife\[\:secret_file\]/"  -i .bak  ~/.chef/knife.rb
-   knife $@ --format=json
-   mv  ~/.chef/knife.rb.bak  ~/.chef/knife.rb
-}
-alias knife-ciphertext=knife-ciphertext
-</code></p>
-
-<p>This bash function comments out the secret file option in knife.rb using sed&rsquo;s in-place editing.</p>
-
-<p>Now I can commit the data bag in its encrypted format:</p>
-
-<p><code>
-knife-ciphertext data_bag show users jenkins &gt; data_bags/users/jenkins.json
-git add data_bags/users/jenkins.json
-git commit -m 'adding the latest jenkins data bag'
-</code></p>
-
-<p>Happing cooking!</p>
 ]]></content>
   </entry>
   

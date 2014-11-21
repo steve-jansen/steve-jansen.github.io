@@ -9,8 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I needed to write a script to garbage collect old nodes in Chef related to
-auto-scaling groups. I decided to search for nodes bootstrapped in the &hellip;">
+  <meta name="description" content="Cron jobs have a funny way of being ignored. Either no one knows the job is failing because the job
+doesn&rsquo;t tell anyone. Or, the job is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -60,6 +60,168 @@ auto-scaling groups. I decided to search for nodes bootstrapped in the &hellip;"
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to Use Jenkins to Monitor Cron Jobs</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-20T17:46:46-05:00" pubdate data-updated="true">Nov 20<span>th</span>, 2014</time>
+        
+         | <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Cron jobs have a funny way of being ignored.  Either no one knows the job is failing because the job
+doesn&rsquo;t tell anyone.   Or, the job is spamming your e-mail inbox many times a day, regardless of success
+or failure, which means you just ignore the e-mails.</p>
+
+<p>I&rsquo;ve seen the &ldquo;Monitor an external job&rdquo; option for new Jenkins jobs before, and never paid much attention.
+Turns out it&rsquo;s a great bucket for storing logs and results of cron jobs.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">external-monitor-job</a> plugin
+seems to ship with the Jenkins war file.  So, your Jenkins should have it out of the box.</p>
+
+<p>Creating a job is pretty simple.  It&rsquo;s just a name and description.  Click &ldquo;New Item&rdquo; in Jenkins and
+select the &ldquo;Monitor an external job&rdquo; option.  This creates a job of type <code>hudson.model.ExternalJob</code>.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">wiki</a> describes a
+fairly complicated method to download the Jenkins jar files onto the server running
+your cron jobs, and then use the Java runtime to run a jar with your cron script as an
+argument.  The jar presumably forks your a new shell to run your desired cron command and
+sends the output/result to Jenkins.</p>
+
+<p>There&rsquo;s a much easier way to do this.  Redirect or <code>tee</code> your job&rsquo;s stdout/stderr output to a
+temp file.  Then post the result code and log file via <code>curl</code> to Jenkins.  No need to
+download jar files.  No need to even have Java runtime on the server.</p>
+
+<p>Just POST a small XML document with the log contents (binary encoded) and the
+exit code to Jenkins @ <code>/job/:jobName/postBuildResult</code> where <code>:jobName</code> is the
+URL encoded name of your monitoring job in Jenkins.</p>
+
+<figure class='code'><figcaption><span>[example cron script]</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="c"># example cron script to post logs to Jenkins</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># exit on error</span>
+</span><span class='line'><span class="nb">set</span> -e
+</span><span class='line'>
+</span><span class='line'><span class="nv">log</span><span class="o">=</span><span class="sb">`</span>mktemp -t tmp<span class="sb">`</span>
+</span><span class='line'><span class="nv">timer</span><span class="o">=</span><span class="sb">`</span>date +<span class="s2">&quot;%s&quot;</span><span class="sb">`</span>
+</span><span class='line'><span class="nv">jenkins_job</span><span class="o">=</span>my_monitoring_job
+</span><span class='line'><span class="nv">jenkins_server</span><span class="o">=</span>http://jenkins.example.com:8080/jenkins/job/<span class="nv">$jenkins_job</span>/postBuildResult
+</span><span class='line'><span class="c"># see http://jenkins.example.com:8080/me/configure to get your username and API token</span>
+</span><span class='line'><span class="nv">jenkins_username</span><span class="o">=</span>myusername
+</span><span class='line'><span class="nv">jenkins_token</span><span class="o">=</span>abcdef0123456789fedcba9876543210
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>banner<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nb">echo</span> <span class="k">$(</span><span class="nb">printf</span> <span class="s1">&#39;#%.0s&#39;</span> <span class="o">{</span>1..80<span class="o">}</span><span class="k">)</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>report<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nv">result</span><span class="o">=</span><span class="nv">$?</span>
+</span><span class='line'>  <span class="nv">timer</span><span class="o">=</span><span class="k">$((</span><span class="sb">`</span>date +<span class="s2">&quot;%s&quot;</span><span class="sb">`</span> <span class="o">-</span> <span class="nv">$timer</span><span class="k">))</span>
+</span><span class='line'>
+</span><span class='line'>  banner
+</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;`whoami`@`hostname -f` `date`: elapsed $timer second(s)&quot;</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;exit code $result&quot;</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># binary encode the log file for Jenkins</span>
+</span><span class='line'>  <span class="nv">msg</span><span class="o">=</span><span class="sb">`</span>cat <span class="s2">&quot;$log&quot;</span> | hexdump -v -e <span class="s1">&#39;1/1 &quot;%02x&quot;&#39;</span><span class="sb">`</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># post the log to jenkins</span>
+</span><span class='line'>  <span class="nb">echo </span>curl -X POST <span class="se">\</span>
+</span><span class='line'>       -u <span class="s2">&quot;$jenkins_username:$jenkins_token&quot;</span> <span class="se">\</span>
+</span><span class='line'>       -d <span class="s2">&quot;&lt;run&gt;&lt;log encoding=\&quot;hexBinary\&quot;&gt;$msg&lt;/log&gt;&lt;result&gt;$result&lt;/result&gt;&lt;duration&gt;$timer&lt;/duration&gt;&lt;/run&gt;&quot;</span> <span class="se">\</span>
+</span><span class='line'>        <span class="nv">$jenkins_server</span>/job/<span class="nv">$jenkins_job</span>/postBuildResult
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">trap </span>report EXIT;
+</span><span class='line'>
+</span><span class='line'>banner
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;hello, world @ `date`!&quot;</span> | tee <span class="s2">&quot;$log&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>[sample `crontab -e` entry]</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">MAILTO</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'>0 * * * * /bin/sh /your/directory/myjob.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A sample of the build log on Jenkins with a green/red build status:</p>
+
+<p><img src="images/2014-11-20.png" alt="Sample Jenkins Build Log" /></p>
+
+<p>Credit to <a href="http://stackoverflow.com/a/25611940/1995977">Taytay on Stackoverflow.com</a>
+for figuring out how to use <code>hexdump</code> to properly encode the XML for Jenkins.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -920,156 +1082,6 @@ and a 32-bit Linux guest on 32-bit hosts:</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/13/tips-for-vagrant-on-windows/">Tips for Vagrant on Windows</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-13T05:55:12-04:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
-        
-         | <a href="/blog/2014/03/13/tips-for-vagrant-on-windows/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I learned some interesting things today about running Vagrant on a Windows machine.
-Vagrant is an amazing tool for running a VM on your local dev box with a target platform (e.g., Linux)
-provisioned by code (e.g., Chef/Puppet/shell scripts).</p>
-
-<h2>Spaces in Paths</h2>
-
-<p>A hard lesson about Vagrant on Windows was Vagrant uses Ruby heavily, and Ruby on Windows
-really, really doesn&rsquo;t like spaces in paths.</p>
-
-<p>The Vagrant installer can&rsquo;t comply with the Windows Installer and Logo requirement to
-default to <code>%ProgramFiles%</code> folder <a href="https://github.com/mitchellh/vagrant/issues/1652">due to Ruby&rsquo;s known issues with spaces in paths like C:\Program Files</a>.</p>
-
-<p>I was able to work around this with a symlink:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">IF NOT EXIST &quot;%ProgramFiles%\Vagrant&quot; MKDIR &quot;%ProgramFiles%\Vagrant&quot;</span>
-</span><span class='line'><span class="go">MKLINK /D &quot;%SystemRoot%\vagrant&quot; &quot;%ProgramFiles%\Vagrant&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I then ran the <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox-4.3.8-92456-Win.exe</a> installer using all defaults
-except for the USB support and Python scripting.</p>
-
-<p><strong>TIP:</strong> do not install VirtualBox&rsquo;s USB drivers if you have an enterprise USB device blocker/filter</p>
-
-<p>I then followed with installing <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">Vagrant_1.4.3.msi</a> to <code>C:\vagrant</code>.</p>
-
-<p><strong>TIP:</strong> <a href="https://github.com/mitchellh/vagrant/issues/3131">the Vagrant v1.5.0 installer is broken for Windows</a>; use <a href="http://www.vagrantup.com/download-archive/v1.4.3.html">v1.4.3</a> until <a href="http://www.vagrantup.com/downloads.html">v1.5.1</a> is released.</p>
-
-<h2>VirtualBox in XP SP3 compatability mode</h2>
-
-<p>I needed to configure a few VirtualBox binaries to run in XP SP3 compatability mode for my Windows 7 SP1 Enterprise laptop.  YMMV.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">REM run VirtualBox in XP SP3 mode</span>
-</span><span class='line'><span class="go">REG ADD &quot;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&quot; ^</span>
-</span><span class='line'><span class="go">        /v &quot;%ProgramFiles%\Oracle\VirtualBox\VirtualBox.exe&quot; ^</span>
-</span><span class='line'><span class="go">        /t REG_SZ  ^</span>
-</span><span class='line'><span class="go">        /d WINXPSP3</span>
-</span><span class='line'><span class="go">REG ADD &quot;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&quot; ^</span>
-</span><span class='line'><span class="go">        /v &quot;%ProgramFiles%\Oracle\VirtualBox\VBoxSVC.exe&quot; ^</span>
-</span><span class='line'><span class="go">        /t REG_SZ  ^</span>
-</span><span class='line'><span class="go">        /d WINXPSP3</span>
-</span><span class='line'><span class="go">REG ADD &quot;HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&quot; ^</span>
-</span><span class='line'><span class="go">        /v &quot;%ProgramFiles%\Oracle\VirtualBox\VBoxManage.exe&quot; ^</span>
-</span><span class='line'><span class="go">        /t REG_SZ  ^</span>
-</span><span class='line'><span class="go">        /d WINXPSP3</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Spaces in your home folder path</h2>
-
-<p>If your Windows username (or <code>%USERPROFILE%</code> path) include spaces, you will need to set an environmental variable <code>%VAGRANT_HOME%</code> to a path that
-does not use spaces.  This caused many non-obvious errors with <code>vagrant plugin install berkshelf</code> and <code>vagrant plugin install omnibus</code>.</p>
-
-<p>A simple fix was setting <code>%VAGRANT_HOME%</code> to &ldquo;C:\VagrantHome&rdquo;</p>
-
-<h2>Example running a simple 32-bit Ubuntu LTS box on 32-bit Windows 7 SP1</h2>
-
-<p>I don&rsquo;t really need the omnibus plugin here, but, this proves it can install a plugin that would
-otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">SETLOCAL</span>
-</span><span class='line'><span class="go">IF NOT EXIST C:\VagrantHome MKDIR C:\VagrantHome</span>
-</span><span class='line'><span class="go">PUSHD C:\VagrantHome</span>
-</span><span class='line'><span class="go">SET VAGRANT_HOME=C:\VagrantHome</span>
-</span><span class='line'><span class="go">PUSHD %TEMP%</span>
-</span><span class='line'><span class="go">MKDIR VagrantTest</span>
-</span><span class='line'><span class="go">CD VagrantTest</span>
-</span><span class='line'><span class="go">vagrant init hashicorp/precise32</span>
-</span><span class='line'><span class="go">vagrant box add hashicorp/precise32 https://vagrantcloud.com/hashicorp/precise32/version/1/provider/virtualbox.box</span>
-</span><span class='line'><span class="go">vagrant plugin install omnibus</span>
-</span><span class='line'><span class="go">vagrant up --provision</span>
-</span><span class='line'><span class="go">PAUSE</span>
-</span><span class='line'><span class="go">vagrant halt</span>
-</span><span class='line'><span class="go">vagrant destroy --force</span>
-</span><span class='line'><span class="go">CD ..</span>
-</span><span class='line'><span class="go">RMDIR /S /Q &quot;%TEMP%\VagrantTest&quot;</span>
-</span><span class='line'><span class="go">POPD</span>
-</span><span class='line'><span class="go">ENDLOCAL</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1110,6 +1122,10 @@ otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to use Jenkins to monitor cron jobs</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
       </li>
     
@@ -1123,10 +1139,6 @@ otherwise fail with spaces in the <code>%USERPROFILE%</code> path.</p>
     
       <li class="post">
         <a href="/blog/2014/07/19/json-proxy-release-0-dot-2-0/">json-proxy release 0.2.0</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/06/including-another-berksfile-in-your-berksfile/">Including another berksfile in your berksfile</a>
       </li>
     
   </ul>

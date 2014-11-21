@@ -8,7 +8,7 @@
         <loc>
             http://steve-jansen.github.io/blog/2013/02/27/tailoring-the-windows-command-prompt-shell/
         </loc>
-        <lastmod>2014-05-05T17:23:50-04:00</lastmod>
+        <lastmod>2014-11-20T17:47:48-05:00</lastmod>
     </url>
     <url>
         <loc>
@@ -135,8 +135,14 @@
         <lastmod>2014-10-17T18:51:43-04:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/
+        </loc>
+        <lastmod>2014-11-20T21:42:12-05:00</lastmod>
+    </url>
+    <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2014-10-17T18:51:43-04:00</lastmod>
+        <lastmod>2014-11-20T21:42:12-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
@@ -202,7 +208,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2014-10-17T18:51:43-04:00</lastmod>
+        <lastmod>2014-11-20T21:42:12-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>

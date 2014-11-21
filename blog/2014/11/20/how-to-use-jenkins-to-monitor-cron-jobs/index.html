@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How to use Jenkins to monitor cron jobs - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Cron jobs have a funny way of being ignored. Either no one knows the job is failing because the job
+doesn&rsquo;t tell anyone. Or, the job is &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How to Use Jenkins to Monitor Cron Jobs</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-20T17:46:46-05:00" pubdate data-updated="true">Nov 20<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Cron jobs have a funny way of being ignored.  Either no one knows the job is failing because the job
+doesn&rsquo;t tell anyone.   Or, the job is spamming your e-mail inbox many times a day, regardless of success
+or failure, which means you just ignore the e-mails.</p>
+
+<p>I&rsquo;ve seen the &ldquo;Monitor an external job&rdquo; option for new Jenkins jobs before, and never paid much attention.
+Turns out it&rsquo;s a great bucket for storing logs and results of cron jobs.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">external-monitor-job</a> plugin
+seems to ship with the Jenkins war file.  So, your Jenkins should have it out of the box.</p>
+
+<p>Creating a job is pretty simple.  It&rsquo;s just a name and description.  Click &ldquo;New Item&rdquo; in Jenkins and
+select the &ldquo;Monitor an external job&rdquo; option.  This creates a job of type <code>hudson.model.ExternalJob</code>.</p>
+
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+external+jobs">wiki</a> describes a
+fairly complicated method to download the Jenkins jar files onto the server running
+your cron jobs, and then use the Java runtime to run a jar with your cron script as an
+argument.  The jar presumably forks your a new shell to run your desired cron command and
+sends the output/result to Jenkins.</p>
+
+<p>There&rsquo;s a much easier way to do this.  Redirect or <code>tee</code> your job&rsquo;s stdout/stderr output to a
+temp file.  Then post the result code and log file via <code>curl</code> to Jenkins.  No need to
+download jar files.  No need to even have Java runtime on the server.</p>
+
+<p>Just POST a small XML document with the log contents (binary encoded) and the
+exit code to Jenkins @ <code>/job/:jobName/postBuildResult</code> where <code>:jobName</code> is the
+URL encoded name of your monitoring job in Jenkins.</p>
+
+<figure class='code'><figcaption><span>[example cron script]</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="c"># example cron script to post logs to Jenkins</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># exit on error</span>
+</span><span class='line'><span class="nb">set</span> -e
+</span><span class='line'>
+</span><span class='line'><span class="nv">log</span><span class="o">=</span><span class="sb">`</span>mktemp -t tmp<span class="sb">`</span>
+</span><span class='line'><span class="nv">timer</span><span class="o">=</span><span class="sb">`</span>date +<span class="s2">&quot;%s&quot;</span><span class="sb">`</span>
+</span><span class='line'><span class="nv">jenkins_job</span><span class="o">=</span>my_monitoring_job
+</span><span class='line'><span class="nv">jenkins_server</span><span class="o">=</span>http://jenkins.example.com:8080/jenkins/job/<span class="nv">$jenkins_job</span>/postBuildResult
+</span><span class='line'><span class="c"># see http://jenkins.example.com:8080/me/configure to get your username and API token</span>
+</span><span class='line'><span class="nv">jenkins_username</span><span class="o">=</span>myusername
+</span><span class='line'><span class="nv">jenkins_token</span><span class="o">=</span>abcdef0123456789fedcba9876543210
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>banner<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nb">echo</span> <span class="k">$(</span><span class="nb">printf</span> <span class="s1">&#39;#%.0s&#39;</span> <span class="o">{</span>1..80<span class="o">}</span><span class="k">)</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>report<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nv">result</span><span class="o">=</span><span class="nv">$?</span>
+</span><span class='line'>  <span class="nv">timer</span><span class="o">=</span><span class="k">$((</span><span class="sb">`</span>date +<span class="s2">&quot;%s&quot;</span><span class="sb">`</span> <span class="o">-</span> <span class="nv">$timer</span><span class="k">))</span>
+</span><span class='line'>
+</span><span class='line'>  banner
+</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;`whoami`@`hostname -f` `date`: elapsed $timer second(s)&quot;</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;exit code $result&quot;</span> &gt;&gt; <span class="s2">&quot;$log&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># binary encode the log file for Jenkins</span>
+</span><span class='line'>  <span class="nv">msg</span><span class="o">=</span><span class="sb">`</span>cat <span class="s2">&quot;$log&quot;</span> | hexdump -v -e <span class="s1">&#39;1/1 &quot;%02x&quot;&#39;</span><span class="sb">`</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># post the log to jenkins</span>
+</span><span class='line'>  <span class="nb">echo </span>curl -X POST <span class="se">\</span>
+</span><span class='line'>       -u <span class="s2">&quot;$jenkins_username:$jenkins_token&quot;</span> <span class="se">\</span>
+</span><span class='line'>       -d <span class="s2">&quot;&lt;run&gt;&lt;log encoding=\&quot;hexBinary\&quot;&gt;$msg&lt;/log&gt;&lt;result&gt;$result&lt;/result&gt;&lt;duration&gt;$timer&lt;/duration&gt;&lt;/run&gt;&quot;</span> <span class="se">\</span>
+</span><span class='line'>        <span class="nv">$jenkins_server</span>/job/<span class="nv">$jenkins_job</span>/postBuildResult
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">trap </span>report EXIT;
+</span><span class='line'>
+</span><span class='line'>banner
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;hello, world @ `date`!&quot;</span> | tee <span class="s2">&quot;$log&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>[sample `crontab -e` entry]</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">MAILTO</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'>0 * * * * /bin/sh /your/directory/myjob.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A sample of the build log on Jenkins with a green/red build status:</p>
+
+<p><img src="images/2014-11-20.png" alt="Sample Jenkins Build Log" /></p>
+
+<p>Credit to <a href="http://stackoverflow.com/a/25611940/1995977">Taytay on Stackoverflow.com</a>
+for figuring out how to use <code>hexdump</code> to properly encode the XML for Jenkins.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-20T17:46:46-05:00" pubdate data-updated="true">Nov 20<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cron/'>cron</a>, <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/jenkins/'>jenkins</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/" title="Previous Post: Finding Chef nodes bootstrapped in the last X hours">&laquo; Finding Chef nodes bootstrapped in the last X hours</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" style="display: block; margin-left:auto; margin-right: auto" />
+	</span>
+</section>
+<section>
+  <p style="clear:both">
+    Hi, I'm Steve.  I'm a software developer loving life in Charlotte, NC,
+    an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>
+    and an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+
+<section>
+  <h1>Guides</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to use Jenkins to monitor cron jobs</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">regexes for the serverspec 2 update</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/">Chef'ing custom nginx configs with the nginx cookbook</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/19/json-proxy-release-0-dot-2-0/">json-proxy release 0.2.0</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+    <li /><a href="/atom.xml" title="Subscribe via RSS">Subscribe via RSS</a>
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
