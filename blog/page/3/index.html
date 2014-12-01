@@ -9,7 +9,7 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Just released a new &ldquo;API&rdquo; provider for the NodeJS authentication middelware Passport. The ReverseProxy API provider enables NodeJS apps &hellip;">
+  <meta name="description" content="To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine. If you haven&rsquo;t seen the proxy before &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -59,6 +59,186 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/">For All UI Devs Out there&#8230;json-proxy v0.10.0</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-20T21:44:00-04:00" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/20/for-all-ui-devs-out-there-json-proxy-v0-dot-10-dot-0/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>To all my UI devs out there, I finally had some time to rework json-proxy into a lean and meaner machine.</p>
+
+<p>If you haven&rsquo;t seen the proxy before, it enables a UI dev to proxy localhost URLs to a remote server.</p>
+
+<p>Why do this?   Say you are doing an AngularJS front end, and want to wire some data to a REST API call like <code>$http.get('/api/foo/1')</code>.
+Before, you had to mock out the JSON result, run the entire server stack locally, or just cross your fingers and hope it works on the integration server.</p>
+
+<p>Well, the proxy lets you transparently reroute <code>http://localhost/api/foo/1</code> from your local laptop to an integration server
+like <code>http://integration-server/api/foo/1</code>.  No CORS.  No JSONP.  No nonsense.</p>
+
+<h3>Grunt</h3>
+
+<p>With v0.1.0, the big change is the proxy now works right inside the Grunt server.   Here&rsquo;s an example config from the scaffold project:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">connect</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">port</span><span class="o">:</span> <span class="mi">9000</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Change this to &#39;0.0.0.0&#39; to access the server from outside.</span>
+</span><span class='line'>    <span class="nx">hostname</span><span class="o">:</span> <span class="s1">&#39;localhost&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">livereload</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">middleware</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">connect</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span>
+</span><span class='line'>          <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;json-proxy&#39;</span><span class="p">).</span><span class="nx">initialize</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">forward</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;/api/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;/swagger/&#39;</span><span class="o">:</span> <span class="s1">&#39;http://integration-server:4040&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">},</span>
+</span><span class='line'>              <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User&#39;</span><span class="o">:</span> <span class="s1">&#39;John Doe&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s1">&#39;X-Forwarded-User-Email&#39;</span><span class="o">:</span> <span class="s1">&#39;john.doe@example.com&#39;</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>          <span class="p">}),</span>
+</span><span class='line'>          <span class="nx">lrSnippet</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="s1">&#39;.tmp&#39;</span><span class="p">),</span>
+</span><span class='line'>          <span class="nx">mountFolder</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span> <span class="nx">yeomanConfig</span><span class="p">.</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Auth Headers</h3>
+
+<p>Even better, you can inject headers into proxied request.  So if you remote server requires an Authorization header with an OAuth-style token, or sits behind an Enterprise SSO appliance, you can add the headers to deal with bypassing the remote server authentication.</p>
+
+<h3>CLI</h3>
+
+<p>The CLI utility is also improved.  The CLI properly supports global installation.
+If you install using <code>sudo npm install -g json-proxy</code>, you can invoke the proxy simply as <code>json-proxy</code> with whatever args you want.</p>
+
+<h3>CLI usage info:</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>json-proxy <span class="o">[</span>-c configFile<span class="o">]</span> <span class="o">[</span>-p port<span class="o">]</span> <span class="o">[</span>-f proxy forwarding rule<span class="o">]</span>
+</span><span class='line'>             <span class="o">[</span>-h header rule<span class="o">]</span> <span class="o">[</span>-html5mode <span class="o">[</span>defaultFile<span class="o">]]</span> <span class="o">[</span>directory<span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>Examples:
+</span><span class='line'>   json-proxy -p 8080 -f <span class="s2">&quot;/api=http://server&quot;</span> -f <span class="s2">&quot;/=http://localhost:9000&quot;</span> .
+</span><span class='line'>   json-proxy -h <span class="s2">&quot;X-Forwarded-User=johndoe&quot;</span> /tmp/folder
+</span><span class='line'>   json-proxy -c <span class="s2">&quot;/tmp/config.json&quot;</span>
+</span><span class='line'>
+</span><span class='line'>By default, looks <span class="k">for </span>a config file at ./json-proxy.json
+</span><span class='line'>
+</span><span class='line'>Environmental variables:
+</span><span class='line'>  JSON_PROXY_PORT         see --port
+</span><span class='line'>  JSON_PROXY_WEBROOT      directory
+</span><span class='line'>  JSON_PROXY_GATEWAY      --gateway
+</span><span class='line'>  JSON_PROXY_GATEWAY_AUTH <span class="s2">&quot;username:password&quot;</span> credentials <span class="k">for</span> --gateway<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>Options:
+</span><span class='line'>  -p, --port     The TCP port <span class="k">for </span>the proxy server
+</span><span class='line'>  -f, --forward  a forwarding rule <span class="o">(</span>ex. /foo<span class="o">=</span>server/foo<span class="o">)</span>
+</span><span class='line'>  -h, --header   a custom request header <span class="o">(</span>ex. iv-user<span class="o">=</span>johndoel<span class="o">)</span>
+</span><span class='line'>  -c, --config   a config file
+</span><span class='line'>  -g, --gateway  URL <span class="k">for </span>a LAN HTTP proxy to use <span class="k">for </span>forwarding requests
+</span><span class='line'>  --html5mode    support AngularJS HTML5 mode by catching 404s
+</span><span class='line'>  -?, --help     about this utility
+</span><span class='line'>  --version      version info
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>More info @ <a href="https://github.com/steve-jansen/json-proxy">https://github.com/steve-jansen/json-proxy</a> and
+<a href="https://npmjs.org/package/json-proxy">https://npmjs.org/package/json-proxy</a></p>
+
+<p>Enjoy!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -470,6 +650,10 @@ ECHO ON
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/">Integrating Rackspace Auto Scale Groups with ObjectRocket Mongo databases</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to use Jenkins to monitor cron jobs</a>
       </li>
     
@@ -483,10 +667,6 @@ ECHO ON
     
       <li class="post">
         <a href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/">Chef&#8217;ing custom nginx configs with the nginx cookbook</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/19/json-proxy-release-0-dot-2-0/">json-proxy release 0.2.0</a>
       </li>
     
   </ul>

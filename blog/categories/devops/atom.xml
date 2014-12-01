@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devops | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-11-20T21:42:38-05:00</updated>
+  <updated>2014-12-01T13:21:43-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,39 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Integrating Rackspace Auto Scale Groups with ObjectRocket Mongo databases]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/"/>
+    <updated>2014-12-01T13:00:58-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases</id>
+    <content type="html"><![CDATA[<p>Thanks to some pretty awesome support from Jon Fanti and John Moore at <a href="http://objectrocket.com">ObjectRocket</a>,
+I learned this week that we had missed two key optimizations for using ObjectRocket MongoDBs with Rackspace
+Auto Scaling groups (ASGs).</p>
+
+<h2>ServiceNet</h2>
+
+<p>First, ObjectRocket support can provide medium and large customers with a server FQDN that resolves to a
+<a href="http://www.rackspace.com/knowledge_center/frequently-asked-question/what-is-servicenet">ServiceNet</a> private IP.
+You can use this FQDN instead of the server name shown in the connect string for your instance.  As long
+as your cloud servers and ObjectRocket are in the same Rackspace data center, the ServiceNet connection string
+will avoid data transfer charges and keep your packets from transiting the public Internet.</p>
+
+<h2>Dynamic IP ACLs</h2>
+
+<p>We struggled to manually maintain the list of authorized IPs for our ObjectRocket MongoDB instances
+when a ASG would add a new node.  We had a backlog plan to script the IP ACLs using Chef, but, hadn&rsquo;t
+found the time yet.</p>
+
+<p>Fortunately, ObjectRocket already supports this!  See <a href="https://app.objectrocket.com/external/rackspace">https://app.objectrocket.com/external/rackspace</a></p>
+
+<p><img src="/images/2014-12-01.png" alt="Screenshot of ObjectRocket integration with Rackspace" /></p>
+
+<p>According to John, the ObjectRocket integration with your Rackspace Cloud account will automatically sync
+the IP ACLs with your list of current Cloud VMs.  Moreover, the integration will ignore any manual IP ACLs
+you create (as long as your description doesn&rsquo;t use the <code>rax-</code> prefix).</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How to use Jenkins to monitor cron jobs]]></title>
@@ -236,63 +269,6 @@ include_recipe &lsquo;nginx&rsquo;</p>
 
 <p>resources(&lsquo;template[nginx.conf]&rsquo;).cookbook &lsquo;my-app&rsquo;
 ```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Including another berksfile in your berksfile]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile/"/>
-    <updated>2014-05-06T13:11:57-04:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/05/06/including-another-berksfile-in-your-berksfile</id>
-    <content type="html"><![CDATA[<p>As part of my cooking with <a href="http://www.getchef.com/downloads/chef-dk/">Chef&rsquo;s new workflow</a>,
-I wanted Berkshelf to dynamically import the secondary dependencies of my site-cookbook&rsquo;s dependencies.</p>
-
-<p>Thanks <a href="https://coderwall.com/p/j72egw">Vasily Mikhayliche&rsquo;s Coderwall post</a> and <a href="https://sethvargo.com/berksfile-magic/">Seth Vargo&rsquo;s post on Berks magic</a>, I was able to hack something
-that worked for me with <a href="http://berkshelf.com/v2.0/">Berkshelf v2.0</a>. (We don&rsquo;t have time to migrate to Berks 3.0 for another couple of weeks, and this feature doesn&rsquo;t seem to be part of Berks 3.0).</p>
-
-<p>``` ruby</p>
-
-<h1>vi:ft=ruby:</h1>
-
-<p>site :opscode</p>
-
-<h1>Extension method to import secondary dependencies in a referenced site-cookbook</h1>
-
-<h1>using the constraints in the site-cookbook&rsquo;s Berkshelf file, rather than just</h1>
-
-<h1>the name of the dependencies in the site-cookbook&rsquo;s metadata.rb file</h1>
-
-<p>#</p>
-
-<h1>credit: <a href="https://sethvargo.com/berksfile-magic/">https://sethvargo.com/berksfile-magic/</a></h1>
-
-<h1><a href="https://coderwall.com/p/j72egw">https://coderwall.com/p/j72egw</a></h1>
-
-<p>def site_cookbook(path)
-  berksfile = &ldquo;../#{path}/Berksfile&rdquo;</p>
-
-<p>  if File.exists?(berksfile)</p>
-
-<pre><code>contents = File.read(berksfile)
-
-# comment out lines like `site :opscode`, which cannot be imported multiple times
-contents = contents.gsub(/(^\s*site\s)/, '#\1')
-
-# comment out lines like `metadata`, which cannot be imported multiple times
-contents = contents.gsub(/(^\s*metadata\s)/, '#\1')
-
-instance_eval(contents) 
-</code></pre>
-
-<p>  end
-end</p>
-
-<p>cookbook &lsquo;nginx&rsquo;, &lsquo;~> 2.4.4&rsquo;
-site_cookbook &lsquo;my-site-cookbook&rsquo;</p>
-
-<p>```</p>
-
-<p>Happy cooking!</p>
 ]]></content>
   </entry>
   

@@ -5,16 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Windows Batch Scripting: Loops - /* steve jansen */</title>
+  <title>Integrating Rackspace Auto Scale Groups with ObjectRocket Mongo databases - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Overview
-Part 1 &ndash; Getting Started
-Part 2 &ndash; Variables
-Part 3 &ndash; Return Codes
-Part 4 &ndash; stdin, stdout, stderr
-Part 5 &ndash; If/ &hellip;">
+  <meta name="description" content="Thanks to some pretty awesome support from Jon Fanti and John Moore at ObjectRocket,
+I learned this week that we had missed two key optimizations for &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -23,7 +19,7 @@ Part 5 &ndash; If/ &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.io/guides/windows-batch-scripting/part-6-loops.html">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -67,7 +63,7 @@ Part 5 &ndash; If/ &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Windows Batch Scripting: Loops</h1>
+      <h1 class="entry-title">Integrating Rackspace Auto Scale Groups With ObjectRocket Mongo Databases</h1>
     
     
       <p class="meta">
@@ -83,7 +79,7 @@ Part 5 &ndash; If/ &hellip;">
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2014-12-01T13:00:58-05:00" pubdate data-updated="true">Dec 1<span>st</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -92,73 +88,31 @@ Part 5 &ndash; If/ &hellip;">
   </header>
 
 
-<div class="entry-content"><ul>
-<li><a href="/guides/windows-batch-scripting/index.html">Overview</a></li>
-<li><a href="/guides/windows-batch-scripting/part-1-getting-started.html">Part 1 &ndash; Getting Started</a></li>
-<li><a href="/guides/windows-batch-scripting/part-2-variables.html">Part 2 &ndash; Variables</a></li>
-<li><a href="/guides/windows-batch-scripting/part-3-return-codes.html">Part 3 &ndash; Return Codes</a></li>
-<li><a href="/guides/windows-batch-scripting/part-4-stdin-stdout-stderr.html">Part 4 &ndash; stdin, stdout, stderr</a></li>
-<li><a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">Part 5 &ndash; If/Then Conditionals</a></li>
-<li>Part 6 &ndash; Loops</li>
-<li><a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions</a></li>
-<li><a href="/guides/windows-batch-scripting/part-8-parsing-input.html">Part 8 &ndash; Parsing Input</a></li>
-<li><a href="/guides/windows-batch-scripting/part-9-logging.html">Part 9 &ndash; Logging</a></li>
-<li><a href="/guides/windows-batch-scripting/part-10-advanced-tricks.html">Part 10 &ndash; Advanced Tricks</a></li>
-</ul>
+<div class="entry-content"><p>Thanks to some pretty awesome support from Jon Fanti and John Moore at <a href="http://objectrocket.com">ObjectRocket</a>,
+I learned this week that we had missed two key optimizations for using ObjectRocket MongoDBs with Rackspace
+Auto Scaling groups (ASGs).</p>
 
+<h2>ServiceNet</h2>
 
-<p>Looping through items in a collection is a frequent task for scripts.  It could be looping through files in a directory, or reading a text file one
-line at a time.</p>
+<p>First, ObjectRocket support can provide medium and large customers with a server FQDN that resolves to a
+<a href="http://www.rackspace.com/knowledge_center/frequently-asked-question/what-is-servicenet">ServiceNet</a> private IP.
+You can use this FQDN instead of the server name shown in the connect string for your instance.  As long
+as your cloud servers and ObjectRocket are in the same Rackspace data center, the ServiceNet connection string
+will avoid data transfer charges and keep your packets from transiting the public Internet.</p>
 
-<h2>Old School with GOTO</h2>
+<h2>Dynamic IP ACLs</h2>
 
-<p>The old-school way of looping on early versions of DOS was to use labels and GOTO statements.  This isn&rsquo;t used much anymore, though it&rsquo;s useful for
-looping through command line arguments.</p>
+<p>We struggled to manually maintain the list of authorized IPs for our ObjectRocket MongoDB instances
+when a ASG would add a new node.  We had a backlog plan to script the IP ACLs using Chef, but, hadn&rsquo;t
+found the time yet.</p>
 
-<pre><code>:args
-SET arg=%~1
-ECHO %arg%
-SHIFT
-GOTO :args
-</code></pre>
+<p>Fortunately, ObjectRocket already supports this!  See <a href="https://app.objectrocket.com/external/rackspace">https://app.objectrocket.com/external/rackspace</a></p>
 
-<h2>New School with FOR</h2>
+<p><img src="/images/2014-12-01.png" alt="Screenshot of ObjectRocket integration with Rackspace" /></p>
 
-<p>The modern way to loop through files or text uses the <code>FOR</code> command.  In my opinion, <code>FOR</code> is the single most powerful command in DOS, and one of
-the least used.</p>
-
-<p><strong>GOTCHA:</strong> The <code>FOR</code> command uses a special variable syntax of <code>%</code> followed by a single letter, like <code>%I</code>.  This syntax is slightly different when
-<code>FOR</code> is used in a batch file, as it needs an extra percent symbol, or <code>%%I</code>.  This is a very common source of errors when writing scripts.  Should
-your for loop exit with invalid syntax, be sure to check that you have the <code>%%</code> style variables.</p>
-
-<h2>Looping Through Files</h2>
-
-<pre><code>FOR %I IN (%USERPROFILE%\*) DO @ECHO %I
-</code></pre>
-
-<h2>Looping Through Directories</h2>
-
-<pre><code>FOR /D %I IN (%USERPROFILE%\*) DO @ECHO %I
-</code></pre>
-
-<p>Recursively loop through files in all subfolders of the %TEMP% folder</p>
-
-<pre><code>FOR /R "%TEMP%" %I IN (*) DO @ECHO %I
-</code></pre>
-
-<p>Recursively loop through all subfolders in the %TEMP% folder</p>
-
-<pre><code>FOR /R "%TEMP%" /D %I IN (*) DO @ECHO %I
-</code></pre>
-
-<h2>Variable Substitution for Filenames</h2>
-
-<p><span class="basic-alignment left">
-<a href="/guides/windows-batch-scripting/part-5-if-then-conditionals.html">&lt;&lt; Part 5 &ndash; If/Then Conditionals</a>
-</span>
-<span class="basic-alignment right">
-<a href="/guides/windows-batch-scripting/part-7-functions.html">Part 7 &ndash; Functions >></a>
-</span></p>
+<p>According to John, the ObjectRocket integration with your Rackspace Cloud account will automatically sync
+the IP ACLs with your list of current Cloud VMs.  Moreover, the integration will ignore any manual IP ACLs
+you create (as long as your description doesn&rsquo;t use the <code>rax-</code> prefix).</p>
 </div>
 
 
@@ -181,12 +135,12 @@ your for loop exit with invalid syntax, be sure to check that you have the <code
   
 
 
-<time datetime="2013-03-01T10:57:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+<time datetime="2014-12-01T13:00:58-05:00" pubdate data-updated="true">Dec 1<span>st</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/batch/'>batch</a>, <a class='category' href='/blog/categories/scripting/'>scripting</a>, <a class='category' href='/blog/categories/shell/'>shell</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+    <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/rackspace/'>rackspace</a>
   
 </span>
 
@@ -195,7 +149,7 @@ your for loop exit with invalid syntax, be sure to check that you have the <code
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/guides/windows-batch-scripting/part-6-loops.html" data-via="" data-counturl="http://steve-jansen.github.io/guides/windows-batch-scripting/part-6-loops.html" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/" >Tweet</a>
   
   
   
@@ -203,6 +157,8 @@ your for loop exit with invalid syntax, be sure to check that you have the <code
 
     
     <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/" title="Previous Post: How to use Jenkins to monitor cron jobs">&laquo; How to use Jenkins to monitor cron jobs</a>
       
       
     </p>
@@ -309,8 +265,8 @@ your for loop exit with invalid syntax, be sure to check that you have the <code
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-6-loops.html';
-        var disqus_url = 'http://steve-jansen.github.io/guides/windows-batch-scripting/part-6-loops.html';
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/';
         var disqus_script = 'embed.js';
       
     (function () {

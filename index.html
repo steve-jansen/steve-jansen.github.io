@@ -9,8 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Cron jobs have a funny way of being ignored. Either no one knows the job is failing because the job
-doesn&rsquo;t tell anyone. Or, the job is &hellip;">
+  <meta name="description" content="Thanks to some pretty awesome support from Jon Fanti and John Moore at ObjectRocket,
+I learned this week that we had missed two key optimizations for &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -60,6 +60,68 @@ doesn&rsquo;t tell anyone. Or, the job is &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/">Integrating Rackspace Auto Scale Groups With ObjectRocket Mongo Databases</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-01T13:00:58-05:00" pubdate data-updated="true">Dec 1<span>st</span>, 2014</time>
+        
+         | <a href="/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Thanks to some pretty awesome support from Jon Fanti and John Moore at <a href="http://objectrocket.com">ObjectRocket</a>,
+I learned this week that we had missed two key optimizations for using ObjectRocket MongoDBs with Rackspace
+Auto Scaling groups (ASGs).</p>
+
+<h2>ServiceNet</h2>
+
+<p>First, ObjectRocket support can provide medium and large customers with a server FQDN that resolves to a
+<a href="http://www.rackspace.com/knowledge_center/frequently-asked-question/what-is-servicenet">ServiceNet</a> private IP.
+You can use this FQDN instead of the server name shown in the connect string for your instance.  As long
+as your cloud servers and ObjectRocket are in the same Rackspace data center, the ServiceNet connection string
+will avoid data transfer charges and keep your packets from transiting the public Internet.</p>
+
+<h2>Dynamic IP ACLs</h2>
+
+<p>We struggled to manually maintain the list of authorized IPs for our ObjectRocket MongoDB instances
+when a ASG would add a new node.  We had a backlog plan to script the IP ACLs using Chef, but, hadn&rsquo;t
+found the time yet.</p>
+
+<p>Fortunately, ObjectRocket already supports this!  See <a href="https://app.objectrocket.com/external/rackspace">https://app.objectrocket.com/external/rackspace</a></p>
+
+<p><img src="/images/2014-12-01.png" alt="Screenshot of ObjectRocket integration with Rackspace" /></p>
+
+<p>According to John, the ObjectRocket integration with your Rackspace Cloud account will automatically sync
+the IP ACLs with your list of current Cloud VMs.  Moreover, the integration will ignore any manual IP ACLs
+you create (as long as your description doesn&rsquo;t use the <code>rax-</code> prefix).</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -987,101 +1049,6 @@ great post on using <code>fsutil</code>!</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/">Configuring Vagrant to Dynamically Match Guest and Host CPU Architectures</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-14T20:06:26-04:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
-        
-         | <a href="/blog/2014/03/14/configuring-vagrant-to-dynamically-match-guest-and-host-cpu-architectures/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Today a work colleague put together a nice Vagrantfile to run a Linux dev environment on our laptops.  <a href="http://www.vagrantup.com">Vagrant</a>
-is sweet for DevOps.  The Vagrant file worked great on his Macbook Pro.
-But it was no dice running on my Windows box &ndash; the VM was a 64-bit Linux VM (why wouldn&rsquo;t a server be 32-bit?) and I&rsquo;m on a
-32-bit laptop (don&rsquo;t ask why my corporate IT still issues 32-bit Windows images on 64-bit hardware!).</p>
-
-<p>To my surprise, VirtualBox can actually a 64-bit guest VM on a 32-bit host OS:</p>
-
-<blockquote><p>If you want to use 64-bit guest support on a 32-bit host operating system, you must also select a 64-bit operating system for the particular VM. Since supporting 64 bits on 32-bit hosts incurs additional overhead, VirtualBox only enables this support upon explicit request.</p>
-
-<p>Source: <a href="http://www.virtualbox.org/manual/ch03.html">http://www.virtualbox.org/manual/ch03.html</a></p></blockquote>
-
-<p>However, I learned Vagrant cloud boxes <a href="https://github.com/mitchellh/vagrant/issues/932">may forget to explicity declare they want VirtualBox to enable  64-on-32 support</a>.  While changing the box &ldquo;Operating System Type&rdquo; from &ldquo;Ubuntu&rdquo; to &ldquo;Ubuntu (64 bit)&rdquo; would be
-an easy fix, I decided to see if Vagrant could dynamically choose the right guest CPU architecture based on the host OS&#8217; CPU architecture.
-Our app would run as either 32 or 64, so it made sense to run 32 on 32 and 64 on 64, right?</p>
-
-<p>Turns out it is quite easy.  The power of ruby as the config language for Vagrant really shines here:</p>
-
-<p>Here the relevant changes to our Vagrantfile to get Vagrant to run a 64-bit Linux guest on 64-bit hosts,
-and a 32-bit Linux guest on 32-bit hosts:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># -*- mode: ruby -*-</span>
-</span><span class='line'><span class="c1"># vi: set ft=ruby :</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;hashicorp/precise64&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://vagrantcloud.com/hashicorp/precise64/current/provider/virtualbox.box&quot;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># support 32 windows hosts :(</span>
-</span><span class='line'>  <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;PROCESSOR_ARCHITECTURE&quot;</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;x86&quot;</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;falling back to 32-bit guest architecture&quot;</span>
-</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;hashicorp/precise32&quot;</span>
-</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://vagrantcloud.com/hashicorp/precise32/current/provider/virtualbox.box&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># ... lots more vagrant plugin and chef goodness ...</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1122,6 +1089,10 @@ and a 32-bit Linux guest on 32-bit hosts:</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/">Integrating Rackspace Auto Scale Groups with ObjectRocket Mongo databases</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to use Jenkins to monitor cron jobs</a>
       </li>
     
@@ -1135,10 +1106,6 @@ and a 32-bit Linux guest on 32-bit hosts:</p>
     
       <li class="post">
         <a href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/">Chef&#8217;ing custom nginx configs with the nginx cookbook</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/19/json-proxy-release-0-dot-2-0/">json-proxy release 0.2.0</a>
       </li>
     
   </ul>
