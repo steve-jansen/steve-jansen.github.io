@@ -9,8 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Thanks to some pretty awesome support from Jon Fanti and John Moore at ObjectRocket,
-I learned this week that we had missed two key optimizations for &hellip;">
+  <meta name="description" content="GitHub WebHooks and Jenkins go together like peanut butter and jelly.
+SCM Webhook trggers are way more efficient for Jenkins over SCM polling. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -60,6 +60,115 @@ I learned this week that we had missed two key optimizations for &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting Github Webhooks Ssl Verification</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-03T00:00:00-05:00" pubdate data-updated="true"></time>
+        
+         | <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>GitHub WebHooks and Jenkins go together like peanut butter and jelly.
+<a href="http://kohsuke.org/2011/12/01/polling-must-die-triggering-jenkins-builds-from-a-git-hook/">SCM Webhook trggers are way more efficient for Jenkins over SCM polling</a>.  Webhooks also give you a great UX &ndash; Jenkins reacts
+immediately when you push a commit or open a pull request.</p>
+
+<p>I am a huge fan of using <a href="https://github.com/jenkinsci/github-oauth-plugin">GitHub OAuth for single sign on with Jenkins</a>.
+The security of OAuth really depends on TLS/SSL for protecting the token in transit,
+so your Jenkins should use SSL when using GitHub OAuth.</p>
+
+<p>GitHub&rsquo;s Webhooks have the option to perform SSL certificate validation.  I&rsquo;ve
+run into issues with GitHub&rsquo;s &ldquo;Hookshot&rdquo; HTTP engine failing SSL verification for
+otherwise valid certificates.  Most of my problems were related to installing
+intermediate CA certificates on Jenkins.</p>
+
+<h2>GitHub WebHook configuration and SSL certificate verification</h2>
+
+<p>Here&rsquo;s an example of a pull request webhook failing SSL validation in GitHub:</p>
+
+<p><img src="/images/2014-12-03-A.png" alt="Screenshot of a failed certificate validation in a GitHub WebHook configuratioon screen" /></p>
+
+<p>GitHub will send a &ldquo;hello, world&rdquo; webhook ping when you create a new webhook.  Note
+that SSL verification failures will have an usual HTTP response code of <code>0</code>:
+<img src="/images/2014-12-03-B.png" alt="Screenshot of a &quot;hello, world&quot; webhook ping from GitHub" /></p>
+
+<p>The response tab will be empty:
+<img src="/images/2014-12-03-C.png" alt="Screenshot of a &quot;hello, world&quot; webhook ping from GitHub" /></p>
+
+<h2>Troubleshoot your SSL certificate with the Symantec SSL Toolbox</h2>
+
+<p>Symantec offers a very helpful <a href="https://ssltools.websecurity.symantec.com/checker/">tool to check your certificate installation</a>
+as part of their &ldquo;SSL Toolbox&rdquo;. The tool offers suggestions to remedy certificate
+issues and links to download missing intermediate CA certificates.</p>
+
+<p>Here&rsquo;s an example of a Symantec diagnostic failure due to a missing intermediate certificate:</p>
+
+<p><img src="/images/2014-12-03-D.png" alt="Screenshot of a failed certificate validation in the Symantec SSL Toolbox" /></p>
+
+<h2>Using the Symantec SSL Toolbox against servers with IP ACLs</h2>
+
+<p>A great feature of the Symantec SSL Tool is how the tool supports non-public servers
+behind a firewall.  The tool will first attempt to verify your cert from
+a Symantec server.  If your server is behind a firewall that denies public access
+except for whitelisted origins, the SSL toolbox has a fallback mode to run a Java applet
+in your browser.  The applet will perform the SSL verification
+requests from local machine rather than a Symantec server.</p>
+
+<blockquote><p><strong>TIP:</strong> GitHub publishes their public IP range for webhooks as part of the
+<a href="https://api.github.com/meta">GitHub metadata API</a> if you wish to create firewall
+whitelist rules for GitHub webhook requests.</p></blockquote>
+
+<h2>Symanetc SSL Toolbox Applet and OS X Java security</h2>
+
+<p>Given the recent security vulnerabilities of Java applets, getting the applet to run
+on OS X takes some work.  Here are the setting I need to use the applet in Safari 7.1
+on OS X 10.9.5 (Mavericks) using the Oracle/Sun JRE 1.7 R71.
+(I never succeeded in using the applet in Firefox or Chrome despite serious effort.)</p>
+
+<p>I needed to enable Safari to run the SSL Toolbox applets in &ldquo;unsafe mode&rdquo; without prompting:
+<img src="/images/2014-12-03-E.png" alt="Screenshot of a Safari security settings for the Symantec SSL Toolbox" /></p>
+
+<p>I also had to temporarily downgrade the JVM 1.7 browser security level to &ldquo;Medium&rdquo; and
+add an execption for <code>https://ssltools.websecurity.symanttec.com</code>:</p>
+
+<p><img src="/images/2014-12-03-F.png" alt="Screenshot of a JVM security settings for the Symantec SSL Toolbox" /></p>
+
+<h2>Green is good!</h2>
+
+<p>Once you&rsquo;ve resolved your certificate issues, you should see green in both the
+Symantec SSL Toolbox and the GitHub WebHook requests after enabling SSL verification.</p>
+
+<p><img src="/images/2014-12-03-G.png" alt="Screenshot of a succesful certificate validation in the Symantec SSL Toolbox" /></p>
+
+<p><img src="/images/2014-12-03-H.png" alt="Screenshot of a succesful certificate validation in a GitHub WebHook configuration screen" /></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -959,96 +1068,6 @@ window stretched the entire 1600 pixel width of my display. This helps greatly w
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/">How to Verify Administrative Rights in a Windows Batch Script</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-15T18:50:08-04:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
-        
-         | <a href="/blog/2014/03/15/how-to-verify-administrative-rights-in-a-windows-batch-script/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>While working on automated provisioning of a Jenkins slave server on Windows, I needed
-to verify that one of my batch scripts was running with administrative privileges.</p>
-
-<p>Turns out this problem is easy to solve these days as long as you don&rsquo;t need to support
-XP.  Thanks to <a href="http://stackoverflow.com/a/21295806/1995977">and31415 on SO</a> for the
-great post on using <code>fsutil</code>!</p>
-
-<p>Here&rsquo;s a working example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">@ECHO OFF</span>
-</span><span class='line'><span class="go">SETLOCAL ENABLEEXTENSIONS</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">:: verify we have admin privileges</span>
-</span><span class='line'><span class="go">CALL :IsAdmin || (ECHO %~n0: ERROR - administrative privileges required &amp;&amp; EXIT /B 1)</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">ECHO &quot;Hello, Admin!&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">:EXIT</span>
-</span><span class='line'><span class="go">EXIT /B</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">:: function to verify admin/UAC privileges</span>
-</span><span class='line'><span class="go">:: CREDIT: http://stackoverflow.com/a/21295806/1995977</span>
-</span><span class='line'><span class="go">:IsAdmin</span>
-</span><span class='line'><span class="go">IF NOT EXIST &quot;%SYSTEMROOT%\system32\fsutil.exe&quot; (</span>
-</span><span class='line'><span class="go">  ECHO %~n0: WARNING - fsutil command not found; cannot verify adminstrative rights</span>
-</span><span class='line'><span class="go">) ELSE (</span>
-</span><span class='line'><span class="go">  &quot;%SYSTEMROOT%\system32\fsutil.exe&quot; dirty query &quot;%SystemDrive%&quot; &gt;NUL 2&gt;&amp;1</span>
-</span><span class='line'><span class="go">)</span>
-</span><span class='line'><span class="go">EXIT /B</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Shameless plug &ndash; learn more tips and tricks for batch scripting in my <a href="/guides/windows-batch-scripting/">Guide to Windows Batch Scripting</a>!</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1089,6 +1108,10 @@ great post on using <code>fsutil</code>!</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting Github Webhooks Ssl Verification</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/">Integrating Rackspace Auto Scale Groups with ObjectRocket Mongo databases</a>
       </li>
     
@@ -1102,10 +1125,6 @@ great post on using <code>fsutil</code>!</p>
     
       <li class="post">
         <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">regexes for the serverspec 2 update</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/">Chef&#8217;ing custom nginx configs with the nginx cookbook</a>
       </li>
     
   </ul>
