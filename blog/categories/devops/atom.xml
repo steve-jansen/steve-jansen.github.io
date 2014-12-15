@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devops | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-12-03T11:34:14-05:00</updated>
+  <updated>2014-12-15T14:28:06-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,221 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/"/>
+    <updated>2014-12-15T09:39:33-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files</id>
+    <content type="html"><![CDATA[<p>Rackspace Cloud DNS offeres a great web console, along with a solid API for managing
+DNS records dynamically from CM tools like Chef.</p>
+
+<p>The web UI @ <a href="https://mycloud.rackspace.com">https://mycloud.rackspace.com</a> doesn&rsquo;t (yet) suppport an action to
+export your domain(s) to standard BIND format zone files.</p>
+
+<p>However, the API does support zone file exports,
+<a href="http://docs.rackspace.com/cdns/api/v1.0/cdns-devguide/content/GET_exportDomain_v1.0__account__domains__domainId__export_domains.html"><code>GET /v1.0/{account}/domains/{domainId}/export</code></a>.</p>
+
+<p>I wanted to create a scheduled Jenkins job to export a domain managed by
+Cloud DNS to GitHub for both versioning and disaster recovery.</p>
+
+<p>One gotcha with the API is it&rsquo;s asynchronous &ndash; you request an export, then
+periodically poll on the status of the export.  The API also has rate limiting.
+So, the export is a bit more involved than a simple <code>curl</code> call.</p>
+
+<p>Based on <a href="https://community.rackspace.com/products/f/25/t/1743">this Rackspace community support post</a>,
+I found a great python utility, <a href="https://github.com/wichert/clouddns">clouddns.py by Wichert Akkerman</a>.</p>
+
+<blockquote><p>Note: I couldn&rsquo;t use the <a href="https://github.com/rackspace/pyrax">https://github.com/rackspace/pyrax</a> official SDK,
+as I&rsquo;m on CentOS 6.5 with Python 2.6, and the SDK requires Python 2.7.  I also tried
+the <a href="https://gist.github.com/DavidWittman/4727690">gist by DavidWittman</a> but failed
+to get it working with the LON region despte following
+<a href="https://github.com/rackerlabs/python-clouddns/blob/master/README.rst">the clouddns README</a></p></blockquote>
+
+<p>Here&rsquo;s the basis of the script I used in a Jenkins job to export a domain and subdomains
+every 15 minutes, alongw with the Git publisher for Jenkins to push the changes back to
+a GitHub repo.</p>
+
+<p><div><script src='https://gist.github.com/14dddef6fa0318761e3c.js'></script>
+<noscript><pre><code>#!/bin/bash
+# exports DNS records from Rackspace Cloud DNS to text files
+# Depends on https://github.com/wichert/clouddns/blob/master/src/clouddns.py
+
+set -e
+
+me=export-zone
+base_domain=
+rackspace_region=
+rackspace_rate_limit_delay=3
+script_root=$(cd `dirname &quot;${BASH_SOURCE[0]}&quot;` &amp;&amp; pwd)
+
+function usage() {
+  cat &lt;&lt; EOF
+Usage: `basename &quot;${BASH_SOURCE[0]}&quot;` [domain]
+  exports a Racksapce Cloud DNS domain and subdomains to zone files&quot;
+
+  domain - an optional filter for the domain to export, defaults to all
+EOF
+  exit 1
+}
+
+[ &quot;$1&quot; == &quot;-?&quot; ] &amp;&amp; usage
+[ &quot;$1&quot; == &quot;--help&quot; ] &amp;&amp; usage
+
+echo &quot;[$me] verifying Rackspace API credentials ...&quot;
+if [ -z &quot;$OS_USERNAME&quot; ] || [ -z &quot;$OS_PASSWORD&quot; ]; then
+  echo &quot;[$me] error - missing rackspace credentials - you may need a openrc file&quot; &gt;&amp;2
+  echo &quot;[$me] see http://docs.rackspace.com/servers/api/v2/cs-gettingstarted/content/section_gs_install_nova.html#d6e1129&quot; &gt;&amp;2
+  exit 1
+fi
+
+if echo &quot;$OS_REGION_NAME&quot; | grep -i &quot;LON&quot; &gt;/dev/null 2&gt;&amp;1; then
+  rackspace_region=uk
+else
+  rackspace_region=us
+fi
+
+echo &quot;[$me] verifying python dependencies ...&quot;
+if ! python --version &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;[$me] error - python runtime not found&quot; &gt;&amp;2
+  echo &quot;[$me] see https://www.python.org/downloads/&quot; &gt;&amp;2
+  exit 2
+fi
+
+if ! pip --version &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;[$me] error - missing python dependency - pip&quot; &gt;&amp;2
+  echo &quot;[$me] see https://pip.pypa.io/en/latest/installing.html&quot; &gt;&amp;2
+  exit 2
+fi
+
+if ! pip install --user isodate &gt;/dev/null; then
+  echo &quot;[$me] error - pip install isodate failed&quot; &gt;&amp;2
+  exit 3
+fi
+
+if ! pip install --user requests &gt;/dev/null; then
+  echo &quot;[$me] error - pip install requets failed&quot; &gt;&amp;2
+  exit 3
+fi
+
+echo &quot;[$me] downloading wichert/clouddns from GitHub ...&quot;
+curl -L -o &quot;$script_root/clouddns.py&quot; &#39;https://raw.githubusercontent.com/wichert/clouddns/master/src/clouddns.py&#39;
+
+if [ -z &quot;$1&quot; ]; then
+  base_domain=&quot;.&quot;
+else
+ base_domain=&quot;$1&quot;
+fi
+
+clouddns_command=&quot;python &quot;&quot;$script_root/clouddns.py&quot;&quot; --region &quot;&quot;$rackspace_region&quot;&quot; \
+                                                      --username &quot;&quot;$OS_USERNAME&quot;&quot; \
+                                                      --api &quot;&quot;$OS_PASSWORD&quot;&quot;&quot;
+
+echo &quot;[$me] exporting zone files for $base_domain ...&quot;
+domain_list=`$clouddns_command list | \
+             awk &#39;{print $1}&#39; | \
+             grep &quot;$base_domain&quot; | \
+             sort`
+
+for domain in $domain_list;
+do
+  echo &quot;[$me] exporting $domain ...&quot;
+  # ignore errors in exporting a subdomain, which can happen due to rate limiting
+  # assume the next run will export the subdomain
+  set +e
+  $clouddns_command export-zone &quot;$domain&quot; &gt; &quot;$domain.txt&quot;
+  set -e
+
+  # avoid Rackspace API rate limiting errors
+  echo &quot;[$me] sleeping $rackspace_rate_limit_delay seconds ...&quot;
+  sleep $rackspace_rate_limit_delay
+done
+
+exit 0
+</code></pre></noscript></div>
+</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Troubleshooting GitHub WebHooks SSL Verification]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/"/>
+    <updated>2014-12-03T10:28:37-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification</id>
+    <content type="html"><![CDATA[<p>GitHub WebHooks and Jenkins go together like peanut butter and jelly.
+<a href="http://kohsuke.org/2011/12/01/polling-must-die-triggering-jenkins-builds-from-a-git-hook/">SCM Webhook trggers are way more efficient for Jenkins over SCM polling</a>.  Webhooks also give you a great UX &ndash; Jenkins reacts
+immediately when you push a commit or open a pull request.</p>
+
+<p>I am a huge fan of using <a href="https://github.com/jenkinsci/github-oauth-plugin">GitHub OAuth for single sign on with Jenkins</a>.
+The security of OAuth really depends on TLS/SSL for protecting the token in transit,
+so your Jenkins should use SSL when using GitHub OAuth.</p>
+
+<p>GitHub&rsquo;s Webhooks have the option to perform SSL certificate validation.  I&rsquo;ve
+run into issues with GitHub&rsquo;s &ldquo;Hookshot&rdquo; HTTP engine failing SSL verification for
+otherwise valid certificates.  Most of my problems were related to installing
+intermediate CA certificates on Jenkins.</p>
+
+<h2>GitHub WebHook configuration and SSL certificate verification</h2>
+
+<p>Here&rsquo;s an example of a pull request webhook failing SSL validation in GitHub:</p>
+
+<p><img src="/images/2014-12-03-A.png" alt="Screenshot of a failed certificate validation in a GitHub WebHook configuratioon screen" /></p>
+
+<p>GitHub will send a &ldquo;hello, world&rdquo; webhook ping when you create a new webhook.  Note
+that SSL verification failures will have an usual HTTP response code of <code>0</code>:
+<img src="/images/2014-12-03-B.png" alt="Screenshot of a &quot;hello, world&quot; webhook ping from GitHub" /></p>
+
+<p>The response tab will be empty:
+<img src="/images/2014-12-03-C.png" alt="Screenshot of a &quot;hello, world&quot; webhook ping from GitHub" /></p>
+
+<h2>Troubleshoot your SSL certificate with the Symantec SSL Toolbox</h2>
+
+<p>Symantec offers a very helpful <a href="https://ssltools.websecurity.symantec.com/checker/">tool to check your certificate installation</a>
+as part of their &ldquo;SSL Toolbox&rdquo;. The tool offers suggestions to remedy certificate
+issues and links to download missing intermediate CA certificates.</p>
+
+<p>Here&rsquo;s an example of a Symantec diagnostic failure due to a missing intermediate certificate:</p>
+
+<p><img src="/images/2014-12-03-D.png" alt="Screenshot of a failed certificate validation in the Symantec SSL Toolbox" /></p>
+
+<h2>Using the Symantec SSL Toolbox against servers with IP ACLs</h2>
+
+<p>A great feature of the Symantec SSL Tool is how the tool supports non-public servers
+behind a firewall.  The tool will first attempt to verify your cert from
+a Symantec server.  If your server is behind a firewall that denies public access
+except for whitelisted origins, the SSL toolbox has a fallback mode to run a Java applet
+in your browser.  The applet will perform the SSL verification
+requests from local machine rather than a Symantec server.</p>
+
+<blockquote><p><strong>TIP:</strong> GitHub publishes their public IP range for webhooks as part of the
+<a href="https://api.github.com/meta">GitHub metadata API</a> if you wish to create firewall
+whitelist rules for GitHub webhook requests.</p></blockquote>
+
+<h2>Symanetc SSL Toolbox Applet and OS X Java security</h2>
+
+<p>Given the recent security vulnerabilities of Java applets, getting the applet to run
+on OS X takes some work.  Here are the setting I need to use the applet in Safari 7.1
+on OS X 10.9.5 (Mavericks) using the Oracle/Sun JRE 1.7 R71.
+(I never succeeded in using the applet in Firefox or Chrome despite serious effort.)</p>
+
+<p>I needed to enable Safari to run the SSL Toolbox applets in &ldquo;unsafe mode&rdquo; without prompting:
+<img src="/images/2014-12-03-E.png" alt="Screenshot of a Safari security settings for the Symantec SSL Toolbox" /></p>
+
+<p>I also had to temporarily downgrade the JVM 1.7 browser security level to &ldquo;Medium&rdquo; and
+add an execption for <code>https://ssltools.websecurity.symanttec.com</code>:</p>
+
+<p><img src="/images/2014-12-03-F.png" alt="Screenshot of a JVM security settings for the Symantec SSL Toolbox" /></p>
+
+<h2>Green is good!</h2>
+
+<p>Once you&rsquo;ve resolved your certificate issues, you should see green in both the
+Symantec SSL Toolbox and the GitHub WebHook requests after enabling SSL verification.</p>
+
+<p><img src="/images/2014-12-03-G.png" alt="Screenshot of a succesful certificate validation in the Symantec SSL Toolbox" /></p>
+
+<p><img src="/images/2014-12-03-H.png" alt="Screenshot of a succesful certificate validation in a GitHub WebHook configuration screen" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Integrating Rackspace Auto Scale Groups with ObjectRocket Mongo databases]]></title>
@@ -174,101 +389,6 @@ way to find out how old a node truly is.</p>
 <p>One of my colleagues pointed out that <a href="https://github.com/opscode/chef-metal">Chef Metal</a>
 sets a very handy <code>node['metal']['location']['allocated_at']</code> attribute that gets
 the job done if you are spinning up new nodes with metal.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[regexes for the serverspec 2 update]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/"/>
-    <updated>2014-10-03T18:24:25-04:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update</id>
-    <content type="html"><![CDATA[<p>The Serverspec team just released v2 of their outstanding testing library
-today, after a very long beta period.  The v2 release had a
-<a href="http://serverspec.org/changes-of-v2.html">few breaking breaking changes</a>
-due to dropped rspec matchers that had been deprecated.</p>
-
-<p>If your <a href="http://kitchen.ci/">test-kitchen</a> tests recently broke today,
-here&rsquo;s a few regexes I used with Sublime Text&rsquo;s regex find/replace
-to rewrite the dropped matchers for the new matchers.</p>
-
-<p>```
-it\s<em>{\s</em>(should|should_not)\s<em>return_(stdout|stderr)\s</em>(?(\/.<em>\/))?\s</em>}
-its(:\2) { \1 match \3 }</p>
-
-<p>it\s<em>{\s</em>(should|should_not)\s<em>return_(stdout|stderr)\s</em>(?(\&ldquo;.<em>\&rdquo;))?\s</em>}
-its(:\2) { \1 contain \3 }</p>
-
-<p>it\s<em>{\s</em>(should|should_not)\s<em>return_(stdout|stderr)\s</em>(?(&lsquo;.<em>&rsquo;))?\s</em>}
-its(:\2) { \1 contain \3 }</p>
-
-<p>it\s<em>{\s</em>(should|should_not)\s<em>return_exit_status\s</em>(\d+)\s*}
-its(:exit_status) { \1 eq \2 }
-```</p>
-
-<p>Hopefully the kitchen busser project will one day add support for
-Gemfile-style constraints on the test node, since busser always
-<a href="https://github.com/test-kitchen/test-kitchen/issues/242#issuecomment-28991870">installs the latest version of a busser plugin gem today.</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Chef'ing custom nginx configs with the nginx cookbook]]></title>
-    <link href="http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/"/>
-    <updated>2014-08-27T19:41:10-04:00</updated>
-    <id>http://steve-jansen.github.io/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook</id>
-    <content type="html"><![CDATA[<p>The <a href="http://supermarket.getchef.com/cookbooks/nginx">nginx</a> cookbook has been
-super helpful Chef'ing some web apps recently.  One thing I struggled to
-understand was how to use my own custom conf, like <code>/etc/nginx/nginx.conf</code>, that
-is optimized for how I use nginx.</p>
-
-<p>One solution I tried, which is probably a Chef anti-pattern, is to only include
-the nginx cookbook on the initial converge:</p>
-
-<h2>The Wrong Way</h2>
-
-<p>``` ruby</p>
-
-<h1>the nginx community cookbook will relentlessly revert conf files,</h1>
-
-<h1>so avoid running it unless nginx isn&rsquo;t installed,</h1>
-
-<h1>or we explicitly reset/delete the node attribute</h1>
-
-<p>include_recipe &lsquo;nginx&rsquo; unless node[&lsquo;nginx&rsquo;][&lsquo;installed&rsquo;]
-node.set[&lsquo;nginx&rsquo;][&lsquo;installed&rsquo;] = true</p>
-
-<h1>our custom nginx.conf</h1>
-
-<p>template &lsquo;/etc/nginx/nginx.conf&rsquo; do
-   source &lsquo;nginx.conf.erb&rsquo;
-   owner &lsquo;root&rsquo;
-   group &lsquo;root&rsquo;
-   mode  &lsquo;0644&rsquo;
-   notifies :reload, &ldquo;service[nginx]&rdquo;, :delayed
-end
-```</p>
-
-<p>I knew this was wrong when I wrote it.   Chef is all about idempotency.
-But, I couldn&rsquo;t figure out a way to keep the nginx cookbook from reverting my
-custom conf during subsequent converges, only to have my <code>template</code> restore my
-custom conf a few seconds later.</p>
-
-<h2>The Better Way</h2>
-
-<p>The OpsCode blog <a href="http://www.getchef.com/blog/2013/12/03/doing-wrapper-cookbooks-right/">Doing Wrapper Cookbooks Right</a> shows the right way, and really opened my eyes on the power of
-Chef&rsquo;s two phase model (compile, then converge).</p>
-
-<p>``` ruby
-include_recipe &lsquo;nginx&rsquo;</p>
-
-<h1>use our custom nginx.conf, rather than the one that ships in the nginx cookbook</h1>
-
-<h1>this avoids the nginx and my-app cookbooks from fighting for control of</h1>
-
-<h1>the same target file</h1>
-
-<p>resources(&lsquo;template[nginx.conf]&rsquo;).cookbook &lsquo;my-app&rsquo;
-```</p>
 ]]></content>
   </entry>
   

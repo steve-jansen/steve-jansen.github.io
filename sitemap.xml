@@ -150,11 +150,17 @@
         <loc>
             http://steve-jansen.github.io/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/
         </loc>
-        <lastmod>2014-12-03T11:34:13-05:00</lastmod>
+        <lastmod>2014-12-15T14:23:24-05:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/
+        </loc>
+        <lastmod>2014-12-15T14:27:45-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/blog/archives/</loc>
-        <lastmod>2014-12-03T11:34:13-05:00</lastmod>
+        <lastmod>2014-12-15T14:27:45-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/guides/windows-batch-scripting/</loc>
@@ -220,7 +226,7 @@
     </url>
     <url>
         <loc>http://steve-jansen.github.io/</loc>
-        <lastmod>2014-12-03T11:34:13-05:00</lastmod>
+        <lastmod>2014-12-15T14:27:45-05:00</lastmod>
     </url>
     <url>
         <loc>http://steve-jansen.github.io/robots.txt</loc>

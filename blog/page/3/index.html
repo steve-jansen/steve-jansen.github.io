@@ -9,8 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="Jeffrey Way at Nettuts+ created a wonderul video tutorial on using Sublime Text 2
-to its fullest capabilities. Even better, Jeffrey authored a free &hellip;">
+  <meta name="description" content="I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
+the Passport authentication strategy for GitHub OAuth with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -60,6 +60,259 @@ to its fullest capabilities. Even better, Jeffrey authored a free &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/22/wiring-together-passport-swagger-express/">Wiring Together Express, Passport OAuth, and Swagger in NodeJS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-22T22:07:00-04:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/22/wiring-together-passport-swagger-express/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
+the <a href="http://passportjs.org/guide/">Passport authentication strategy for GitHub OAuth</a> with
+<a href="https://github.com/wordnik/swagger-node-express">Swagger for Express</a>.  Normally, this
+would be fairly straightforward.  A wrinkle with other examples is I needed to disallow
+all anonymous access for an intranet app.</p>
+
+<p>I&rsquo;m a big fan of Swagger UI &ndash; it&rsquo;s a great, DRY way to auto-document your REST APIs. I expected Swagger
+to be a natural fit with NodeJS.  Suprisingly, I found the Swagger.Net implmentation for .Net&rsquo;s WebAPI
+to be considerably easier to use compared to the NodeJS implementation.
+Swagger.Net easily drops into an existing WebAPI project.  Not so with NodeJS.</p>
+
+<p>In Node, you really have to write your REST APIs from the ground up using the Swagger packge.  The other
+wacky part for me was you need two Express apps side-by-side to handle requests for both REST APIs and
+static content.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">app</span>     <span class="o">=</span> <span class="nx">express</span><span class="p">(),</span>
+</span><span class='line'>    <span class="nx">subapp</span>  <span class="o">=</span> <span class="nx">express</span><span class="p">(),;</span>
+</span><span class='line'>    <span class="nx">swagger</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./lib/swagger/swagger&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As we&rsquo;ll see below, the <code>subapp</code> sandboxes the Swagger package to the <code>/api/*</code> route.</p>
+
+<p><em>(I use a local copy of the swagger-node-express package downloaded to my source tree because I found that
+the npm package was considerably outdated compared to the master branch of the swagger-node-express repo.)</em></p>
+
+<p>Next, we configure PassportJS to use GitHub OAuth.  GitHub will POST back to the route
+<code>/auth/github/callback</code> upon successful authentication.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">passport</span>       <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;passport&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">GitHubStrategy</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;passport-github&#39;</span><span class="p">).</span><span class="nx">Strategy</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">passport</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="k">new</span> <span class="nx">GitHubStrategy</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">clientID</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;OAUTH_ID&#39;</span><span class="p">],</span>
+</span><span class='line'>    <span class="nx">clientSecret</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;OAUTH_TOKEN&#39;</span><span class="p">],</span>
+</span><span class='line'>    <span class="nx">callbackURL</span><span class="o">:</span> <span class="s1">&#39;/auth/github/callback&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="kd">function</span><span class="p">(</span><span class="nx">accessToken</span><span class="p">,</span> <span class="nx">refreshToken</span><span class="p">,</span> <span class="nx">profile</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">user</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">id</span><span class="o">:</span> <span class="nx">profile</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">email</span><span class="o">:</span> <span class="p">(</span><span class="nx">profile</span><span class="p">.</span><span class="nx">emails</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">?</span> <span class="nx">profile</span><span class="p">.</span><span class="nx">emails</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">gravatar</span><span class="o">:</span> <span class="nx">profile</span><span class="p">.</span><span class="nx">_json</span><span class="p">.</span><span class="nx">gravatar_id</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For my needs, I got away with serializing the 3 user properties I need to a session cookie:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">passport</span><span class="p">.</span><span class="nx">serializeUser</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">user</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">passport</span><span class="p">.</span><span class="nx">deserializeUser</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">user</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A critical piece of wiring is a reusable function to verify authentication:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// middleware to ensure user is authenticated</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">authenticate</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">isAuthenticated</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">next</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">&#39;x-requested-with&#39;</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;XMLHttpRequest&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s2">&quot;Authentication required&quot;</span><span class="p">,</span> <span class="mi">401</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The next key wiring is to configure both Express apps to use Passport as well as our <code>authenticate</code> function.
+This approach prevents infinite OAuth HTTP 302 redirects:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// configure express to use swagger for the `/api` route</span>
+</span><span class='line'><span class="nx">subpath</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">cookieParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">bodyParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">methodOverride</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">session</span><span class="p">({</span> <span class="nx">secret</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;SESSION_TOKEN&#39;</span><span class="p">]</span> <span class="p">}));</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">initialize</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">session</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">subpath</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">authenticate</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">swagger</span><span class="p">.</span><span class="nx">setAppHandler</span><span class="p">(</span><span class="nx">subpath</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// configure express for the static content on the `/` route</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">cookieParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">bodyParser</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">methodOverride</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">session</span><span class="p">({</span> <span class="nx">secret</span><span class="o">:</span> <span class="nx">config</span><span class="p">[</span><span class="s1">&#39;SESSION_TOKEN&#39;</span><span class="p">]</span> <span class="p">}));</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">initialize</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">passport</span><span class="p">.</span><span class="nx">session</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">router</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">authenticate</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/api&#39;</span><span class="p">,</span> <span class="nx">subpath</span><span class="p">);</span> <span class="cm">/* mount `/api` using the subapp */</span>
+</span><span class='line'>  <span class="c1">// default document middleware for swagger/index.html</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/swagger&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="s1">&#39;/swagger&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/swagger/&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">next</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/swagger&#39;</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public/swagger&#39;</span><span class="p">)));</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public/client&#39;</span><span class="p">)));</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, we define routes to handle OAuth logins and callbacks, then configure Swagger using the
+route <code>/api/doc</code>, and finally start the server.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// GitHub OAuth routes</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="nx">passport</span><span class="p">.</span><span class="nx">authenticate</span><span class="p">(</span><span class="s1">&#39;github&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/auth/github/callback&#39;</span><span class="p">,</span>  <span class="nx">passport</span><span class="p">.</span><span class="nx">authenticate</span><span class="p">(</span><span class="s1">&#39;github&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">successReturnToOrRedirect</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="nx">failureRedirect</span><span class="o">:</span> <span class="s1">&#39;/login&#39;</span> <span class="p">}));</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Swagger configuration</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">addModels</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./models&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">addGet</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./controllers/user&#39;</span><span class="p">).</span><span class="nx">get</span><span class="p">);</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">configureSwaggerPaths</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;/doc&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">swagger</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../package.json&#39;</span><span class="p">).</span><span class="nx">version</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">8080</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -696,7 +949,11 @@ ECHO ON
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting Github Webhooks Ssl Verification</a>
+        <a href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/">Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting GitHub WebHooks SSL Verification</a>
       </li>
     
       <li class="post">
@@ -709,10 +966,6 @@ ECHO ON
     
       <li class="post">
         <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">regexes for the serverspec 2 update</a>
       </li>
     
   </ul>

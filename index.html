@@ -9,8 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="GitHub WebHooks and Jenkins go together like peanut butter and jelly.
-SCM Webhook trggers are way more efficient for Jenkins over SCM polling. &hellip;">
+  <meta name="description" content="Rackspace Cloud DNS offeres a great web console, along with a solid API for managing
+DNS records dynamically from CM tools like Chef. The web UI @ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,7 +66,7 @@ SCM Webhook trggers are way more efficient for Jenkins over SCM polling. &hellip
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting Github Webhooks Ssl Verification</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/">Jenkins Job to Export Rackspace Cloud DNS Domain as BIND Zone Files</a></h1>
     
     
       <p class="meta">
@@ -82,7 +82,173 @@ SCM Webhook trggers are way more efficient for Jenkins over SCM polling. &hellip
   
 
 
-<time datetime="2014-12-03T00:00:00-05:00" pubdate data-updated="true"></time>
+<time datetime="2014-12-15T09:39:33-05:00" pubdate data-updated="true">Dec 15<span>th</span>, 2014</time>
+        
+         | <a href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Rackspace Cloud DNS offeres a great web console, along with a solid API for managing
+DNS records dynamically from CM tools like Chef.</p>
+
+<p>The web UI @ <a href="https://mycloud.rackspace.com">https://mycloud.rackspace.com</a> doesn&rsquo;t (yet) suppport an action to
+export your domain(s) to standard BIND format zone files.</p>
+
+<p>However, the API does support zone file exports,
+<a href="http://docs.rackspace.com/cdns/api/v1.0/cdns-devguide/content/GET_exportDomain_v1.0__account__domains__domainId__export_domains.html"><code>GET /v1.0/{account}/domains/{domainId}/export</code></a>.</p>
+
+<p>I wanted to create a scheduled Jenkins job to export a domain managed by
+Cloud DNS to GitHub for both versioning and disaster recovery.</p>
+
+<p>One gotcha with the API is it&rsquo;s asynchronous &ndash; you request an export, then
+periodically poll on the status of the export.  The API also has rate limiting.
+So, the export is a bit more involved than a simple <code>curl</code> call.</p>
+
+<p>Based on <a href="https://community.rackspace.com/products/f/25/t/1743">this Rackspace community support post</a>,
+I found a great python utility, <a href="https://github.com/wichert/clouddns">clouddns.py by Wichert Akkerman</a>.</p>
+
+<blockquote><p>Note: I couldn&rsquo;t use the <a href="https://github.com/rackspace/pyrax">https://github.com/rackspace/pyrax</a> official SDK,
+as I&rsquo;m on CentOS 6.5 with Python 2.6, and the SDK requires Python 2.7.  I also tried
+the <a href="https://gist.github.com/DavidWittman/4727690">gist by DavidWittman</a> but failed
+to get it working with the LON region despte following
+<a href="https://github.com/rackerlabs/python-clouddns/blob/master/README.rst">the clouddns README</a></p></blockquote>
+
+<p>Here&rsquo;s the basis of the script I used in a Jenkins job to export a domain and subdomains
+every 15 minutes, alongw with the Git publisher for Jenkins to push the changes back to
+a GitHub repo.</p>
+
+<div><script src='https://gist.github.com/14dddef6fa0318761e3c.js'></script>
+<noscript><pre><code>#!/bin/bash
+# exports DNS records from Rackspace Cloud DNS to text files
+# Depends on https://github.com/wichert/clouddns/blob/master/src/clouddns.py
+
+set -e
+
+me=export-zone
+base_domain=
+rackspace_region=
+rackspace_rate_limit_delay=3
+script_root=$(cd `dirname &quot;${BASH_SOURCE[0]}&quot;` &amp;&amp; pwd)
+
+function usage() {
+  cat &lt;&lt; EOF
+Usage: `basename &quot;${BASH_SOURCE[0]}&quot;` [domain]
+  exports a Racksapce Cloud DNS domain and subdomains to zone files&quot;
+
+  domain - an optional filter for the domain to export, defaults to all
+EOF
+  exit 1
+}
+
+[ &quot;$1&quot; == &quot;-?&quot; ] &amp;&amp; usage
+[ &quot;$1&quot; == &quot;--help&quot; ] &amp;&amp; usage
+
+echo &quot;[$me] verifying Rackspace API credentials ...&quot;
+if [ -z &quot;$OS_USERNAME&quot; ] || [ -z &quot;$OS_PASSWORD&quot; ]; then
+  echo &quot;[$me] error - missing rackspace credentials - you may need a openrc file&quot; &gt;&amp;2
+  echo &quot;[$me] see http://docs.rackspace.com/servers/api/v2/cs-gettingstarted/content/section_gs_install_nova.html#d6e1129&quot; &gt;&amp;2
+  exit 1
+fi
+
+if echo &quot;$OS_REGION_NAME&quot; | grep -i &quot;LON&quot; &gt;/dev/null 2&gt;&amp;1; then
+  rackspace_region=uk
+else
+  rackspace_region=us
+fi
+
+echo &quot;[$me] verifying python dependencies ...&quot;
+if ! python --version &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;[$me] error - python runtime not found&quot; &gt;&amp;2
+  echo &quot;[$me] see https://www.python.org/downloads/&quot; &gt;&amp;2
+  exit 2
+fi
+
+if ! pip --version &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;[$me] error - missing python dependency - pip&quot; &gt;&amp;2
+  echo &quot;[$me] see https://pip.pypa.io/en/latest/installing.html&quot; &gt;&amp;2
+  exit 2
+fi
+
+if ! pip install --user isodate &gt;/dev/null; then
+  echo &quot;[$me] error - pip install isodate failed&quot; &gt;&amp;2
+  exit 3
+fi
+
+if ! pip install --user requests &gt;/dev/null; then
+  echo &quot;[$me] error - pip install requets failed&quot; &gt;&amp;2
+  exit 3
+fi
+
+echo &quot;[$me] downloading wichert/clouddns from GitHub ...&quot;
+curl -L -o &quot;$script_root/clouddns.py&quot; &#39;https://raw.githubusercontent.com/wichert/clouddns/master/src/clouddns.py&#39;
+
+if [ -z &quot;$1&quot; ]; then
+  base_domain=&quot;.&quot;
+else
+ base_domain=&quot;$1&quot;
+fi
+
+clouddns_command=&quot;python &quot;&quot;$script_root/clouddns.py&quot;&quot; --region &quot;&quot;$rackspace_region&quot;&quot; \
+                                                      --username &quot;&quot;$OS_USERNAME&quot;&quot; \
+                                                      --api &quot;&quot;$OS_PASSWORD&quot;&quot;&quot;
+
+echo &quot;[$me] exporting zone files for $base_domain ...&quot;
+domain_list=`$clouddns_command list | \
+             awk &#39;{print $1}&#39; | \
+             grep &quot;$base_domain&quot; | \
+             sort`
+
+for domain in $domain_list;
+do
+  echo &quot;[$me] exporting $domain ...&quot;
+  # ignore errors in exporting a subdomain, which can happen due to rate limiting
+  # assume the next run will export the subdomain
+  set +e
+  $clouddns_command export-zone &quot;$domain&quot; &gt; &quot;$domain.txt&quot;
+  set -e
+
+  # avoid Rackspace API rate limiting errors
+  echo &quot;[$me] sleeping $rackspace_rate_limit_delay seconds ...&quot;
+  sleep $rackspace_rate_limit_delay
+done
+
+exit 0
+</code></pre></noscript></div>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting GitHub WebHooks SSL Verification</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-03T10:28:37-05:00" pubdate data-updated="true">Dec 3<span>rd</span>, 2014</time>
         
          | <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/#disqus_thread">Comments</a>
         
@@ -999,75 +1165,6 @@ not the encrypted ciphertext.   Not exactly what you want to commit to GitHub.</
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/16/a-better-iis-express-console-window/">A Better IIS Express Console Window</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-16T18:18:34-04:00" pubdate data-updated="true">Mar 16<span>th</span>, 2014</time>
-        
-         | <a href="/blog/2014/03/16/a-better-iis-express-console-window/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>IIS Express is the <em>de facto</em>  server to use for local development of ASP.NET MVC and Web Api apps.  It&rsquo;s just like it&rsquo;s big brother IIS
-minus a few features rarely used for local development.
-Unlike it&rsquo;s big brother, IIS Express runs on demand as a regular console app under the security context of
-your current login.  This makes it much easier to start and stop debugging sessions.</p>
-
-<p>Being a console app is great &ndash; you can see <code>System.Diagnostics.Debug.Print</code> and <code>System.Diagnostics.Trace.Write</code>
-output right in the console alongside IIS&#8217; usual log statements for HTTP requests.</p>
-
-<p>A really useful trick is to create a Windows Explorer shortcut to iisexpress.exe, and open that shortcut iisexpress.exe.lnk file instead of directly
-opening iisexpress.exe. There are two benefits to this:</p>
-
-<ol>
-<li><p>iisexpress.exe gets a dedicated icon on the Windows taskbar.  In the screenshot below, I can <code>WinKey + 5</code> to quickly switch to my IIS Express
-console output.  (<code>WinKey + N</code> focuses/opens the Nth item on the taskbar; repeat as needed if you have multiple windows grouped for that taskbar icon).</p></li>
-<li><p>I can customize the command prompt preferences for just iisexpress.exe.  In the screenshot below, I&rsquo;m using a smaller font in purple color, with the
-window stretched the entire 1600 pixel width of my display. This helps greatly with the readability of long lines of text in the console output.</p></li>
-</ol>
-
-
-<p><img src="/images/2014-03-16-A.png" alt="Screenshot of the iisexpress.exe open in a custom window" /></p>
-
-<p>Here&rsquo;s a closer look at the console ouptut:
-<img src="/images/2014-03-16-H.png" alt="Screenshot of the iisexpress.exe open in a custom window" /></p>
-
-<p>Here are screenshots of the Explorer settings I used for <code>C:\Program Files\IIS Express\iisexpress.exe.lnk</code>:</p>
-
-<p><img src="/images/2014-03-16-B.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
-<img src="/images/2014-03-16-C.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
-<img src="/images/2014-03-16-D.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
-<img src="/images/2014-03-16-E.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
-<img src="/images/2014-03-16-F.png" alt="Screenshot of the iisexpress.exe.lnk settings" />
-<img src="/images/2014-03-16-G.png" alt="Screenshot of the iisexpress.exe.lnk settings" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1108,7 +1205,11 @@ window stretched the entire 1600 pixel width of my display. This helps greatly w
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting Github Webhooks Ssl Verification</a>
+        <a href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/">Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting GitHub WebHooks SSL Verification</a>
       </li>
     
       <li class="post">
@@ -1121,10 +1222,6 @@ window stretched the entire 1600 pixel width of my display. This helps greatly w
     
       <li class="post">
         <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/03/regexes-for-the-serverspec-2-update/">regexes for the serverspec 2 update</a>
       </li>
     
   </ul>

@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files - /* steve jansen */</title>
+  <meta name="author" content="Steve Jansen">
+
+  
+  <meta name="description" content="Rackspace Cloud DNS offeres a great web console, along with a solid API for managing
+DNS records dynamically from CM tools like Chef. The web UI @ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="/* steve jansen */" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43558425-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">/* steve jansen */</a></h1>
+  
+    <h2>// another day in paradise hacking code and more</h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Jenkins Job to Export Rackspace Cloud DNS Domain as BIND Zone Files</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-15T09:39:33-05:00" pubdate data-updated="true">Dec 15<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Rackspace Cloud DNS offeres a great web console, along with a solid API for managing
+DNS records dynamically from CM tools like Chef.</p>
+
+<p>The web UI @ <a href="https://mycloud.rackspace.com">https://mycloud.rackspace.com</a> doesn&rsquo;t (yet) suppport an action to
+export your domain(s) to standard BIND format zone files.</p>
+
+<p>However, the API does support zone file exports,
+<a href="http://docs.rackspace.com/cdns/api/v1.0/cdns-devguide/content/GET_exportDomain_v1.0__account__domains__domainId__export_domains.html"><code>GET /v1.0/{account}/domains/{domainId}/export</code></a>.</p>
+
+<p>I wanted to create a scheduled Jenkins job to export a domain managed by
+Cloud DNS to GitHub for both versioning and disaster recovery.</p>
+
+<p>One gotcha with the API is it&rsquo;s asynchronous &ndash; you request an export, then
+periodically poll on the status of the export.  The API also has rate limiting.
+So, the export is a bit more involved than a simple <code>curl</code> call.</p>
+
+<p>Based on <a href="https://community.rackspace.com/products/f/25/t/1743">this Rackspace community support post</a>,
+I found a great python utility, <a href="https://github.com/wichert/clouddns">clouddns.py by Wichert Akkerman</a>.</p>
+
+<blockquote><p>Note: I couldn&rsquo;t use the <a href="https://github.com/rackspace/pyrax">https://github.com/rackspace/pyrax</a> official SDK,
+as I&rsquo;m on CentOS 6.5 with Python 2.6, and the SDK requires Python 2.7.  I also tried
+the <a href="https://gist.github.com/DavidWittman/4727690">gist by DavidWittman</a> but failed
+to get it working with the LON region despte following
+<a href="https://github.com/rackerlabs/python-clouddns/blob/master/README.rst">the clouddns README</a></p></blockquote>
+
+<p>Here&rsquo;s the basis of the script I used in a Jenkins job to export a domain and subdomains
+every 15 minutes, alongw with the Git publisher for Jenkins to push the changes back to
+a GitHub repo.</p>
+
+<div><script src='https://gist.github.com/14dddef6fa0318761e3c.js'></script>
+<noscript><pre><code>#!/bin/bash
+# exports DNS records from Rackspace Cloud DNS to text files
+# Depends on https://github.com/wichert/clouddns/blob/master/src/clouddns.py
+
+set -e
+
+me=export-zone
+base_domain=
+rackspace_region=
+rackspace_rate_limit_delay=3
+script_root=$(cd `dirname &quot;${BASH_SOURCE[0]}&quot;` &amp;&amp; pwd)
+
+function usage() {
+  cat &lt;&lt; EOF
+Usage: `basename &quot;${BASH_SOURCE[0]}&quot;` [domain]
+  exports a Racksapce Cloud DNS domain and subdomains to zone files&quot;
+
+  domain - an optional filter for the domain to export, defaults to all
+EOF
+  exit 1
+}
+
+[ &quot;$1&quot; == &quot;-?&quot; ] &amp;&amp; usage
+[ &quot;$1&quot; == &quot;--help&quot; ] &amp;&amp; usage
+
+echo &quot;[$me] verifying Rackspace API credentials ...&quot;
+if [ -z &quot;$OS_USERNAME&quot; ] || [ -z &quot;$OS_PASSWORD&quot; ]; then
+  echo &quot;[$me] error - missing rackspace credentials - you may need a openrc file&quot; &gt;&amp;2
+  echo &quot;[$me] see http://docs.rackspace.com/servers/api/v2/cs-gettingstarted/content/section_gs_install_nova.html#d6e1129&quot; &gt;&amp;2
+  exit 1
+fi
+
+if echo &quot;$OS_REGION_NAME&quot; | grep -i &quot;LON&quot; &gt;/dev/null 2&gt;&amp;1; then
+  rackspace_region=uk
+else
+  rackspace_region=us
+fi
+
+echo &quot;[$me] verifying python dependencies ...&quot;
+if ! python --version &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;[$me] error - python runtime not found&quot; &gt;&amp;2
+  echo &quot;[$me] see https://www.python.org/downloads/&quot; &gt;&amp;2
+  exit 2
+fi
+
+if ! pip --version &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;[$me] error - missing python dependency - pip&quot; &gt;&amp;2
+  echo &quot;[$me] see https://pip.pypa.io/en/latest/installing.html&quot; &gt;&amp;2
+  exit 2
+fi
+
+if ! pip install --user isodate &gt;/dev/null; then
+  echo &quot;[$me] error - pip install isodate failed&quot; &gt;&amp;2
+  exit 3
+fi
+
+if ! pip install --user requests &gt;/dev/null; then
+  echo &quot;[$me] error - pip install requets failed&quot; &gt;&amp;2
+  exit 3
+fi
+
+echo &quot;[$me] downloading wichert/clouddns from GitHub ...&quot;
+curl -L -o &quot;$script_root/clouddns.py&quot; &#39;https://raw.githubusercontent.com/wichert/clouddns/master/src/clouddns.py&#39;
+
+if [ -z &quot;$1&quot; ]; then
+  base_domain=&quot;.&quot;
+else
+ base_domain=&quot;$1&quot;
+fi
+
+clouddns_command=&quot;python &quot;&quot;$script_root/clouddns.py&quot;&quot; --region &quot;&quot;$rackspace_region&quot;&quot; \
+                                                      --username &quot;&quot;$OS_USERNAME&quot;&quot; \
+                                                      --api &quot;&quot;$OS_PASSWORD&quot;&quot;&quot;
+
+echo &quot;[$me] exporting zone files for $base_domain ...&quot;
+domain_list=`$clouddns_command list | \
+             awk &#39;{print $1}&#39; | \
+             grep &quot;$base_domain&quot; | \
+             sort`
+
+for domain in $domain_list;
+do
+  echo &quot;[$me] exporting $domain ...&quot;
+  # ignore errors in exporting a subdomain, which can happen due to rate limiting
+  # assume the next run will export the subdomain
+  set +e
+  $clouddns_command export-zone &quot;$domain&quot; &gt; &quot;$domain.txt&quot;
+  set -e
+
+  # avoid Rackspace API rate limiting errors
+  echo &quot;[$me] sleeping $rackspace_rate_limit_delay seconds ...&quot;
+  sleep $rackspace_rate_limit_delay
+done
+
+exit 0
+</code></pre></noscript></div>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Steve Jansen</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-15T09:39:33-05:00" pubdate data-updated="true">Dec 15<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/dns/'>dns</a>, <a class='category' href='/blog/categories/jenkins/'>jenkins</a>, <a class='category' href='/blog/categories/rackspace/'>rackspace</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/" title="Previous Post: Troubleshooting GitHub WebHooks SSL Verification">&laquo; Troubleshooting GitHub WebHooks SSL Verification</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+	<span>
+		<img src="http://www.gravatar.com/avatar/9ece5a08fa2e47180dc50d1e31f92e2f?s=200" alt="Gravatar of Steve Jansen " title="Gravatar of Steve Jansen" style="display: block; margin-left:auto; margin-right: auto" />
+	</span>
+</section>
+<section>
+  <p style="clear:both">
+    Hi, I'm Steve.  I'm a software developer loving life in Charlotte, NC,
+    an (ISC)<sup>2</sup> <a href="https://www.isc2.org/csslp/default.aspx">CSSLP</a>
+    and an avid fan of <a href="http://www.crossfit.com">Crossfit</a>.
+  </p>
+  <p>
+    And, no, I'm not Steve Jansen the British jazz drummer, though that does sound like a sweet career.
+  </p>
+</section>
+
+<section>
+  <h1>Guides</h1>
+  <ul id="recent_posts">
+      <li class="post">
+        <a href="/guides/windows-batch-scripting/index.html">Guide to Windows Batch Scripting</a>
+      </li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/">Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/03/troubleshooting-github-webhooks-ssl-verification/">Troubleshooting GitHub WebHooks SSL Verification</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/01/integrating-rackspace-auto-scale-groups-with-objectrocket-mongo-databases/">Integrating Rackspace Auto Scale Groups with ObjectRocket Mongo databases</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to use Jenkins to monitor cron jobs</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Social Stuff</h1>
+  <ul>
+    
+      <li /><a href="https://github.com/steve-jansen">@steve-jansen</a> on GitHub
+    
+    <li /><a href="http://stackoverflow.com/users/1995977/steve-jansen">@steve-jansen</a> on StackOverflow
+    <li /><a href="https://coderwall.com/p/u/steve-jansen">@steve-jansen</a> ProTips on Coderwall
+    <li /><a href="https://connect.microsoft.com/SQLServer/SearchResults.aspx?UserHandle=steve-jansen">@steve-jansen</a> on Microsft Connect
+    <li /><a href="http://aspnet.uservoice.com/users/33548256-steve-jansen">@steve-jansen</a> on ASP.NET User Voice
+    <li /><a href="/atom.xml" title="Subscribe via RSS">Subscribe via RSS</a>
+  </ul>
+</section>
+
+<!--<a href="https://coderwall.com/steve-jansen"><img alt="Endorse steve-jansen on Coderwall" src="https://api.coderwall.com/steve-jansen/endorsecount.png" /></a>-->
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Steve Jansen -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'steve-jansen';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
