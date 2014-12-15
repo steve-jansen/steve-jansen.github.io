@@ -4,9 +4,9 @@ title: "Troubleshooting GitHub WebHooks SSL Verification"
 date: 2014-12-03 10:28:37 -0500
 comments: true
 categories:
--- devops
--- jenkins
--- github
+- devops
+- jenkins
+- github
 ---
 
 GitHub WebHooks and Jenkins go together like peanut butter and jelly.
