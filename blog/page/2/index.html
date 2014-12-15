@@ -9,7 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="IIS Express is the de facto server to use for local development of ASP.NET MVC and Web Api apps. It&rsquo;s just like it&rsquo;s big brother IIS &hellip;">
+  <meta name="description" content="I&rsquo;ve been using Chef for a bit now and generally a huge fan of the new
+Chef workflow. We are working hard to attain true continuous delivery &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -59,6 +60,103 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/">Adding Chef Encrypted Data Bags to Source Control</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-05T15:54:25-04:00" pubdate data-updated="true">May 5<span>th</span>, 2014</time>
+        
+         | <a href="/blog/2014/05/05/adding-chef-encrypted-data-bags-to-source-control/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;ve been using Chef for a bit now and generally a huge fan of the new
+<a href="http://www.getchef.com/downloads/chef-dk/">Chef workflow</a>.</p>
+
+<p>We are working hard to attain true continuous delivery and test driven development with Chef.
+The devil is in the details now.</p>
+
+<p>One small wrinkle in our effort has been marrying <a href="http://docs.opscode.com/chef/essentials_data_bags.html#encrypt-a-data-bag-item">encrypted data_bags</a> with our chef-repo in GitHub.</p>
+
+<p>I don&rsquo;t want to type the optional argument <code>--secret-file ~/.chef/encrypted_data_bag_secret</code> everytime I interact with a data bag. So, I added this option to my <code>~/.chef/knife.rb</code> file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span><span class="o">[</span><span class="ss">:secret_file</span><span class="o">]</span>  <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">/encrypted_data_bag_secret&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>However, this precludes me from easily exporting the edited file to disk.  The export will always be my secret plaintext,
+not the encrypted ciphertext.   Not exactly what you want to commit to GitHub.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span> <span class="n">data_bag</span> <span class="n">create</span> <span class="n">users</span> <span class="n">jenkins</span>
+</span><span class='line'><span class="c1"># DON&#39;T COMMIT THIS... the exported file will be unencrypted</span>
+</span><span class='line'><span class="n">knife</span> <span class="n">data_bag</span> <span class="n">users</span> <span class="n">jenkins</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">json</span> <span class="o">&gt;</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, I decided to create a bash alias to temporarily disable the knife.rb setting and export the data bag to a file:</p>
+
+<p>My <code>~/.bash_profile</code> file contains this alias:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">function</span> <span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">sed</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;s/knife\[\:secret_file\]/</span><span class="se">\#</span><span class="s2">knife\[\:secret_file\]/&quot;</span>  <span class="o">-</span><span class="n">i</span> <span class="o">.</span><span class="n">bak</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
+</span><span class='line'>   <span class="n">knife</span> <span class="vg">$@</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">json</span>
+</span><span class='line'>   <span class="n">mv</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span><span class="o">.</span><span class="n">bak</span>  <span class="o">~</span><span class="sr">/.chef/</span><span class="n">knife</span><span class="o">.</span><span class="n">rb</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">alias</span> <span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span><span class="o">=</span><span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This bash function comments out the secret file option in knife.rb using sed&rsquo;s in-place editing.</p>
+
+<p>Now I can commit the data bag in its encrypted format:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">knife</span><span class="o">-</span><span class="n">ciphertext</span> <span class="n">data_bag</span> <span class="n">show</span> <span class="n">users</span> <span class="n">jenkins</span> <span class="o">&gt;</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
+</span><span class='line'><span class="n">git</span> <span class="n">add</span> <span class="n">data_bags</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">jenkins</span><span class="o">.</span><span class="n">json</span>
+</span><span class='line'><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;adding the latest jenkins data bag&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Happing cooking!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1058,73 +1156,6 @@ particularly for creative work like coding that fits brilliantly with remote col
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a Shell Script</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-27T15:44:00-04:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
-yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,
-<a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
-be commanded to run in non-interactive mode.</p>
-
-<p>Enter an old-school POSIX friend in core-utils&hellip; <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
-
-<p>The <code>yes</code> utility continuously outputs &lsquo;Y&rsquo; followed by a newline as long as another process is reading the stdout stream.
-Very convenient for piping to another program.</p>
-
-<p>Here&rsquo;s how I automated Yeoman to generate a new AngularJS app:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># yeoman has a number of interactive prompts, and sadly doesn&#39;t support a batch mode</span>
-</span><span class='line'><span class="c"># so we use the coreutils `yes` utility to accept all the default answers in yeoman;</span>
-</span><span class='line'><span class="c"># yes is not part of msysgit, so skip this when running on windows without cygwin</span>
-</span><span class='line'>which yes &gt; /dev/null
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span>
-</span><span class='line'><span class="k">then</span>
-</span><span class='line'><span class="k">  </span>yes | yo angular
-</span><span class='line'><span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1167,6 +1198,10 @@ Very convenient for piping to another program.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/">Parsing Jenkins secrets in a shell script</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/">Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files</a>
       </li>
     
@@ -1180,10 +1215,6 @@ Very convenient for piping to another program.</p>
     
       <li class="post">
         <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to use Jenkins to monitor cron jobs</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
       </li>
     
   </ul>

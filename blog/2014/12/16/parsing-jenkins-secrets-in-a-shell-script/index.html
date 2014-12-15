@@ -5,13 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>regexes for the serverspec 2 update - /* steve jansen */</title>
+  <title>Parsing Jenkins secrets in a shell script - /* steve jansen */</title>
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="The Serverspec team just released v2 of their outstanding testing library
-today, after a very long beta period. The v2 release had a
-few breaking &hellip;">
+  <meta name="description" content="The Jenkins credentials-binding plugin
+provides a convenient way to securely store secrets like usernames/passwords in
+Jenkins. You can even inject &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +20,7 @@ few breaking &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/">
+  <link rel="canonical" href="http://steve-jansen.github.io/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,7 +64,7 @@ few breaking &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Regexes for the Serverspec 2 Update</h1>
+      <h1 class="entry-title">Parsing Jenkins Secrets in a Shell Script</h1>
     
     
       <p class="meta">
@@ -80,7 +80,7 @@ few breaking &hellip;">
   
 
 
-<time datetime="2014-10-03T18:24:25-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2014</time>
+<time datetime="2014-12-16T14:39:54-05:00" pubdate data-updated="true">Dec 16<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -89,42 +89,33 @@ few breaking &hellip;">
   </header>
 
 
-<div class="entry-content"><p>The Serverspec team just released v2 of their outstanding testing library
-today, after a very long beta period.  The v2 release had a
-<a href="http://serverspec.org/changes-of-v2.html">few breaking breaking changes</a>
-due to dropped rspec matchers that had been deprecated.</p>
+<div class="entry-content"><p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Binding+Plugin">Jenkins credentials-binding plugin</a>
+provides a convenient way to securely store secrets like usernames/passwords in
+Jenkins.  You can even inject these secrets into build steps as environmental
+variables in a job like this:</p>
 
-<p>If your <a href="http://kitchen.ci/">test-kitchen</a> tests recently broke today,
-here&rsquo;s a few regexes I used with Sublime Text&rsquo;s regex find/replace
-to rewrite the dropped matchers for the new matchers.</p>
+<p><img src="/images/2014-12-16.png" alt="screenshot of a Jenkins job using the credentials-binding plugin" /></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>For a username/password pair, the plugin will inject the pair as a single value
+joined by <code>:</code>.  You can split the credentials into their respective parts
+using <a href="http://spin.atomicobject.com/2014/02/16/bash-string-maniuplation/">bash string manipulation operators like <code>%</code> and <code>#</code></a>.</p>
+
+<p>Assuming you configured the job to inject a variable named <code>CREDENTIALS</code>, you can do:</p>
+
+<figure class='code'><figcaption><span>[parsing Jenkins secret credentials with bash]</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\/.*\/)\)?\s*\}
-</span><span class='line'>its(:\2) { \1 match \3 }
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">USERNAME</span><span class="o">=</span><span class="k">${</span><span class="nv">CREDENTIALS</span><span class="p">%:*</span><span class="k">}</span>
+</span><span class='line'><span class="nv">PASSWORD</span><span class="o">=</span><span class="k">${</span><span class="nv">CREDENTIALS</span><span class="p">#*:</span><span class="k">}</span>
 </span><span class='line'>
-</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?(\".*\")\)?\s*\}
-</span><span class='line'>its(:\2) { \1 contain \3 }
-</span><span class='line'>
-</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_(stdout|stderr)\s*\(?('.*')\)?\s*\}
-</span><span class='line'>its(:\2) { \1 contain \3 }
-</span><span class='line'>
-</span><span class='line'>it\s*\{\s*(should|should_not)\s*return_exit_status\s*(\d+)\s*\}
-</span><span class='line'>its(:exit_status) { \1 eq \2 }</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c"># proof of concept - don&#39;t echo this in real life :)</span>
+</span><span class='line'><span class="nb">echo </span><span class="nv">USERNAME</span><span class="o">=</span><span class="nv">$USERNAME</span>
+</span><span class='line'><span class="nb">echo </span><span class="nv">USERNAME</span><span class="o">=</span><span class="nv">$PASSWORD</span>
+</span></code></pre></td></tr></table></div></figure>
 
-
-<p>Hopefully the kitchen busser project will one day add support for
-Gemfile-style constraints on the test node, since busser always
-<a href="https://github.com/test-kitchen/test-kitchen/issues/242#issuecomment-28991870">installs the latest version of a busser plugin gem today.</a>.</p>
 </div>
 
 
@@ -147,12 +138,12 @@ Gemfile-style constraints on the test node, since busser always
   
 
 
-<time datetime="2014-10-03T18:24:25-04:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2014</time>
+<time datetime="2014-12-16T14:39:54-05:00" pubdate data-updated="true">Dec 16<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/devops/'>devops</a>
+    <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/jenkins/'>jenkins</a>
   
 </span>
 
@@ -161,7 +152,7 @@ Gemfile-style constraints on the test node, since busser always
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://steve-jansen.github.io/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/" data-via="" data-counturl="http://steve-jansen.github.io/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/" >Tweet</a>
   
   
   
@@ -170,10 +161,8 @@ Gemfile-style constraints on the test node, since busser always
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/08/27/chefing-custom-nginx-configs-with-the-nginx-cookbook/" title="Previous Post: Chef'ing custom nginx configs with the nginx cookbook">&laquo; Chef'ing custom nginx configs with the nginx cookbook</a>
+        <a class="basic-alignment left" href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/" title="Previous Post: Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files">&laquo; Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/" title="Next Post: Finding Chef nodes bootstrapped in the last X hours">Finding Chef nodes bootstrapped in the last X hours &raquo;</a>
       
     </p>
   </footer>
@@ -279,8 +268,8 @@ Gemfile-style constraints on the test node, since busser always
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/';
-        var disqus_url = 'http://steve-jansen.github.io/blog/2014/10/03/regexes-for-the-serverspec-2-update/';
+        var disqus_identifier = 'http://steve-jansen.github.io/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/';
+        var disqus_url = 'http://steve-jansen.github.io/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/';
         var disqus_script = 'embed.js';
       
     (function () {

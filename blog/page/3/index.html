@@ -9,8 +9,8 @@
   <meta name="author" content="Steve Jansen">
 
   
-  <meta name="description" content="I spent a couple of hours tonight sorting out how to wire a NodeJS Express app to use both
-the Passport authentication strategy for GitHub OAuth with &hellip;">
+  <meta name="description" content="I had a niche need to automate yeoman, and spent a few hours trying to overcome
+yeoman&rsquo;s insistance on interactive prompts. As far as I can &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -60,6 +60,73 @@ the Passport authentication strategy for GitHub OAuth with &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/">Running Yeoman in a Shell Script</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-27T15:44:00-04:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/08/27/running-yeoman-in-a-shell-script/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I had a niche need to automate <a href="http://yeoman.io">yeoman</a>, and spent a few hours trying to overcome
+yeoman&rsquo;s insistance on interactive prompts.  As far as I can tell the prompting library,
+<a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a>, has no way to read a response file, or at least
+be commanded to run in non-interactive mode.</p>
+
+<p>Enter an old-school POSIX friend in core-utils&hellip; <a href="http://man7.org/linux/man-pages/man1/yes.1.html">yes</a></p>
+
+<p>The <code>yes</code> utility continuously outputs &lsquo;Y&rsquo; followed by a newline as long as another process is reading the stdout stream.
+Very convenient for piping to another program.</p>
+
+<p>Here&rsquo;s how I automated Yeoman to generate a new AngularJS app:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># yeoman has a number of interactive prompts, and sadly doesn&#39;t support a batch mode</span>
+</span><span class='line'><span class="c"># so we use the coreutils `yes` utility to accept all the default answers in yeoman;</span>
+</span><span class='line'><span class="c"># yes is not part of msysgit, so skip this when running on windows without cygwin</span>
+</span><span class='line'>which yes &gt; /dev/null
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span>
+</span><span class='line'><span class="k">then</span>
+</span><span class='line'><span class="k">  </span>yes | yo angular
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -949,6 +1016,10 @@ ECHO ON
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/">Parsing Jenkins secrets in a shell script</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/15/jenkins-job-to-export-rackspace-cloud-dns-domain-as-bind-zone-files/">Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files</a>
       </li>
     
@@ -962,10 +1033,6 @@ ECHO ON
     
       <li class="post">
         <a href="/blog/2014/11/20/how-to-use-jenkins-to-monitor-cron-jobs/">How to use Jenkins to monitor cron jobs</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/17/finding-chef-nodes-bootstrapped-in-the-last-x-hours/">Finding Chef nodes bootstrapped in the last X hours</a>
       </li>
     
   </ul>

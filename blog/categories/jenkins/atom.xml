@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jenkins | /* steve jansen */]]></title>
   <link href="http://steve-jansen.github.io/blog/categories/jenkins/atom.xml" rel="self"/>
   <link href="http://steve-jansen.github.io/"/>
-  <updated>2014-12-15T14:28:06-05:00</updated>
+  <updated>2014-12-15T14:46:36-05:00</updated>
   <id>http://steve-jansen.github.io/</id>
   <author>
     <name><![CDATA[Steve Jansen]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Parsing Jenkins secrets in a shell script]]></title>
+    <link href="http://steve-jansen.github.io/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script/"/>
+    <updated>2014-12-16T14:39:54-05:00</updated>
+    <id>http://steve-jansen.github.io/blog/2014/12/16/parsing-jenkins-secrets-in-a-shell-script</id>
+    <content type="html"><![CDATA[<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Binding+Plugin">Jenkins credentials-binding plugin</a>
+provides a convenient way to securely store secrets like usernames/passwords in
+Jenkins.  You can even inject these secrets into build steps as environmental
+variables in a job like this:</p>
+
+<p><img src="/images/2014-12-16.png" alt="screenshot of a Jenkins job using the credentials-binding plugin" /></p>
+
+<p>For a username/password pair, the plugin will inject the pair as a single value
+joined by <code>:</code>.  You can split the credentials into their respective parts
+using <a href="http://spin.atomicobject.com/2014/02/16/bash-string-maniuplation/">bash string manipulation operators like <code>%</code> and <code>#</code></a>.</p>
+
+<p>Assuming you configured the job to inject a variable named <code>CREDENTIALS</code>, you can do:</p>
+
+<p>``` bash [parsing Jenkins secret credentials with bash]
+USERNAME=${CREDENTIALS%:<em>}
+PASSWORD=${CREDENTIALS#</em>:}</p>
+
+<h1>proof of concept &ndash; don&rsquo;t echo this in real life :)</h1>
+
+<p>echo USERNAME=$USERNAME
+echo USERNAME=$PASSWORD
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Jenkins Job to export Rackspace Cloud DNS Domain As BIND Zone Files]]></title>
