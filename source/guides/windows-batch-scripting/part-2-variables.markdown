@@ -37,6 +37,8 @@ The `SET` command assigns a value to a variable.
 
     SET foo=bar
 
+**NOTE:** Do not use whitespace between the name and value; `SET foo = bar` will _not_ work but `SET foo=bar` will work.
+
 The `/A` switch supports arthimetic operations during assigments.  This is a useful tool if you need to validated that user input is a numerical value.
 
     SET /A four=2+2
