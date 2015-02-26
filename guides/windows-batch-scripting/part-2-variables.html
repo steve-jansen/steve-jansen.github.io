@@ -123,6 +123,8 @@ silly bugs like typos in variable names.</p>
 <pre><code>SET foo=bar
 </code></pre>
 
+<p><strong>NOTE:</strong> Do not use whitespace between the name and value; <code>SET foo = bar</code> will <em>not</em> work but <code>SET foo=bar</code> will work.</p>
+
 <p>The <code>/A</code> switch supports arthimetic operations during assigments.  This is a useful tool if you need to validated that user input is a numerical value.</p>
 
 <pre><code>SET /A four=2+2
@@ -371,7 +373,7 @@ other files in the same directory as our script.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Steve Jansen -
+  Copyright &copy; 2015 - Steve Jansen -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
