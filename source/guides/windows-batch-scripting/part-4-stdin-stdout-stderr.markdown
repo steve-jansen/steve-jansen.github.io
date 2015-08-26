@@ -61,7 +61,7 @@ This is useful if you want to write both stdout and stderr to a single log file.
 
 To use the contents of a file as the input to a program, instead of typing the input from the keyboard, use the `<` operator.
 
-    TYPE < SomeFile.txt
+    SORT < SomeFile.txt
 
 
 ## Suppressing Program Output
