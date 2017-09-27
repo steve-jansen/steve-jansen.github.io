@@ -192,20 +192,20 @@ are called variable substitution support and can resolve the path, timestamp, or
 this super useful feature is a bit hard to find &ndash; run &lsquo;FOR /?&rsquo; and page to the end of the output.</p>
 
 <ul>
-<li><code>%~1</code> removes quotes from the first command line argument, which is super useful when working with arguments to file paths.  You will need to quote any file paths, but, quoting a file path twice will cause a file not found error.</li>
+<li><code>%~I</code> removes quotes from the first command line argument, which is super useful when working with arguments to file paths.  You will need to quote any file paths, but, quoting a file path twice will cause a file not found error.</li>
 </ul>
 
 
-<p><code>SET myvar=%~1</code></p>
+<p><code>SET myvar=%~I</code></p>
 
 <ul>
-<li><p><code>%~f1</code> is the full path to the folder of the first command line argument</p></li>
-<li><p><code>%~fs1</code> is the same as above but the extra <code>s</code> option yields the DOS 8.3 short name path to the first command line argument (e.g., <code>C:\PROGRA~1</code> is
+<li><p><code>%~fI</code> is the full path to the folder of the first command line argument</p></li>
+<li><p><code>%~fsI</code> is the same as above but the extra <code>s</code> option yields the DOS 8.3 short name path to the first command line argument (e.g., <code>C:\PROGRA~1</code> is
 usually the 8.3 short name variant of <code>C:\Program Files</code>).  This can be helpful when using third party scripts or programs that don&rsquo;t handle spaces
 in file paths.</p></li>
-<li><p><code>%~dp1</code> is the full path to the parent folder of the first command line argument.  I use this trick in nearly every batch file I write to determine
+<li><p><code>%~dpI</code> is the full path to the parent folder of the first command line argument.  I use this trick in nearly every batch file I write to determine
 where the script file itself lives.  The syntax <code>SET parent=%~dp0</code> will put the path of the folder for the script file in the variable <code>%parent%</code>.</p></li>
-<li><p><code>%~nx1</code> is just the file name and file extension of the first command line argument.  I also use this trick frequently to determine the
+<li><p><code>%~nxI</code> is just the file name and file extension of the first command line argument.  I also use this trick frequently to determine the
 name of the script at runtime. If I need to print messages to the user, I like to prefix the message with the script&rsquo;s name, like
 <code>ECHO %~n0: some message</code> instead of <code>ECHO some message</code> . The prefixing helps the end user by knowing the output is
 from the script and not another program being called by the script.  It may sound silly until you spend hours trying to track down
