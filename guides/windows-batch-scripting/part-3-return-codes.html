@@ -129,12 +129,10 @@ the built-in DOS commands like <code>ECHO</code>, <code>IF</code>, and <code>SET
 
 <p>Another common technique is:</p>
 
-<p>  IF ERRORLEVEL 1 (</p>
-
-<pre><code>  REM do something here to address the error
+<pre><code>IF ERRORLEVEL 1 (
+  REM do something here to address the error
+)
 </code></pre>
-
-<p>  )</p>
 
 <p>The <code>ERRORLEVEL 1</code> statement is true when the return code is any number equal to or greater than 1.  However, I don&rsquo;t use this technique because
 programs can return negative numbers as well as positive numbers.  Most programs rarely document every possible return code, so I&rsquo;d rather explicity
