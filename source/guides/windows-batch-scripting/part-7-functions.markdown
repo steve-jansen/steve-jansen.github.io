@@ -4,7 +4,7 @@ layout: post
 title: "Windows Batch Scripting: Functions"
 date: 2013-03-01 10:57
 comments: true
-categories: 
+categories:
 - windows
 - batch
 - shell
@@ -21,7 +21,7 @@ categories:
 * Part 7 - Functions
 * [Part 8 - Parsing Input](/guides/windows-batch-scripting/part-8-parsing-input.html)
 * [Part 9 - Logging](/guides/windows-batch-scripting/part-9-logging.html)
-* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-advanced-tricks.html)
+* [Part 10 - Advanced Tricks](/guides/windows-batch-scripting/part-10-advanced-tricks.html)
 
 
 Functions are de facto way to reuse code in just about any procedural coding language.  While DOS lacks a bona fide function keyword, you can
@@ -59,7 +59,7 @@ In this example, we'll implement a poor man's version of the *nix tee utility to
     EXIT /B 0
 
 # Calling a function
-    
+
 We use the `CALL` keyword to invoke the quasi function labelled `:tee`.  We can pass command line arguments just like we're calling another batch file.
 
 We have to remember to `EXIT /B` keyword at the end our function.  Sadly, there is no way to return anything other than an exit code.
@@ -82,4 +82,3 @@ The caller could also pass data by modifying a global variable, however, I try t
 <span class="basic-alignment right">
 [Part 8 - Parsing Input >>](/guides/windows-batch-scripting/part-8-parsing-input.html)
 </span>
-
