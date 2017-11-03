@@ -1,0 +1,55 @@
+==================================================================
+https://keybase.io/stevejansen
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://steve-jansen.github.io
+  * I am stevejansen (https://keybase.io/stevejansen) on keybase.
+  * I have a public key ASA_OhoiYVixB58rBEiRJl_9CcBjl0xT2QsAbM-ponCvsAo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120dcd25df0bde6885ac4ae06e6c484fc9c8349838a6121db0e5cbb624790d497f80a",
+      "host": "keybase.io",
+      "kid": "01203f3a1a226158b1079f2b044891265ffd09c063974c53d90b006ccfa9a270afb00a",
+      "uid": "40cd77fb189c2d3a84237dfa9a4dbf19",
+      "username": "stevejansen"
+    },
+    "merkle_root": {
+      "ctime": 1509670612,
+      "hash": "62c70e6b67ca135ac78772a303f4e7a26495980ca5ee16768415f0a9d76415ded1d24181eafcdbddd840445ae1e5cbdb46d4c1f78979c7283b02980fc8da8e1b",
+      "hash_meta": "53f683ce3c2b2d09a3733a1dc38f0b6a2f5b4e08d38b5de3265b4278b4b7690f",
+      "seqno": 1661069
+    },
+    "service": {
+      "hostname": "steve-jansen.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "1.0.34"
+  },
+  "ctime": 1509670650,
+  "expire_in": 504576000,
+  "prev": "717fa72ad7b56680286bcc944f9a713a1edd3994d118b1f2f6aee35a2f796974",
+  "seqno": 12,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgPzoaImFYsQefKwRIkSZf/QnAY5dMU9kLAGzPqaJwr7AKp3BheWxvYWTFA1J7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTIwZGNkMjVkZjBiZGU2ODg1YWM0YWUwNmU2YzQ4NGZjOWM4MzQ5ODM4YTYxMjFkYjBlNWNiYjYyNDc5MGQ0OTdmODBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwM2YzYTFhMjI2MTU4YjEwNzlmMmIwNDQ4OTEyNjVmZmQwOWMwNjM5NzRjNTNkOTBiMDA2Y2NmYTlhMjcwYWZiMDBhIiwidWlkIjoiNDBjZDc3ZmIxODljMmQzYTg0MjM3ZGZhOWE0ZGJmMTkiLCJ1c2VybmFtZSI6InN0ZXZlamFuc2VuIn0sIm1lcmtsZV9yb290Ijp7ImN0aW1lIjoxNTA5NjcwNjEyLCJoYXNoIjoiNjJjNzBlNmI2N2NhMTM1YWM3ODc3MmEzMDNmNGU3YTI2NDk1OTgwY2E1ZWUxNjc2ODQxNWYwYTlkNzY0MTVkZWQxZDI0MTgxZWFmY2RiZGRkODQwNDQ1YWUxZTVjYmRiNDZkNGMxZjc4OTc5YzcyODNiMDI5ODBmYzhkYThlMWIiLCJoYXNoX21ldGEiOiI1M2Y2ODNjZTNjMmIyZDA5YTM3MzNhMWRjMzhmMGI2YTJmNWI0ZTA4ZDM4YjVkZTMyNjViNDI3OGI0Yjc2OTBmIiwic2Vxbm8iOjE2NjEwNjl9LCJzZXJ2aWNlIjp7Imhvc3RuYW1lIjoic3RldmUtamFuc2VuLmdpdGh1Yi5pbyIsInByb3RvY29sIjoiaHR0cHM6In0sInR5cGUiOiJ3ZWJfc2VydmljZV9iaW5kaW5nIiwidmVyc2lvbiI6MX0sImNsaWVudCI6eyJuYW1lIjoia2V5YmFzZS5pbyBnbyBjbGllbnQiLCJ2ZXJzaW9uIjoiMS4wLjM0In0sImN0aW1lIjoxNTA5NjcwNjUwLCJleHBpcmVfaW4iOjUwNDU3NjAwMCwicHJldiI6IjcxN2ZhNzJhZDdiNTY2ODAyODZiY2M5NDRmOWE3MTNhMWVkZDM5OTRkMTE4YjFmMmY2YWVlMzVhMmY3OTY5NzQiLCJzZXFubyI6MTIsInRhZyI6InNpZ25hdHVyZSJ9o3NpZ8RA8HF3LrjmWaREV/PLivhU+gpTaaKHMpa/oYFgWsAMHAh/vmVmzH3oQiT1QtsMzrAlI/mr1o1xrttYX8K1qXdCCKhzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIJgl8tzD00WKEOVKEHqUBpsMeEyF5vyuTpfu3sGwfzw7o3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/stevejansen
+
+==================================================================
